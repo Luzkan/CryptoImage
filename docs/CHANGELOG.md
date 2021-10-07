@@ -7,15 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [[0.0.1]] - 2021-10-xx
+## [[0.0.1]] - 2021-10-17 _(MJ)_
 
 ###### _([diff: 0.0.0-0.0.1])_
 
-**TBA**
-
 Added:
 
-- _TBA_
+- Created [**`DevelopmentWorkCulture.md`**](../docs/DevelopmentWorkCulture.md) for the project that contains some rules how we can make working together easier.
 
 ## [[0.0.0]] - 2021-10-07 _(MJ)_
 
