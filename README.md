@@ -47,3 +47,12 @@
   Notes concerning content of the articles might be found in a separate [google document](https://docs.google.com/document/d/1F5Q8ApOe5yL0iadJa6EWmWJUUAZd8F_k0yqANr2R_Gg/edit?usp=sharing).
 
 </p>
+
+
+## Team
+
+
+| <a href="https://github.com/Luzkan/" target="_blank">**Luzkan**</a> | <a href="https://github.com/werekkk" target="_blank">**Werekkk**</a> | <a href="https://github.com/InBinaryWorld" target="_blank">**InBinaryWorld**</a>
+| :---: |:---:| :---:|
+| [![Luzkan](https://avatars1.githubusercontent.com/u/1352231?s=150&u=cadaf12690f8715dc8cffa070b89f0e8c3bdabba&v=4?s=150)](https://github.com/Luzkan/)    | [![Werekk](https://cdn.ticketswap.com/public/202003/ea92c768-8b93-407f-a70b-2c40911fcfe1.b89e30c805396dfc2abb94e160c844a5bc7f13de.jpeg)](https://github.com/werekkk) | [![InBinaryWorld](https://cdn.ticketswap.com/public/202003/ea92c768-8b93-407f-a70b-2c40911fcfe1.b89e30c805396dfc2abb94e160c844a5bc7f13de.jpeg)](https://github.com/InBinaryWorld)|
+| <a href="https://github.com/Luzkan" target="_blank">`Marcel Jerzyk`</a> | <a href="https://github.com/werekkk" target="_blank">`Jacek Wernikowski`</a> | <a href="https://github.com/InBinaryWorld" target="_blank">`Krzysztof Szafraniak`</a>
