@@ -48,27 +48,6 @@ function enableEncryptButton() {
 
 
 // -------------------------------------------------------------
-// Encoders
-
-
-function encoder1(pixel3DArray) {
-    const temporaryUpsideDownImage = pixel3DArray.reverse();
-    return encodeBMPFrom3dData(temporaryUpsideDownImage);
-}
-
-function encoder2(pixel3DArray) {
-    const temporaryUpsideDownImage = pixel3DArray.reverse();
-    return encodeBMPFrom3dData(temporaryUpsideDownImage);
-}
-
-function encoder3(pixel3DArray) {
-    const temporaryUpsideDownImage = pixel3DArray.reverse();
-    return encodeBMPFrom3dData(temporaryUpsideDownImage);
-}
-
-
-
-// -------------------------------------------------------------
 // Actions
 
 // This updates the global text variable on any input change
@@ -86,12 +65,13 @@ document.getElementById("form-input-image").addEventListener('input', async e =>
 
     // Decode & Create Pixel 3D Array
     const decodedFile = await decodeBMP(file);
-    const pixel3dArray = decodedFile.pixels3D;
+    const pixel3DArray = decodedFile.pixels3D;
     if (DEBUG) {console.log(decodedFile);}
 
-    const encodedImage1 = await encoder1(pixel3dArray);
-    const encodedImage2 = await encoder2(pixel3dArray);
-    const encodedImage3 = await encoder3(pixel3dArray);
+    // Refer: algorithms.js
+    const encodedImage1 = await algorithm1(pixel3DArray);
+    const encodedImage2 = await algorithm2(pixel3DArray);
+    const encodedImage3 = await algorithm3(pixel3DArray);
 
     // Output is in global scope
     image_output = new EncryptedFile(file.name, encodedImage1, encodedImage2, encodedImage3);

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.4.1]] - 2021-10-26 _(MJ)_
+
+###### _([diff: 0.4.0-0.4.1])_
+
+Changed:
+
+- Moved encoders from `main.js` to separate [`algorithms.js`](../src/algorithms.js) file
+- Moved `bmp-encoder-decoder.js` to separate [`/src/encoders`](../src/encoders) directory and renamed it to [`bmp.js`](../src/encoders/bmp.js)
+
 ## [[0.4.0]] - 2021-10-26 _(MJ)_
 
 ###### _([diff: 0.3.0-0.4.0])_
@@ -125,12 +134,14 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.4.0-0.4.1]: https://github.com/Luzkan/CryptoImage/compare/0.4.0...0.4.1
 [diff: 0.3.0-0.4.0]: https://github.com/Luzkan/CryptoImage/compare/0.3.0...0.4.0
 [diff: 0.2.0-0.3.0]: https://github.com/Luzkan/CryptoImage/compare/0.2.0...0.3.0
 [diff: 0.1.1-0.2.0]: https://github.com/Luzkan/CryptoImage/compare/0.1.1...0.2.0
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[0.4.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.4.1
 [0.4.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.4.0
 [0.3.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.3.1
 [0.3.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.3.0
