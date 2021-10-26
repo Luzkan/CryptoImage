@@ -451,3 +451,17 @@ input[type="file"]::file-selector-button {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #1b1b1b;
 }
+
+/* Tooltip container */
+.hidden-tooltip {
+  color: transparent;
+  transition: all .25s ease-in;
+}
+
+.encoder-decoder-step:hover .hidden-tooltip {
+  color: red;
+}
+
+.permamently-transparent {
+  color: transparent !important;
+}

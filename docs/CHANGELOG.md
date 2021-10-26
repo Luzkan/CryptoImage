@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.4.0]] - 2021-10-26 _(MJ)_
+
+###### _([diff: 0.3.0-0.4.0])_
+
+**Converter Form responsiveness.**
+
+Added:
+
+- Prepared the [`main.js`](../src/main.js) for the user usage-flow logic handling & tiny structurization
+  - Temporary downloads example based on the checkbox inputs
+  - Variable which holds the text for encryption with on-key-change updates
+  - Functions and logic checks for each encryption method
+  - Variables holding the counter labels
+- Some ID's in the index.html to get the HTML elements
+- Constraint for the input, limited _(currently)_ only to `.bmp` filetype
+- Tooltip for Encoder Button
+  - Disabled it by default
+  - After user uploads an image, it is enabled
+  - If he tries to press the button before uploading an image, a tooltip will apear
+  - Tooltip is hidden after the image is uploaded
+  - ![CI - CryptoImage logo](./img/changelog/button_tooltip.gif)
+
+Changed:
+
+- Moved the examples from [`main.js`](../src/main.js) to [`examples.js`](../src/examples.js)
+
+## [[0.3.0]] - 2021-10-21 _(KS)_
+
+###### _([diff: 0.2.0-0.3.0])_
+
+**BMP Decoder / Encoder class & Blob Downloader.**
+
+Added:
+
+- BMP Encoder / Decoder
+  - Properties:
+    - `bytesPerPixel`
+    - `fileSize`
+    - `height`
+    - `width`
+    - `plainPixelsData`
+    - `pixels3D`
+- Blob Downloader
+
 ## [[0.2.0]] - 2021-10-13 _(MJ)_
 
 ###### _([diff: 0.1.1-0.2.0])_
@@ -81,10 +125,15 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.3.0-0.4.0]: https://github.com/Luzkan/CryptoImage/compare/0.3.0...0.4.0
+[diff: 0.2.0-0.3.0]: https://github.com/Luzkan/CryptoImage/compare/0.2.0...0.3.0
 [diff: 0.1.1-0.2.0]: https://github.com/Luzkan/CryptoImage/compare/0.1.1...0.2.0
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[0.4.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.4.0
+[0.3.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.3.1
+[0.3.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.3.0
 [0.2.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.2.0
 [0.1.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.1.1
 [0.1.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.1.0

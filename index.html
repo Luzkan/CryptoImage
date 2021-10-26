@@ -60,7 +60,7 @@
 												<i class="icon-cloud-upload to-animate-2"></i>
 												<div class="encoder-decoder-step to-animate">
 													<h3>Upload Your Image</h3>
-													<input class="form-control form-control-sm file-input custom-file-input" id="formFileSm" type="file" />
+													<input class="form-control form-control-sm file-input custom-file-input" id="form-input-image" type="file" accept=".bmp" />
 												</div>
 											</div>
 											<div class="encoder-decoder-step-container">
@@ -94,7 +94,8 @@
 												<i class="icon-gear to-animate-2"></i>
 												<div class="encoder-decoder-step to-animate">
 													<h3>Ready</h3>
-													<button type="button" class="btn btn-primary">Encrypt / Decrypt</button>
+													<button type="button" id="btn-encrypt" class="btn btn-primary" disabled="true">Encrypt / Decrypt</button>
+													<p class="hidden-tooltip" id="btn-encrypt-tooltip" style="margin-top: 8px;">Upload an image first.</p>
 												</div>
 											</div>
 										</form>
@@ -108,15 +109,15 @@
 					<div class="container">
 						<div class="row to-animate">
 							<div class="col-md-4 text-center">
-								<span class="data-counter js-counter" data-from="0" data-to="1024" data-speed="6000" data-refresh-interval="50"></span>
+								<span class="data-counter js-counter" id="image-size-counter" data-from="0" data-to="1024" data-speed="6000" data-refresh-interval="50"></span>
 								<span class="data-counter-label">Image Size (KB)</span>
 							</div>
 							<div class="col-md-4 text-center">
-								<span class="data-counter js-counter" data-from="0" data-to="896" data-speed="6000" data-refresh-interval="50"></span>
+								<span class="data-counter js-counter" id="availalbe-size-counter" data-from="0" data-to="896" data-speed="6000" data-refresh-interval="50"></span>
 								<span class="data-counter-label">Available Information Data (KB)</span>
 							</div>
 							<div class="col-md-4 text-center">
-								<span class="data-counter js-counter" data-from="0" data-to="128" data-speed="6000" data-refresh-interval="50"></span>
+								<span class="data-counter js-counter" id="decode-size-counter" data-from="0" data-to="128" data-speed="6000" data-refresh-interval="50"></span>
 								<span class="data-counter-label">Decode Header (KB)</span>
 							</div>
 						</div>
@@ -280,7 +281,6 @@
 	<!-- Entry Point -->
 	<script src="src/bmp-decoder-encoder.js"></script>
 	<script src="src/main.js"></script>
-
 
 </body>
 

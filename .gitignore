@@ -4,3 +4,7 @@
 # Editor-based HTTP Client requests
 /httpRequests/
 .idea
+
+# Personal irectory with testing files
+example
+example/*
