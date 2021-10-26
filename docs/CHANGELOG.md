@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.5.0]] - 2021-10-26 _(JW)_
+
+###### _([diff: 0.4.1-0.5.0])_
+
+Added:
+
+ - [_Reversible Data Hiding_](./docs/papers/Reversible_data_hiding.pdf) - a paper on histogram shifting
+ - Directory `/src/algorithms/` with three javascript files containg basic structure of three chosen encryption methods
+
+ Changed:
+
+ - `main.js` now invokes the (not yet finished) encryption methods of the `/src/algorithms/` directory instead of the sample methods from `/src/algorithms.js` (which was removed)
+
 ## [[0.4.1]] - 2021-10-26 _(MJ)_
 
 ###### _([diff: 0.4.0-0.4.1])_
@@ -134,6 +147,7 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.4.1-0.5.0]: https://github.com/Luzkan/CryptoImage/compare/0.4.1...0.5.0
 [diff: 0.4.0-0.4.1]: https://github.com/Luzkan/CryptoImage/compare/0.4.0...0.4.1
 [diff: 0.3.0-0.4.0]: https://github.com/Luzkan/CryptoImage/compare/0.3.0...0.4.0
 [diff: 0.2.0-0.3.0]: https://github.com/Luzkan/CryptoImage/compare/0.2.0...0.3.0
@@ -141,6 +155,7 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[0.5.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.5.0
 [0.4.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.4.1
 [0.4.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.4.0
 [0.3.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.3.1

@@ -69,9 +69,9 @@ document.getElementById("form-input-image").addEventListener('input', async e =>
     if (DEBUG) {console.log(decodedFile);}
 
     // Refer: algorithms.js
-    const encodedImage1 = await algorithm1(pixel3DArray);
-    const encodedImage2 = await algorithm2(pixel3DArray);
-    const encodedImage3 = await algorithm3(pixel3DArray);
+    const encodedImage1 = await differentialExpansionEncrypt(pixel3DArray);
+    const encodedImage2 = await histogramShiftingEncrypt(pixel3DArray);
+    const encodedImage3 = await singularValueDecompositionEncrypt(pixel3DArray);
 
     // Output is in global scope
     image_output = new EncryptedFile(file.name, encodedImage1, encodedImage2, encodedImage3);

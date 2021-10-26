@@ -56,6 +56,7 @@ This is our project app for _Information Acquisition and Protection Engineering 
 1. M. U. Celik, G. Sharma, A. M. Tekalp, E. Saber, [_Lossless generalized-LSB data embedding._](./docs/papers/Lossless_generalized-LSB_data_embedding.pdf) (2005).
 1. F.S. Hassan, A. Gutub, [_Efficient Image Reversible Data Hiding Technique Based on Interpolation Optimization._](./docs/papers/Efficient_image_reversible_data_hiding_technique_based_on_interpolation_optimization.pdf) (2021).
 1. A. Jose, M. Mareena, K. Saritha, [_Comparative study on different reversible image data hiding techniques._](./docs/papers/Comparative_study_on_different_reversible_image_data_hiding_techniques.pdf) (2017).
+1. Z. Ni, Y. Shi, N. Ansari, W. Su, [_Reversible Data Hiding_](./docs/papers/Reversible_data_hiding.pdf) (2006).
 
 Notes concerning content of the articles might be found in a separate [google document](https://docs.google.com/document/d/1F5Q8ApOe5yL0iadJa6EWmWJUUAZd8F_k0yqANr2R_Gg/edit?usp=sharing).
 
