@@ -1,290 +1,472 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>CryptoImage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="CryptoImage - Hide Message in any Image"
+    />
+    <meta
+      name="keywords"
+      content="cryptoimage, cryptographic, image, text, encoder, hidden, message, stegonography"
+    />
+    <meta
+      name="author"
+      content="Marcel Jerzyk, Krzysztof Szafraniak, Jacek Wernikowski"
+    />
 
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>CryptoImage</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="CryptoImage - Hide Message in any Image" />
-	<meta name="keywords" content="cryptoimage, cryptographic, image, text, encoder, hidden, message, stegonography" />
-	<meta name="author" content="Marcel Jerzyk, Krzysztof Szafraniak, Jacek Wernikowski" />
+    <link rel="shortcut icon" href="assets/icons/favicon.ico" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Inconsolata:400,700"
+      rel="stylesheet"
+    />
 
-	<link rel="shortcut icon" href="assets/icons/favicon.ico">
-	<link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet">
+    <!-- Animation -->
+    <link rel="stylesheet" href="assets/css/animate.css" />
+    <!-- Icons -->
+    <link rel="stylesheet" href="assets/css/icomoon.css" />
+    <link rel="stylesheet" href="assets/css/simple-line-icons.css" />
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="assets/css/bootstrap.css" />
+    <!-- Style -->
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <!-- Modernizr JS -->
+    <script src="assets/js/modernizr-2.6.2.min.js"></script>
+  </head>
 
-	<!-- Animation -->
-	<link rel="stylesheet" href="assets/css/animate.css">
-	<!-- Icons -->
-	<link rel="stylesheet" href="assets/css/icomoon.css">
-	<link rel="stylesheet" href="assets/css/simple-line-icons.css">
-	<!-- Bootstrap  -->
-	<link rel="stylesheet" href="assets/css/bootstrap.css">
-	<!-- Style -->
-	<link rel="stylesheet" href="assets/css/style.css">
-	<!-- Modernizr JS -->
-	<script src="assets/js/modernizr-2.6.2.min.js"></script>
-</head>
+  <body>
+    <section id="section-main" data-section="main">
+      <div class="section-main">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 section-heading text-center">
+              <div class="project-grid to-animate">
+                <img
+                  src="assets/img/logo-black.png"
+                  alt="CryptoImage"
+                  class="crypto-image-logo"
+                />
+              </div>
+              <h2 class="to-animate">CryptoImage</h2>
+              <div class="row">
+                <div class="col-md-8 col-md-offset-2 subtext">
+                  <h3 class="to-animate">
+                    Hey, do you have some precious information that should be
+                    hidden? <br />
+                    We can serve you with an image message encoder/decoder.
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="subsection-encoder-decoder">
+              <!-- This will be replaced with Canvas for image manipulation display/read/transform I guess. -->
+              <div
+                class="grid2 to-animate"
+                style="background-image: url(assets/img/background.jpg)"
+              ></div>
+              <div class="grid2">
+                <div class="subsection-e-d">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <!-- Inside a form just in-case. Can be removed, depends on the implementation. -->
+                      <form>
+                        <div class="encoder-decoder-step-container">
+                          <i class="icon-cloud-upload to-animate-2"></i>
+                          <div class="encoder-decoder-step to-animate">
+                            <h3>Upload Your Image</h3>
+                            <input
+                              class="
+                                form-control form-control-sm
+                                file-input
+                                custom-file-input
+                              "
+                              id="form-input-image"
+                              type="file"
+                              accept=".bmp"
+                            />
+                          </div>
+                        </div>
+                        <div class="encoder-decoder-step-container">
+                          <i class="icon-user-secret to-animate-2"></i>
+                          <div class="encoder-decoder-step to-animate">
+                            <h3>Choose Encryption Method</h3>
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="method-1-checkbox"
+                                value="method-1-option"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="method-1-checkbox"
+                                >Differential expansion</label
+                              >
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="method-2-checkbox"
+                                value="method-2-option"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="method-2-checkbox"
+                                >Histogram shifting</label
+                              >
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="method-3-checkbox"
+                                value="method-3-option"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="method-3-checkbox"
+                                >Singular value decomposition</label
+                              >
+                            </div>
+                          </div>
+                        </div>
+                        <div class="encoder-decoder-step-container">
+                          <i class="icon-pencil to-animate-2"></i>
+                          <div class="encoder-decoder-step to-animate">
+                            <h3>Your Message</h3>
+                            <div class="form-group">
+                              <textarea
+                                class="form-control message-input"
+                                id="crypto-image-message"
+                                rows="3"
+                              ></textarea>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="encoder-decoder-step-container">
+                          <i class="icon-gear to-animate-2"></i>
+                          <div class="encoder-decoder-step to-animate">
+                            <h3>Ready</h3>
+                            <button
+                              type="button"
+                              id="btn-encrypt"
+                              class="btn btn-primary"
+                              disabled="true"
+                            >
+                              Encrypt / Decrypt
+                            </button>
+                            <p
+                              class="hidden-tooltip"
+                              id="btn-encrypt-tooltip"
+                              style="margin-top: 8px"
+                            >
+                              Upload an image first.
+                            </p>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="subsection-image-data-counter" class="image-data-counters">
+            <div class="container">
+              <div class="row to-animate">
+                <div class="col-md-4 text-center">
+                  <span
+                    class="data-counter js-counter"
+                    id="image-size-counter"
+                    data-from="0"
+                    data-to="1024"
+                    data-speed="6000"
+                    data-refresh-interval="50"
+                  ></span>
+                  <span class="data-counter-label">Image Size (KB)</span>
+                </div>
+                <div class="col-md-4 text-center">
+                  <span
+                    class="data-counter js-counter"
+                    id="availalbe-size-counter"
+                    data-from="0"
+                    data-to="896"
+                    data-speed="6000"
+                    data-refresh-interval="50"
+                  ></span>
+                  <span class="data-counter-label"
+                    >Available Information Data (KB)</span
+                  >
+                </div>
+                <div class="col-md-4 text-center">
+                  <span
+                    class="data-counter js-counter"
+                    id="decode-size-counter"
+                    data-from="0"
+                    data-to="128"
+                    data-speed="6000"
+                    data-refresh-interval="50"
+                  ></span>
+                  <span class="data-counter-label">Decode Header (KB)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<body>
-	<section id="section-main" data-section="main">
-		<div class="section-main">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12 section-heading text-center">
-						<div class="project-grid to-animate">
-							<img src="assets/img/logo-black.png" alt="CryptoImage" class="crypto-image-logo">
-						</div>
-						<h2 class="to-animate">CryptoImage</h2>
-						<div class="row">
-							<div class="col-md-8 col-md-offset-2 subtext">
-								<h3 class="to-animate">
-									Hey, do you have some precious information that should be hidden? <br>
-									We can serve you with an image message encoder/decoder.
-								</h3>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="subsection-encoder-decoder">
-						<!-- This will be replaced with Canvas for image manipulation display/read/transform I guess. -->
-						<div class="grid2 to-animate" style="background-image: url(assets/img/background.jpg);"> </div>
-						<div class="grid2">
-							<div class="subsection-e-d">
-								<div class="row">
-									<div class="col-md-12">
-										<!-- Inside a form just in-case. Can be removed, depends on the implementation. -->
-										<form>
-											<div class="encoder-decoder-step-container">
-												<i class="icon-cloud-upload to-animate-2"></i>
-												<div class="encoder-decoder-step to-animate">
-													<h3>Upload Your Image</h3>
-													<input class="form-control form-control-sm file-input custom-file-input" id="form-input-image" type="file" accept=".bmp" />
-												</div>
-											</div>
-											<div class="encoder-decoder-step-container">
-												<i class="icon-user-secret to-animate-2"></i>
-												<div class="encoder-decoder-step to-animate">
-													<h3>Choose Encryption Method</h3>
-													<div class="form-check form-check-inline">
-														<input class="form-check-input" type="checkbox" id="method-1-checkbox" value="method-1-option">
-														<label class="form-check-label" for="method-1-checkbox">Differential expansion</label>
-													</div>
-													<div class="form-check form-check-inline">
-														<input class="form-check-input" type="checkbox" id="method-2-checkbox" value="method-2-option">
-														<label class="form-check-label" for="method-2-checkbox">Histogram shifting</label>
-													</div>
-													<div class="form-check form-check-inline">
-														<input class="form-check-input" type="checkbox" id="method-3-checkbox" value="method-3-option">
-														<label class="form-check-label" for="method-3-checkbox">Singular value decomposition</label>
-													</div>
-												</div>
-											</div>
-											<div class="encoder-decoder-step-container">
-												<i class="icon-pencil to-animate-2"></i>
-												<div class="encoder-decoder-step to-animate">
-													<h3>Your Message</h3>
-													<div class="form-group">
-														<textarea class="form-control message-input" id="crypto-image-message" rows="3"></textarea>
-													</div>
-												</div>
-											</div>
-											<div class="encoder-decoder-step-container">
-												<i class="icon-gear to-animate-2"></i>
-												<div class="encoder-decoder-step to-animate">
-													<h3>Ready</h3>
-													<button type="button" id="btn-encrypt" class="btn btn-primary" disabled="true">Encrypt / Decrypt</button>
-													<p class="hidden-tooltip" id="btn-encrypt-tooltip" style="margin-top: 8px;">Upload an image first.</p>
-												</div>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id="subsection-image-data-counter" class="image-data-counters">
-					<div class="container">
-						<div class="row to-animate">
-							<div class="col-md-4 text-center">
-								<span class="data-counter js-counter" id="image-size-counter" data-from="0" data-to="1024" data-speed="6000" data-refresh-interval="50"></span>
-								<span class="data-counter-label">Image Size (KB)</span>
-							</div>
-							<div class="col-md-4 text-center">
-								<span class="data-counter js-counter" id="availalbe-size-counter" data-from="0" data-to="896" data-speed="6000" data-refresh-interval="50"></span>
-								<span class="data-counter-label">Available Information Data (KB)</span>
-							</div>
-							<div class="col-md-4 text-center">
-								<span class="data-counter js-counter" id="decode-size-counter" data-from="0" data-to="128" data-speed="6000" data-refresh-interval="50"></span>
-								<span class="data-counter-label">Decode Header (KB)</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+    <section id="section-results" data-section="results">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 section-heading text-center">
+            <h2 class="to-animate">Image Decoding Completed</h2>
+            <div class="row">
+              <div class="col-md-8 col-md-offset-2 subtext to-animate">
+                <h3>Save it via mouse right click.</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="results-grouped">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 text-center">
+              <div
+                class="project-grid to-animate"
+                style="background-image: url(assets/img/img-original.jpg)"
+              >
+                <div class="desc">
+                  <h3><a href="#">Original Image</a></h3>
+                  <span>This is the decoded, clean & original image.</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 text-center">
+              <div
+                class="project-grid to-animate"
+                style="background-image: url(assets/img/img-from-m1.jpg)"
+              >
+                <div class="desc">
+                  <h3><a href="#">Method #1</a></h3>
+                  <span>Simple Explanation of Method #1</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 text-center">
+              <div
+                class="project-grid to-animate"
+                style="background-image: url(assets/img/img-from-m2.jpg)"
+              >
+                <div class="desc">
+                  <h3><a href="#">Method #2</a></h3>
+                  <span>Simple Explanation of Method #2</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 text-center">
+              <div
+                class="project-grid to-animate"
+                style="background-image: url(assets/img/img-from-m3.jpg)"
+              >
+                <div class="desc">
+                  <h3><a href="#">Method #3</a></h3>
+                  <span>Simple Explanation of Method #3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-	<section id="section-results" data-section="results">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12 section-heading text-center">
-					<h2 class="to-animate">Image Decoding Completed</h2>
-					<div class="row">
-						<div class="col-md-8 col-md-offset-2 subtext to-animate">
-							<h3>Save it via mouse right click.</h3>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="results-grouped">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12 text-center">
-						<div class="project-grid to-animate" style="background-image:  url(assets/img/img-original.jpg);">
-							<div class="desc">
-								<h3><a href="#">Original Image</a></h3>
-								<span>This is the decoded, clean & original image.</span>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-12 text-center">
-						<div class="project-grid to-animate" style="background-image:  url(assets/img/img-from-m1.jpg);">
-							<div class="desc">
-								<h3><a href="#">Method #1</a></h3>
-								<span>Simple Explanation of Method #1</span>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-12 text-center">
-						<div class="project-grid to-animate" style="background-image:  url(assets/img/img-from-m2.jpg);">
-							<div class="desc">
-								<h3><a href="#">Method #2</a></h3>
-								<span>Simple Explanation of Method #2</span>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-12 text-center">
-						<div class="project-grid to-animate" style="background-image:  url(assets/img/img-from-m3.jpg);">
-							<div class="desc">
-								<h3><a href="#">Method #3</a></h3>
-								<span>Simple Explanation of Method #3</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+    <section id="section-team" data-section="team">
+      <div class="section-team">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 section-heading text-center">
+              <h2 class="to-animate">Credits</h2>
+              <div class="row">
+                <div class="col-md-8 col-md-offset-2 subtext">
+                  <h3 class="to-animate">
+                    We are not responsible for the generated content via
+                    website, but here we are.
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="team-box text-center to-animate-2">
+                <div class="user">
+                  <img
+                    class="img-reponsive"
+                    src="assets/img/marcel.jpg"
+                    alt="Marcel JErzyk"
+                  />
+                </div>
+                <h3>Marcel Jerzyk</h3>
+                <span class="position">- mój-sub-opis-xD -</span>
+                <p>
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                </p>
+                <ul class="social-media">
+                  <li>
+                    <a href="https://luzkan.github.io/me/" class="desktop"
+                      ><i class="icon-desktop"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/Luzkan" class="github"
+                      ><i class="icon-github"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://open.spotify.com/artist/3Ap6T22pdtSlivZiRCuVXd"
+                      class="spotify"
+                      ><i class="icon-spotify"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="https://soundcloud.com/luzkan" class="soundcloud"
+                      ><i class="icon-soundcloud"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.linkedin.com/in/luzkan/"
+                      class="linkedin"
+                      ><i class="icon-linkedin"></i
+                    ></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
 
-	<section id="section-team" data-section="team">
-		<div class="section-team">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12 section-heading text-center">
-						<h2 class="to-animate">Credits</h2>
-						<div class="row">
-							<div class="col-md-8 col-md-offset-2 subtext">
-								<h3 class="to-animate">We are not responsible for the generated content via website, but here we are.</h3>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<div class="team-box text-center to-animate-2">
-							<div class="user"><img class="img-reponsive" src="assets/img/marcel.jpg" alt="Marcel JErzyk"></div>
-							<h3>Marcel Jerzyk</h3>
-							<span class="position">- mój-sub-opis-xD -</span>
-							<p>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-							</p>
-							<ul class="social-media">
-								<li><a href="https://luzkan.github.io/me/" class="desktop"><i class="icon-desktop"></i></a></li>
-								<li><a href="https://github.com/Luzkan" class="github"><i class="icon-github"></i></a></li>
-								<li><a href="https://open.spotify.com/artist/3Ap6T22pdtSlivZiRCuVXd" class="spotify"><i class="icon-spotify"></i></a></li>
-								<li><a href="https://soundcloud.com/luzkan" class="soundcloud"><i class="icon-soundcloud"></i></a></li>
-								<li><a href="https://www.linkedin.com/in/luzkan/" class="linkedin"><i class="icon-linkedin"></i></a></li>
-							</ul>
-						</div>
-					</div>
+            <div class="col-md-4">
+              <div class="team-box text-center to-animate-2">
+                <div class="user">
+                  <img
+                    class="img-reponsive"
+                    src="assets/img/krzysiek.jpg"
+                    alt="Krzysztof Szafraniak"
+                  />
+                </div>
+                <h3>Krzysztof Szafraniak</h3>
+                <span class="position">- wasz-sub-opis -</span>
+                <p>
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                </p>
+                <ul class="social-media">
+                  <li>
+                    <a href="#" class="facebook"
+                      ><i class="icon-facebook"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="#" class="twitter"><i class="icon-twitter"></i></a>
+                  </li>
+                  <li>
+                    <a href="#" class="dribbble"
+                      ><i class="icon-dribbble"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="#" class="linkedin"
+                      ><i class="icon-linkedin"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="#" class="github"><i class="icon-github"></i></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
 
-					<div class="col-md-4">
-						<div class="team-box text-center to-animate-2">
-							<div class="user"><img class="img-reponsive" src="assets/img/krzysiek.jpg" alt="Krzysztof Szafraniak"></div>
-							<h3>Krzysztof Szafraniak</h3>
-							<span class="position">- wasz-sub-opis -</span>
-							<p>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-							</p>
-							<ul class="social-media">
-								<li><a href="#" class="facebook"><i class="icon-facebook"></i></a></li>
-								<li><a href="#" class="twitter"><i class="icon-twitter"></i></a></li>
-								<li><a href="#" class="dribbble"><i class="icon-dribbble"></i></a></li>
-								<li><a href="#" class="linkedin"><i class="icon-linkedin"></i></a></li>
-								<li><a href="#" class="github"><i class="icon-github"></i></a></li>
-							</ul>
-						</div>
-					</div>
+            <div class="col-md-4">
+              <div class="team-box text-center to-animate-2">
+                <div class="user">
+                  <img
+                    class="img-reponsive"
+                    src="assets/img/jacek.jpg"
+                    alt="Jacek Wernikowski"
+                  />
+                </div>
+                <h3>Jacek Wernikowski</h3>
+                <span class="position">- wasz-sub-opis -</span>
+                <p>
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                  - ' dłuższy opis ' -<br />
+                </p>
+                <ul class="social-media">
+                  <li>
+                    <a href="#" class="facebook"
+                      ><i class="icon-facebook"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="#" class="twitter"><i class="icon-twitter"></i></a>
+                  </li>
+                  <li>
+                    <a href="#" class="dribbble"
+                      ><i class="icon-dribbble"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="#" class="linkedin"
+                      ><i class="icon-linkedin"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="#" class="github"><i class="icon-github"></i></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-					<div class="col-md-4">
-						<div class="team-box text-center to-animate-2">
-							<div class="user"><img class="img-reponsive" src="assets/img/jacek.jpg" alt="Jacek Wernikowski"></div>
-							<h3>Jacek Wernikowski</h3>
-							<span class="position">- wasz-sub-opis -</span>
-							<p>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-								- ' dłuższy opis ' -<br>
-							</p>
-							<ul class="social-media">
-								<li><a href="#" class="facebook"><i class="icon-facebook"></i></a></li>
-								<li><a href="#" class="twitter"><i class="icon-twitter"></i></a></li>
-								<li><a href="#" class="dribbble"><i class="icon-dribbble"></i></a></li>
-								<li><a href="#" class="linkedin"><i class="icon-linkedin"></i></a></li>
-								<li><a href="#" class="github"><i class="icon-github"></i></a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- jQuery -->
-	<script src="assets/js/jquery.min.js"></script>
-	<script src="assets/js/jquery.easing.1.3.js"></script>
-	<script src="assets/js/jquery.waypoints.min.js"></script>
-	<script src="assets/js/jquery.stellar.min.js"></script>
-	<!-- Bootstrap -->
-	<script src="assets/js/bootstrap.min.js"></script>
-	<!-- Counters -->
-	<script src="assets/js/jquery.countTo.js"></script>
-	<!-- Website Frontend/Looks Specific -->
-	<script src="assets/js/website_main.js"></script>
-	<!-- Entry Point -->
-	<script src="src/encoders/bmp.js"></script>
-	<script src="src/algorithms/differential-expansion.js"></script>
-	<script src="src/algorithms/histogram-shifting.js"></script>
-	<script src="src/algorithms/singular-value-decomposition.js"></script>
-	<script src="src/main.js"></script>
-
-</body>
-
+    <!-- jQuery -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.easing.1.3.js"></script>
+    <script src="assets/js/jquery.waypoints.min.js"></script>
+    <script src="assets/js/jquery.stellar.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <!-- Counters -->
+    <script src="assets/js/jquery.countTo.js"></script>
+    <!-- Website Frontend/Looks Specific -->
+    <script src="assets/js/website_main.js"></script>
+    <!-- Entry Point -->
+    <script src="build/encoders/bmp.js"></script>
+    <script src="build/algorithms/differential-expansion.js"></script>
+    <script src="build/algorithms/histogram-shifting.js"></script>
+    <script src="build/algorithms/singular-value-decomposition.js"></script>
+    <script src="build/main.js"></script>
+  </body>
 </html>

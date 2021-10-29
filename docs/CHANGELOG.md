@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.6.0]] - 2021-10-29 _(MJ)_
+
+**The Project from now is written in TypeScript. 🎉**
+
+###### _([diff: 0.5.1-0.6.0])_
+
+Added:
+
+- TypeScript configuration [`tsconfig.json`](../tsconfig.json).
+- New development section in [`README.md`](../README.md#Development).
+
+Changed:
+
+- All the source code files from `/src/` from `.js` to `.ts`.
+
+TODO:
+
+- Not everything is typed yet, tiny bit of work left to do.
+
 ## [[0.5.1]] - 2021-10-29 _(MJ)_
 
 ###### _([diff: 0.5.0-0.5.1])_
@@ -155,6 +174,7 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.5.1-0.6.0]: https://github.com/Luzkan/CryptoImage/compare/0.5.1...0.6.0
 [diff: 0.5.0-0.5.1]: https://github.com/Luzkan/CryptoImage/compare/0.5.0...0.5.1
 [diff: 0.4.1-0.5.0]: https://github.com/Luzkan/CryptoImage/compare/0.4.1...0.5.0
 [diff: 0.4.0-0.4.1]: https://github.com/Luzkan/CryptoImage/compare/0.4.0...0.4.1
@@ -164,7 +184,8 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
-[0.5.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.5.1
+[0.6.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.5.1
+[0.5.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.5.1
 [0.5.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.5.0
 [0.4.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.4.1
 [0.4.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.4.0

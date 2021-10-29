@@ -25,6 +25,9 @@
       <a href="#Usage">Usage</a>
     </li>
     <li>
+      <a href="#Development">Development</a>
+    </li>
+    <li>
       <a href="#Related-work">Related Work</a>
     </li>
     <li>
@@ -45,6 +48,22 @@
 Hey!
 
 This is our project app for _Information Acquisition and Protection Engineering Course_.
+
+---
+
+<p id="Development">
+
+## Development 🚧
+
+The project is written in [TypeScript](https://www.typescriptlang.org/). If you are coming from the JavaScript World, fear not! It's easier to setup than you think. All you have to do is to run the following command:
+
+> `tsc`
+
+... in order to transcompile the `.ts` source code into [.js](https://developer.mozilla.org/en-US/docs/Web/JavaScript) runnable build.
+
+There's only one requirement: the [npm](https://www.npmjs.com/) package manager and `npm install -g typescript` command ran at least once to install the TypeScript language.
+
+---
 
 ---
 

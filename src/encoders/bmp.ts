@@ -1,8 +1,8 @@
-function littleEndianBytesToNumber(byteArray) {
-    return byteArray.reduce((sum, byte, idx) => sum + (byte << (idx * 8)), 0);
+function littleEndianBytesToNumber(byteArray: any[] | Uint8Array) {
+    return byteArray.reduce((sum: number, byte: number, idx: number) => sum + (byte << (idx * 8)), 0);
 }
 
-function littleEndianNumberToBytes(number, length) {
+function littleEndianNumberToBytes(number: number, length: number) {
     const bytes = [];
     let value = number;
     for (let i = 0; i < length; i++) {
@@ -12,11 +12,11 @@ function littleEndianNumberToBytes(number, length) {
     return bytes;
 }
 
-function generateArrayOfZeroes(length) {
+function generateArrayOfZeroes(length: number) {
     return new Array(length).fill(0);
 }
 
-function flatMap(array) {
+function flatMap(array: string | any[]) {
     const flat = [];
     for (let i = 0; i < array.length; i++)
         for (let inner = array[i], j = 0; j < inner.length; j++)
@@ -24,7 +24,7 @@ function flatMap(array) {
     return flat;
 }
 
-async function decodeBMP(blob) {
+async function decodeBMP(blob: { arrayBuffer: () => any; }) {
     const buffer = await blob.arrayBuffer()
     const bytes = new Uint8Array(buffer);
     const type = new TextDecoder("ascii").decode(bytes.slice(0, 2));
@@ -69,12 +69,12 @@ async function decodeBMP(blob) {
 }
 
 
-async function encodeBMPFrom3dData(pixels3dData) {
+async function encodeBMPFrom3dData(pixels3dData: string | any[]) {
     const plainPixelsData = flatMap(flatMap(pixels3dData));
     return await encodeBMP(plainPixelsData, pixels3dData[0].length, pixels3dData.length);
 }
 
-async function encodeBMP(plainPixelsData, width, height) {
+async function encodeBMP(plainPixelsData: string | any[], width: number, height: number) {
     const imgPixelsCount = width * height;
     const imgPixelsDataLen = plainPixelsData.length;
     const bytesPerPixel = imgPixelsDataLen / imgPixelsCount;
@@ -115,7 +115,7 @@ async function encodeBMP(plainPixelsData, width, height) {
 
 
 // Download file:
-function downloadBlob(blob, fileName) {
+function downloadBlob(blob: null, fileName: string) {
     const downloadLink = document.createElement('a');
     downloadLink.href = window.URL.createObjectURL(blob);
     downloadLink.setAttribute('download', fileName);
