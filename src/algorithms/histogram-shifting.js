@@ -7,14 +7,39 @@ function histogramShiftingEncrypt(pixel3DArray) {
 
     channelArray.forEach(encryptInChannel)
     
-    return channelArrayToPixel3DArray(channelArray)
+    return channelArrayToPixel3DArray(pixel3DArray)
+    // return channelArrayToPixel3DArray(channelArray)
+}
+
+
+class RGB {
+    constructor(idx, red, green, blue, transparency) {
+        this.idx = idx;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.transparency = transparency;
+    }
 }
 
 function pixel3DArrayToChannelArray(pixel3DArray) {
+    let RGBChannelArray = [];
+    let pixelIterator = 0;
 
-    // convert pixel 3D array to three arrays representing R, G and B pixel values
+    for (let channel in pixel3DArray) {
+        for (let pixel in pixel3DArray[channel]) {
+            RGBChannelArray.push(new RGB(
+                pixelIterator,
+                pixel3DArray[channel][pixel][0],
+                pixel3DArray[channel][pixel][1],
+                pixel3DArray[channel][pixel][2],
+                pixel3DArray[channel][pixel][3]
+            ));
+            pixelIterator += 1;
+        }
+    }
 
-    return [[], [], []];
+    return RGBChannelArray;
 }
 
 function encryptInChannel(channel) {
@@ -60,6 +85,6 @@ function channelArrayToPixel3DArray(channelArray) {
 
     // convert three channel arrays to a pixel 3D array
 
-    const temporaryUpsideDownImage = pixel3DArray.reverse();
+    const temporaryUpsideDownImage = channelArray.reverse();
     return encodeBMPFrom3dData(temporaryUpsideDownImage);
 }
