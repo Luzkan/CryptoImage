@@ -11,17 +11,12 @@ const DEBUG = true
 
 // Class storing the variables for the image
 class EncryptedFile {
-    name: any;
-    encryptedImage1: null;
-    encryptedImage2: null;
-    encryptedImage3: null;
-    
-    constructor(name: any, encryptedImage1 = null, encryptedImage2 = null, encryptedImage3 = null) {
-      this.name = name;
-      this.encryptedImage1 = encryptedImage1;
-      this.encryptedImage2 = encryptedImage2;
-      this.encryptedImage3 = encryptedImage3;
-    }
+  constructor(
+    public readonly name: string,
+    public readonly encryptedImage1: BMP,
+    public readonly encryptedImage2: BMP,
+    public readonly encryptedImage3: BMP) {
+  }
 }
 
 
@@ -48,15 +43,15 @@ let encrypted_text: string | null = null;             // Textfield Text Value
 
 function enableEncryptButton() {
 
-    // Enable the encrypt button if the textfield is not empty
-    const encryptButton = document.getElementById("btn-encrypt") as HTMLButtonElement;
-    const encryptButtonTooltip = document.getElementById("btn-encrypt-tooltip");
+  // Enable the encrypt button if the textfield is not empty
+  const encryptButton = document.getElementById("btn-encrypt") as HTMLButtonElement;
+  const encryptButtonTooltip = document.getElementById("btn-encrypt-tooltip");
 
-    // if encryptButton is not null, enable it
-    if (encryptButton && encryptButtonTooltip) {
-        encryptButton.disabled = false;
-        encryptButtonTooltip.classList.add("permamently-transparent");
-    }
+  // if encryptButton is not null, enable it
+  if (encryptButton && encryptButtonTooltip) {
+    encryptButton.disabled = false;
+    encryptButtonTooltip.classList.add("permamently-transparent");
+  }
 }
 
 
@@ -66,8 +61,12 @@ function enableEncryptButton() {
 // This updates the global text variable on any input change
 const cryptoImageMessage = document.getElementById("crypto-image-message") as HTMLTextAreaElement;
 cryptoImageMessage.addEventListener('input', (event: Event) => {
-    if (event) {encrypted_text = event.target.value;};
-    if (DEBUG) {console.log(encrypted_text);}
+  if (event) {
+    encrypted_text = (event.target as any).value;
+  }
+  if (DEBUG) {
+    console.log(encrypted_text);
+  }
 });
 
 
@@ -75,33 +74,41 @@ cryptoImageMessage.addEventListener('input', (event: Event) => {
 const formInputImage = document.getElementById("form-input-image") as HTMLInputElement;
 formInputImage.addEventListener('input', async e => {
 
-    // Retrieve Imagefile
-    const file = e.target.files[0];
+  // Retrieve Imagefile
+  const file = (e.target as any).files[0];
 
-    // Decode & Create Pixel 3D Array
-    const decodedFile = await decodeBMP(file);
-    const pixel3DArray = decodedFile.pixels3D;
-    if (DEBUG) {console.log(decodedFile);}
+  // Decode & Create Pixel 3D Array
+  const bmp: BMP = await BMP.from(file);
+  if (DEBUG) {
+    console.log(bmp);
+    console.log(bmp.pixelsArrayData);
+  }
 
-    // Refer: algorithms.js
-    const encodedImage1 = await differentialExpansionEncrypt(pixel3DArray);
-    const encodedImage2 = await histogramShiftingEncrypt(pixel3DArray);
-    const encodedImage3 = await singularValueDecompositionEncrypt(pixel3DArray);
+  // Refer: algorithms.js
+  const encodedImage1 = await differentialExpansionEncrypt(bmp);
+  const encodedImage2 = await histogramShiftingEncrypt(bmp);
+  const encodedImage3 = await singularValueDecompositionEncrypt(bmp);
 
-    // Output is in global scope
-    image_output = new EncryptedFile(file.name, encodedImage1, encodedImage2, encodedImage3);
+  // Output is in global scope
+  image_output = new EncryptedFile(file.name, encodedImage1, encodedImage2, encodedImage3);
 
-    // Enable Convert Button
-    enableEncryptButton()
+  // Enable Convert Button
+  enableEncryptButton()
 });
 
 
 // This function handles the Encode/Decode actions
 const btnEncrypt = document.getElementById("btn-encrypt") as HTMLButtonElement;
-btnEncrypt.addEventListener('click', function(){
+btnEncrypt.addEventListener('click', function () {
 
-    // Downlaod based on checkbox values
-    if (checkbox1 && image_output && checkbox1.checked) { downloadBlob(image_output.encryptedImage1, `encrypted1-${image_output.name}`); }
-    if (checkbox2 && image_output && checkbox2.checked) { downloadBlob(image_output.encryptedImage2, `encrypted2-${image_output.name}`); }
-    if (checkbox3 && image_output && checkbox3.checked) { downloadBlob(image_output.encryptedImage3, `encrypted3-${image_output.name}`); }
+  // Downlaod based on checkbox values
+  if (checkbox1 && image_output && checkbox1.checked) {
+    downloadBMP(image_output.encryptedImage1, `encrypted1-${ image_output.name }`);
+  }
+  if (checkbox2 && image_output && checkbox2.checked) {
+    downloadBMP(image_output.encryptedImage2, `encrypted2-${ image_output.name }`);
+  }
+  if (checkbox3 && image_output && checkbox3.checked) {
+    downloadBMP(image_output.encryptedImage3, `encrypted3-${ image_output.name }`);
+  }
 });

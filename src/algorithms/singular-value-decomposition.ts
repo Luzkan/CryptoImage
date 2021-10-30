@@ -3,13 +3,14 @@
 
 let blockSize = 8;
 
-function singularValueDecompositionEncrypt(pixel3DArray: [number, number, number, number][][]) {
+function singularValueDecompositionEncrypt(bmp: BMP) {
 
     // const arrays = pixel3DArrayTo2DArrays(pixel3DArray)
 
     // arrays.forEach(encrypt2DArray(arrays))
 
     // return twoDimArraysToPixel3DArray(arrays)
+    return bmp
 }
 
 function pixel3DArrayTo2DArrays(pixel3DArray: [number, number, number, number][][]) {

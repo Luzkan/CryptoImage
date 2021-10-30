@@ -2,76 +2,86 @@
 // Things that possibly could get exported out to a separate file
 
 class RGB {
-    index: number;
-    red: number;
-    green: number;
-    blue: number;
-    transparency: number;
+  index: number;
+  red: number;
+  green: number;
+  blue: number;
+  transparency: number;
 
-    constructor(index: number, red: number, green: number, blue: number, transparency: number) {
-        this.index = index;
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.transparency = transparency;
-    }
+  constructor(index: number, red: number, green: number, blue: number, transparency: number) {
+    this.index = index;
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
+    this.transparency = transparency;
+  }
 }
-
-function pixel3DArrayToChannelArray(pixel3DArray: [number, number, number, number][][]) {
-    let RGBChannelArray = pixel3DArray.flat().map((pixel: any, i: number) => new RGB(i, ...pixel))
-    if (DEBUG) {console.log(RGBChannelArray)}
-    return RGBChannelArray;
-}
-
 
 
 // -------------------------------------------------------------
 // Histogram shifting algorithm
 
-function histogramShiftingEncrypt(pixel3DArray: [number, number, number, number][][]) {
-    const channelArray = pixel3DArrayToChannelArray(pixel3DArray);
-    channelArray.forEach(encryptInChannel)
-    return channelArrayToPixel3DArray(channelArray)
+function histogramShiftingEncrypt(bmp: BMP): BMP {
+  const channelArray = bmpToChannelArray(bmp);
+  const encryptedChannels = channelArray.map(encryptInChannel)
+  return channelArrayToBMP(encryptedChannels, bmp.width, bmp.height)
 }
 
+function encryptInChannel(channel: number[]) {
 
+  const histogram = channelToHistogram(channel)
 
-function encryptInChannel(channel: any) {
+  const minValueCount = Math.min(...histogram)
+  const maxValueCount = Math.max(...histogram)
+  const minValue = histogram.indexOf(minValueCount)
+  const maxValue = histogram.indexOf(maxValueCount)
 
-    const histogram = channelToHistogram(channel)
+  const channel1 = minValue > 0 ? appendMinValuePixels(channel, minValue) : channel;
 
-    const minValueCount = Math.min(...histogram)
-    const maxValueCount = Math.max(...histogram)
-    const minValue = histogram.indexOf(minValueCount)
-    const maxValue = histogram.indexOf(maxValueCount)
-
-    if (minValue > 0) {
-        appendMinValuePixels(channel, minValue)
-    }
-
-    shiftHistogram(channel, minValue, maxValue)
-    encryptMessage(channel, maxValue)
+  const shifted = shiftHistogram(channel1, minValue, maxValue)
+  const encrypted = encryptMessage(shifted, maxValue);
+  // TODO:
+  return channel;
 }
 
-function channelToHistogram(channel: any) {
-    // Convert RGB channel pixel value array to a histogram - an array with 255 elements
-    return [];
+function channelToHistogram(channel: number[]): number[] {
+  const hist = new Array(256).fill(0);
+  channel.forEach(value => hist[value]++)
+  return hist;
 }
 
 function appendMinValuePixels(channel: any, minValue: number) {
-    // Append positions and value of pixels with the least frequent value to the encrypted message
+  // Append positions and value of pixels with the least frequent value to the encrypted message
 }
 
 function shiftHistogram(channel: any, minValue: number, maxValue: number) {
-    // Shift Histogram
+  // Shift Histogram
 }
 
 function encryptMessage(channel: any, maxValue: number) {
-    // Encrypt the Message
+  // Encrypt the Message
 }
 
-function channelArrayToPixel3DArray(channelArray: any[]) {
-    // Convert three channel arrays to a Pixel 3D Array
-    const temporaryUpsideDownImage = channelArray.reverse();
-    return encodeBMPFrom3dData(temporaryUpsideDownImage);
+
+function bmpToChannelArray(bmp: BMP): number[][] {
+  const pixels = bmp.pixelsArrayData;
+  const channels = [];
+  for (let i = 0; i < pixels[0].length; i++) {
+    const channel = [];
+    for (let j = 0; j < pixels.length; j++) {
+      channel.push(pixels[j][i]);
+    }
+    channels.push(channel);
+  }
+  return channels;
+}
+
+function channelArrayToBMP(channelArray: number[][], width: number, height: number): BMP {
+  const plainPixelsData = [];
+  for (let i = 0; i < channelArray[0].length; i++) {
+    for (let j = 0; j < channelArray.length; j++) {
+      plainPixelsData.push(channelArray[j][i])
+    }
+  }
+  return BMP.fromPlainData(plainPixelsData, width, height);
 }

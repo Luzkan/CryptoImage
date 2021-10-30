@@ -1,37 +1,39 @@
 // -------------------------------------------------------------
 // Difference expansion algorithm
 
-function differentialExpansionEncrypt(pixel3DArray: [number, number, number, number][][])  {
-    
-    const pixelPairs = pixel3DArrayToPixelPairs(pixel3DArray);
+function differentialExpansionEncrypt(bmp: BMP): BMP {
 
-    encrypt(pixelPairs)
+  const pixelPairs = bmpToPixelPairs(bmp);
 
-    return pixel3DArrayToPixelPairs(pixelPairs, pixel3DArray)
+  const encrypted = encrypt(pixelPairs)
+
+  const pixelArray = pixelPairsToPixelArray(encrypted)
+  return BMP.fromPixelArrayData(pixelArray, bmp.width)
 }
 
-function pixel3DArrayToPixelPairs(pixel3DArray: [number, number, number, number][][]) {
-
-    // convert pixel 3D array to pixel pairs array (an array of integer pairs)
-
-    return [];
+// Co z nieparzystymi ?
+function bmpToPixelPairs(bmp: BMP): number[][][] {
+  const pixels = bmp.pixelsArrayData;
+  const pairs = [];
+  for (let i = 0; i < pixels.length; i = i + 2) {
+    pairs.push(pixels.slice(i, i + 2));
+  }
+  return pairs;
 }
 
-function encrypt(pixelPairs: string | any[]) {
+function encrypt(pixelPairs: number[][][]): number[][][] {
 
-    for (let i = 0; i < pixelPairs.length; i++) {
-        const pixelA = pixelPairs[i][0];
-        const pixelB = pixelPairs[i][1];
-        const bitToEncrypt = null;  // get the current bit of the text
+  for (let i = 0; i < pixelPairs.length; i++) {
+    const pixelA: number[] = pixelPairs[i][0];
+    const pixelB: number[] = pixelPairs[i][1];
+    const bitToEncrypt = null;  // get the current bit of the text
 
-        // encrypt the bit to pixels
-    }
+    // encrypt the bit to pixels
+  }
+  return pixelPairs;
 }
 
-function pixelPairsTo3DArray(pixelPairs: any, pixel3DArray: any[]) {
-
-    // convert pixel pairs array to pixel 3D array 
-    
-    const temporaryUpsideDownImage = pixel3DArray.reverse();
-    return encodeBMPFrom3dData(temporaryUpsideDownImage);
+function pixelPairsToPixelArray(pairs: number[][][]): number[][] {
+  // convert pairs of pixels to pixel array
+  return flatMap(pairs);
 }
