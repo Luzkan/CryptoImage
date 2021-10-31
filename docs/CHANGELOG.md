@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.6.2]] - 2021-11-01 _(KS)_
+
+## [[0.6.1]] - 2021-10-30 _(KS)_
+
 ## [[0.6.0]] - 2021-10-29 _(MJ)_
 
 **The Project from now is written in TypeScript. 🎉**
@@ -174,6 +178,8 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.6.1-0.6.2]: https://github.com/Luzkan/CryptoImage/compare/0.6.1...0.6.2
+[diff: 0.6.0-0.6.1]: https://github.com/Luzkan/CryptoImage/compare/0.6.0...0.6.1
 [diff: 0.5.1-0.6.0]: https://github.com/Luzkan/CryptoImage/compare/0.5.1...0.6.0
 [diff: 0.5.0-0.5.1]: https://github.com/Luzkan/CryptoImage/compare/0.5.0...0.5.1
 [diff: 0.4.1-0.5.0]: https://github.com/Luzkan/CryptoImage/compare/0.4.1...0.5.0
@@ -184,7 +190,9 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
-[0.6.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.5.1
+[0.6.2]: https://github.com/Luzkan/CryptoImage/releases/tag/0.6.2
+[0.6.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.6.1
+[0.6.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.6.0
 [0.5.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.5.1
 [0.5.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.5.0
 [0.4.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.4.1

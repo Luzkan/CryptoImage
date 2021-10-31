@@ -1,39 +1,121 @@
 // -------------------------------------------------------------
 // Difference expansion algorithm
 
-function differentialExpansionEncrypt(bmp: BMP): BMP {
+function bytesToWriteDE(bmp: BMP): number {
+  return Math.floor(bmp.pixelPlainData.length / 2 / 8);
+}
+
+function differentialExpansionEncrypt(bmp: BMP, asciiMessage: string): BMP {
+  if (bytesToWriteDE(bmp) < asciiMessage.length) {
+    throw new Error("Message is to big !!!")
+  }
 
   const pixelPairs = bmpToPixelPairs(bmp);
 
-  const encrypted = encrypt(pixelPairs)
+  const byteArray = asciiStringToCharCode(asciiMessage);
 
-  const pixelArray = pixelPairsToPixelArray(encrypted)
-  return BMP.fromPixelArrayData(pixelArray, bmp.width)
+  const encryptedPairs = encryptDE(pixelPairs, byteArray);
+
+  return pixelPairsToBMP(encryptedPairs, bmp.bytesPerPixel, bmp.width);
 }
 
-// Co z nieparzystymi ?
-function bmpToPixelPairs(bmp: BMP): number[][][] {
-  const pixels = bmp.pixelsArrayData;
+function differentialExpansionDecrypt(bmp: BMP): [BMP, string] {
+  const pixelPairs = bmpToPixelPairs(bmp);
+
+  const [decryptedPairs, byteArray] = decryptDE(pixelPairs);
+  const message = charCodeArrayToString(byteArray);
+
+  const orgBmp = pixelPairsToBMP(decryptedPairs, bmp.bytesPerPixel, bmp.width);
+  return [orgBmp, message];
+}
+
+
+function encryptDE(pixelPairs: number[][], payloadBytes: number[]): number[][] {
+  const payloadBits = toBitArray(payloadBytes);
+  const messageLength = payloadBits.length;
+
+  const encryptedPairs = [];
+  for (let i = 0; i < messageLength; i++) {
+    const pixelA = pixelPairs[i][0];
+    const pixelB = pixelPairs[i][1];
+    const bit = payloadBits[i]
+    encryptedPairs.push(encryptDEValue(pixelA, pixelB, bit))
+  }
+
+  for (let i = messageLength; i < pixelPairs.length; i++) {
+    const pixelA = pixelPairs[i][0];
+    const pixelB = pixelPairs[i][1];
+    encryptedPairs.push(encryptDEValue(pixelA, pixelB, 0));
+  }
+  return encryptedPairs;
+}
+
+function decryptDE(pixelPairs: number[][]): [number[][], number[]] {
+  const decryptedPairs = [];
+  const decryptedBits = [];
+
+  const iterations = pixelPairs[pixelPairs.length - 1].length == 2 ? pixelPairs.length : pixelPairs.length - 1;
+
+  for (let i = 0; i < iterations; i++) {
+    const pixelA = pixelPairs[i][0];
+    const pixelB = pixelPairs[i][1];
+    const [pair, bit] = decryptDEPair(pixelA, pixelB)
+    decryptedPairs.push(pair)
+    decryptedBits.push(bit);
+  }
+
+  if (iterations != pixelPairs.length) {
+    decryptedPairs.push(pixelPairs[pixelPairs.length - 1]);
+  }
+
+  const encryptedBytes = bitsToByteArray(decryptedBits);
+  return [decryptedPairs, encryptedBytes];
+}
+
+function encryptDEValue(pixelA: number, pixelB: number, bitValue: number): number[] {
+  const diff = (pixelA - pixelB) & 0xFF;
+  const avg = (pixelB + (diff >>> 1)) & 0xFF
+
+  const newDiff = (((diff + 64) & 0xFF) << 1 | bitValue) & 0xFF;
+
+  const x = avg + Math.floor(0.5 * (newDiff + 1)) & 0xFF;
+  const y = avg - Math.floor(0.5 * (newDiff)) & 0xFF;
+
+  return [x, y];
+}
+
+function decryptDEPair(pixelA: number, pixelB: number): [number[], number] {
+  const diff = (pixelA - pixelB) & 0xFF;
+  const avg = (pixelB + (diff >>> 1)) & 0xFF
+
+  const newDiff = ((diff >> 1) - 64) & 0xFF;
+  const bit = diff & 0x1;
+
+  const x = avg + Math.floor(0.5 * (newDiff + 1)) & 0xFF;
+  const y = avg - Math.floor(0.5 * (newDiff)) & 0xFF;
+
+  return [[x, y], bit];
+}
+
+function bmpToPixelPairs(bmp: BMP): number[][] {
+  const channels = pixelArrayToChannelArray(bmp.pixelsArrayData)
+
+  // less probability of overfill if not mix colours in pairs
+  const channelsFlat = flatMap(channels)
   const pairs = [];
-  for (let i = 0; i < pixels.length; i = i + 2) {
-    pairs.push(pixels.slice(i, i + 2));
+  for (let pos = 0; pos < channelsFlat.length; pos = pos + 2) {
+    pairs.push(channelsFlat.slice(pos, pos + 2))
   }
   return pairs;
 }
 
-function encrypt(pixelPairs: number[][][]): number[][][] {
-
-  for (let i = 0; i < pixelPairs.length; i++) {
-    const pixelA: number[] = pixelPairs[i][0];
-    const pixelB: number[] = pixelPairs[i][1];
-    const bitToEncrypt = null;  // get the current bit of the text
-
-    // encrypt the bit to pixels
+function pixelPairsToBMP(pairs: number[][], pixelDepth: number, width: number): BMP {
+  const channelsFlat = flatMap(pairs);
+  const channelLength = channelsFlat.length / pixelDepth;
+  const channels = []
+  for (let pos = 0; pos < channelsFlat.length; pos = pos + channelLength) {
+    channels.push(channelsFlat.slice(pos, pos + channelLength))
   }
-  return pixelPairs;
-}
-
-function pixelPairsToPixelArray(pairs: number[][][]): number[][] {
-  // convert pairs of pixels to pixel array
-  return flatMap(pairs);
+  const pixelArray = channelArrayToPixelArray(channels, pixelDepth);
+  return BMP.fromPixelArrayData(pixelArray, width)
 }

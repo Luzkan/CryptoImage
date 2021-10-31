@@ -2,10 +2,11 @@
 // -------------------------------------------------------------
 // Singular value decomposition algorithm
 let blockSize = 8;
-function singularValueDecompositionEncrypt(pixel3DArray) {
+function singularValueDecompositionEncrypt(bmp) {
     // const arrays = pixel3DArrayTo2DArrays(pixel3DArray)
     // arrays.forEach(encrypt2DArray(arrays))
     // return twoDimArraysToPixel3DArray(arrays)
+    return bmp;
 }
 function pixel3DArrayTo2DArrays(pixel3DArray) {
     // convert pixel 3D array to three 2D arrays
