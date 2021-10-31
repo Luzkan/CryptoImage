@@ -22,9 +22,10 @@ class RGB {
 // Histogram shifting algorithm
 
 function histogramShiftingEncrypt(bmp: BMP): BMP {
-  const channelArray = bmpToChannelArray(bmp);
+  const channelArray = pixelArrayToChannelArray(bmp.pixelsArrayData);
   const encryptedChannels = channelArray.map(encryptInChannel)
-  return channelArrayToBMP(encryptedChannels, bmp.width, bmp.height)
+  const pixelArray = channelArrayToPixelArray(encryptedChannels, bmp.bytesPerPixel)
+  return BMP.fromPixelArrayData(pixelArray, bmp.width)
 }
 
 function encryptInChannel(channel: number[]) {
@@ -60,28 +61,4 @@ function shiftHistogram(channel: any, minValue: number, maxValue: number) {
 
 function encryptMessage(channel: any, maxValue: number) {
   // Encrypt the Message
-}
-
-
-function bmpToChannelArray(bmp: BMP): number[][] {
-  const pixels = bmp.pixelsArrayData;
-  const channels = [];
-  for (let i = 0; i < pixels[0].length; i++) {
-    const channel = [];
-    for (let j = 0; j < pixels.length; j++) {
-      channel.push(pixels[j][i]);
-    }
-    channels.push(channel);
-  }
-  return channels;
-}
-
-function channelArrayToBMP(channelArray: number[][], width: number, height: number): BMP {
-  const plainPixelsData = [];
-  for (let i = 0; i < channelArray[0].length; i++) {
-    for (let j = 0; j < channelArray.length; j++) {
-      plainPixelsData.push(channelArray[j][i])
-    }
-  }
-  return BMP.fromPlainData(plainPixelsData, width, height);
 }

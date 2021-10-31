@@ -16,7 +16,7 @@ function littleEndianNumberToBytes(number: number, length: number): number[] {
   let value = number;
   for (let i = 0; i < length; i++) {
     bytes.push(value & 255);
-    value = Math.floor(value >> 8);
+    value = Math.floor(value >>> 8);
   }
   return bytes;
 }
@@ -58,7 +58,7 @@ class BMP {
       const height = littleEndianBytesToNumber(bytes.slice(22, 26));
       const bitsPerPixel = littleEndianBytesToNumber(bytes.slice(28, 30));
 
-      const bytesPerPixel = bitsPerPixel >> 3;
+      const bytesPerPixel = bitsPerPixel >>> 3;
       const pixelsData = bytes.slice(pixelDataOffset);
 
       const pixels3D = [];

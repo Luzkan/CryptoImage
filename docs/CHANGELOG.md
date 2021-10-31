@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.6.2]] - 2021-11-01 _(KS)_
+
+## [[0.6.1]] - 2021-10-30 _(KS)_
+
 ## [[0.6.0]] - 2021-10-29 _(MJ)_
 
 **The Project from now is written in TypeScript. 🎉**

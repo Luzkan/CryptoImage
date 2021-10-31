@@ -1,0 +1,10 @@
+{
+  "name": "foo",
+  "scripts": {
+    "tsc": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "tsc": "^2.0.3",
+    "typescript": "^4.4.4"
+  }
+}
