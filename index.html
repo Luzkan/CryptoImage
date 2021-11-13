@@ -66,9 +66,11 @@
             <div class="subsection-encoder-decoder">
               <!-- This will be replaced with Canvas for image manipulation display/read/transform I guess. -->
               <div
-                class="grid2 to-animate"
+                id="original-image"
+                class="grid2 to-animate image-container"
                 style="background-image: url(assets/img/background.jpg)"
-              ></div>
+              >
+              </div>
               <div class="grid2">
                 <div class="subsection-e-d">
                   <div class="row">
@@ -105,7 +107,7 @@
                               <label
                                 class="form-check-label"
                                 for="method-1-checkbox"
-                                >Differential expansion</label
+                                >Differential Expansion</label
                               >
                             </div>
                             <div class="form-check form-check-inline">
@@ -118,7 +120,7 @@
                               <label
                                 class="form-check-label"
                                 for="method-2-checkbox"
-                                >Histogram shifting</label
+                                >Histogram Shifting</label
                               >
                             </div>
                             <div class="form-check form-check-inline">
@@ -131,7 +133,7 @@
                               <label
                                 class="form-check-label"
                                 for="method-3-checkbox"
-                                >Singular value decomposition</label
+                                >Singular Value Decomposition</label
                               >
                             </div>
                           </div>
@@ -226,7 +228,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12 section-heading text-center">
-            <h2 class="to-animate">Image Decoding Completed</h2>
+            <h2 class="to-animate">Image Processing Completed</h2>
             <div class="row">
               <div class="col-md-8 col-md-offset-2 subtext to-animate">
                 <h3>Save it via mouse right click.</h3>
@@ -238,14 +240,37 @@
       <div class="results-grouped">
         <div class="container">
           <div class="row">
-            <div class="col-md-12 text-center">
+            <div class="to-animate">
+              <div class="col-md-4 text-center to-animate alt-project-grid" id="method1-image">
+                  <div class="desc">
+                    <h3><a href="#">Differential Expansion</a></h3>
+                    <span>Simple Explanation of Method #1</span>
+                  </div>
+              </div>
+              <div class="col-md-4 text-center to-animate alt-project-grid" id="method2-image">
+                  <div class="desc">
+                    <h3><a href="#">Histogram Shifting</a></h3>
+                    <span>Simple Explanation of Method #2</span>
+                  </div>
+              </div>
+              <div class="col-md-4 text-center to-animate alt-project-grid" id="method3-image">
+                  <div class="desc">
+                    <h3><a href="#">Singular Value Decomposition</a></h3>
+                    <span>Simple Explanation of Method #3</span>
+                  </div>
+              </div>
+            </div>
+
+
+            <!-- <div class="col-md-12 text-center">
               <div
-                class="project-grid to-animate"
+                class="project-grid to-animate alt-project-grid"
                 style="background-image: url(assets/img/img-original.jpg)"
               >
                 <div class="desc">
                   <h3><a href="#">Original Image</a></h3>
                   <span>This is the decoded, clean & original image.</span>
+                  <div id="original-image"></div>
                 </div>
               </div>
             </div>
@@ -257,6 +282,7 @@
                 <div class="desc">
                   <h3><a href="#">Method #1</a></h3>
                   <span>Simple Explanation of Method #1</span>
+                  <div id="method1-image"></div>
                 </div>
               </div>
             </div>
@@ -268,6 +294,7 @@
                 <div class="desc">
                   <h3><a href="#">Method #2</a></h3>
                   <span>Simple Explanation of Method #2</span>
+                  <div id="method2-image"></div>
                 </div>
               </div>
             </div>
@@ -279,9 +306,10 @@
                 <div class="desc">
                   <h3><a href="#">Method #3</a></h3>
                   <span>Simple Explanation of Method #3</span>
+                  <div id="method3-image"></div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -462,12 +490,18 @@
     <script src="assets/js/jquery.countTo.js"></script>
     <!-- Website Frontend/Looks Specific -->
     <script src="assets/js/website_main.js"></script>
+
+    <!-- Node Modules-->
+    <!-- Image Loading -->
+
+    <script src="assets/js/load-image.all.min.js"></script>
     <!-- Entry Point -->
+    
     <script src="build/utils.js"></script>
     <script src="build/encoders/bmp.js"></script>
     <script src="build/algorithms/differential-expansion.js"></script>
     <script src="build/algorithms/histogram-shifting.js"></script>
     <script src="build/algorithms/singular-value-decomposition.js"></script>
-    <script src="build/main.js"></script>
+    <script type="module" src="build/main.js"></script>
   </body>
 </html>
