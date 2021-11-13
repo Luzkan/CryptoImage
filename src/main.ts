@@ -36,9 +36,14 @@ const checkbox3 = document.getElementById("method-3-checkbox") as HTMLInputEleme
 
 // Images
 const originalImageDiv = document.getElementById("original-image") as HTMLInputElement;
-const method1ImageDiv = document.getElementById("method1-image") as HTMLInputElement;
-const method2ImageDiv = document.getElementById("method2-image") as HTMLInputElement;
-const method3ImageDiv = document.getElementById("method3-image") as HTMLInputElement;
+
+const diffExpEncodedDiv = document.getElementById("diff-exp-encoded-image") as HTMLInputElement;
+const histShiftEncodedDiv = document.getElementById("hist-shift-encoded-image") as HTMLInputElement;
+const singValDecompEncodedDiv = document.getElementById("sing-val-decomp-encoded-image") as HTMLInputElement;
+
+const diffExpDecodedDiv = document.getElementById("diff-exp-decoded-image") as HTMLInputElement;
+const histShiftDecodedDiv = document.getElementById("hist-shift-decoded-image") as HTMLInputElement;
+const singValDecompDecodedDiv = document.getElementById("sing-val-decomp-decoded-image") as HTMLInputElement;
 
 // Label Counters
 const imageSizeCounterLabel = document.getElementById("image-size-counter") as HTMLSpanElement;
@@ -131,9 +136,13 @@ btnEncrypt.addEventListener("click", function() {
 
   image_output = encryptAndDecrypt(bmp, encrypted_text);
 
-  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { method1ImageDiv.appendChild(img); }, { maxWidth: 300 });
-  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { method2ImageDiv.appendChild(img); }, { maxWidth: 300 });
-  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { method3ImageDiv.appendChild(img); }, { maxWidth: 300 });
+  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { diffExpEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { histShiftEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { singValDecompEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+
+  loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img: any) { diffExpDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+  loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img: any) { histShiftDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+  loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img: any) { singValDecompDecodedDiv.appendChild(img); }, { maxWidth: 300 });
 
 });
 

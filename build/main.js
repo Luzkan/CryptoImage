@@ -29,9 +29,12 @@ const checkbox2 = document.getElementById("method-2-checkbox");
 const checkbox3 = document.getElementById("method-3-checkbox");
 // Images
 const originalImageDiv = document.getElementById("original-image");
-const method1ImageDiv = document.getElementById("method1-image");
-const method2ImageDiv = document.getElementById("method2-image");
-const method3ImageDiv = document.getElementById("method3-image");
+const diffExpEncodedDiv = document.getElementById("diff-exp-encoded-image");
+const histShiftEncodedDiv = document.getElementById("hist-shift-encoded-image");
+const singValDecompEncodedDiv = document.getElementById("sing-val-decomp-encoded-image");
+const diffExpDecodedDiv = document.getElementById("diff-exp-decoded-image");
+const histShiftDecodedDiv = document.getElementById("hist-shift-decoded-image");
+const singValDecompDecodedDiv = document.getElementById("sing-val-decomp-decoded-image");
 // Label Counters
 const imageSizeCounterLabel = document.getElementById("image-size-counter");
 const availableSizeCounterLabel = document.getElementById("availalbe-size-counter");
@@ -109,9 +112,12 @@ btnEncrypt.addEventListener("click", function () {
         return;
     }
     image_output = encryptAndDecrypt(bmp, encrypted_text);
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { method1ImageDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { method2ImageDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { method3ImageDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { diffExpEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { histShiftEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { singValDecompEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { diffExpDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { histShiftDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { singValDecompDecodedDiv.appendChild(img); }, { maxWidth: 300 });
 });
 btnEncrypt.addEventListener('click', function () {
     if (checkbox1 && image_output && checkbox1.checked) {
