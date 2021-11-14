@@ -1,82 +1,149 @@
 // -------------------------------------------------------------
 // Difference expansion algorithm
 
-function bytesToWriteDE(bmp: BMP): number {
-  return Math.floor(bmp.pixelPlainData.length / 2 / 8);
+function bytesToWriteDE(bmp: BMP, compressedMapLen?: number, diffBitsMap?: number[]): number {
+  if (!compressedMapLen || !diffBitsMap) {
+    const pixelPairs = bmpToPixelPairs(bmp);
+    diffBitsMap = createDiffBitsMap(pixelPairs);
+    const locMap7 = createLocationMap(diffBitsMap, 7);
+    const bytes = bitsToByteArray(locMap7);
+    compressedMapLen = huffmanCompress(bytes).length;
+  }
+  const availableToWrite = diffBitsMap.filter(item => item !== 8);
+  const mapAvailableSize = availableToWrite.filter(item => item !== 7).length;
+  const availableSize = availableToWrite.length;
+
+  const messageSize = Math.floor((availableSize - compressedMapLen) / 8);
+  return compressedMapLen > mapAvailableSize ? 0 : messageSize;
 }
 
 function differentialExpansionEncrypt(bmp: BMP, asciiMessage: string): BMP {
-  if (bytesToWriteDE(bmp) < asciiMessage.length) {
-    throw new Error("Message is to big !!!")
+  const pixelPairs = bmpToPixelPairs(bmp);
+  const diffBitsMap = createDiffBitsMap(pixelPairs);
+  const locMap7 = createLocationMap(diffBitsMap, 7);
+  const locMap7Bytes = bitsToByteArray(locMap7);
+  const locMap7compressed = huffmanCompress(locMap7Bytes);
+
+  if (bytesToWriteDE(bmp, locMap7compressed.length, diffBitsMap) < asciiMessage.length * 8) {
+    throw new Error("Cannot embed that message in provided image")
   }
 
-  const pixelPairs = bmpToPixelPairs(bmp);
-
   const byteArray = asciiStringToCharCode(asciiMessage);
-
-  const encryptedPairs = encryptDE(pixelPairs, byteArray);
-
-  return pixelPairsToBMP(encryptedPairs, bmp.bytesPerPixel, bmp.width);
+  const bitsArray = toBitArray(byteArray);
+  const bitsToWrite = flatMap([locMap7compressed, bitsArray]);
+  encryptDEInPairs(pixelPairs, diffBitsMap, bitsToWrite);
+  const pixelsToWrite = pixelPairsToPixelArray(pixelPairs, bmp.bytesPerPixel);
+  return BMP.fromPixelArrayData(pixelsToWrite, bmp.width)
 }
 
 function differentialExpansionDecrypt(bmp: BMP): [BMP, string] {
   const pixelPairs = bmpToPixelPairs(bmp);
-
-  const [decryptedPairs, byteArray] = decryptDE(pixelPairs);
-  const message = charCodeArrayToString(byteArray);
-
-  const orgBmp = pixelPairsToBMP(decryptedPairs, bmp.bytesPerPixel, bmp.width);
-  return [orgBmp, message];
+  const mapBytesLength = Math.floor((pixelPairs.length - 1) / 8) + 1;
+  const diffBitsMap = createDiffBitsMap(pixelPairs);
+  const compressed = decodeUpTo7DiffInPairs(pixelPairs, diffBitsMap)
+  const [locMap7, payload1] = huffmanDecompress(compressed, mapBytesLength)
+  const payload2 = decryptFromLocMapInPairs(pixelPairs, locMap7);
+  const bytePayload = bitsToByteArray(flatMap([payload1, payload2]));
+  const pixelsToWrite = pixelPairsToPixelArray(pixelPairs, bmp.bytesPerPixel);
+  const orgBmp = BMP.fromPixelArrayData(pixelsToWrite, bmp.width);
+  const message = charCodeArrayToString(bytePayload);
+  const tailBeginIdx = message.indexOf(String.fromCharCode(0));
+  return [orgBmp, message.slice(0, tailBeginIdx)];
 }
 
+function createDiffBitsMap(pairs: number[][]): number[] {
+  // console.log("8: ", diffs.filter(item => item === 8).length);
+  // console.log("7: ", diffs.filter(item => item === 7).length);
+  // console.log("6: ", diffs.filter(item => item === 6).length);
+  // console.log("5: ", diffs.filter(item => item === 5).length);
+  // console.log("4: ", diffs.filter(item => item === 4).length);
+  // console.log("3: ", diffs.filter(item => item === 3).length);
+  // console.log("2: ", diffs.filter(item => item === 2).length);
+  // console.log("1: ", diffs.filter(item => item === 1).length);
+  // console.log("0: ", diffs.filter(item => item === 0).length);
+  // console.log("NaN: ", diffs.filter(item => item === NaN).length);
+  return pairs.map((pair) => {
+    if (pair.length < 2) {
+      return NaN;
+    }
+    const diff = (pair[0] - pair[1]) & 0xFF;
+    let diffOrder = 0x80;
+    for (let i = 8; i >= 0; i--) {
+      if ((diff & diffOrder) === diffOrder) {
+        return i;
+      }
+      diffOrder = diffOrder >>> 1;
+    }
+    return NaN;
+  });
+}
 
-function encryptDE(pixelPairs: number[][], payloadBytes: number[]): number[][] {
-  const payloadBits = toBitArray(payloadBytes);
+function createLocationMap(diffBitsMap: number[], diffBits: number): number[] {
+  return diffBitsMap.map(item => item === diffBits ? 1 : 0);
+}
+
+function encryptDEInPairs(pixelPairs: number[][], diffBitsMap: number[], payloadBits: number[]): void {
+  const writeOrder: number[] = [];
+  for (let i = 0; i < 8; i++) {
+    diffBitsMap.forEach((item, idx) => item === i ? writeOrder.push(idx) : null);
+  }
+
   const messageLength = payloadBits.length;
-
-  const encryptedPairs = [];
   for (let i = 0; i < messageLength; i++) {
-    const pixelA = pixelPairs[i][0];
-    const pixelB = pixelPairs[i][1];
     const bit = payloadBits[i]
-    encryptedPairs.push(encryptDEValue(pixelA, pixelB, bit))
+    const pixelIdx = writeOrder[i];
+    const pixelA = pixelPairs[pixelIdx][0];
+    const pixelB = pixelPairs[pixelIdx][1];
+    pixelPairs[pixelIdx] = encryptDEValue(pixelA, pixelB, bit);
   }
 
-  for (let i = messageLength; i < pixelPairs.length; i++) {
-    const pixelA = pixelPairs[i][0];
-    const pixelB = pixelPairs[i][1];
-    encryptedPairs.push(encryptDEValue(pixelA, pixelB, 0));
+  for (let i = messageLength; i < writeOrder.length; i++) {
+    const pixelIdx = writeOrder[i];
+    const pixelA = pixelPairs[pixelIdx][0];
+    const pixelB = pixelPairs[pixelIdx][1];
+    pixelPairs[pixelIdx] = encryptDEValue(pixelA, pixelB, 0);
   }
-  return encryptedPairs;
 }
 
-function decryptDE(pixelPairs: number[][]): [number[][], number[]] {
-  const decryptedPairs = [];
+
+function decodeUpTo7DiffInPairs(pixelPairs: number[][], diffBitsMap: number[]): number[] {
+  const readOrder: number[] = [];
+  diffBitsMap.forEach((item, idx) => item === 0 || item === 1 ? readOrder.push(idx) : null);
+  for (let i = 2; i < 8; i++) {
+    diffBitsMap.forEach((item, idx) => item === i ? readOrder.push(idx) : null);
+  }
+
   const decryptedBits = [];
-
-  const iterations = pixelPairs[pixelPairs.length - 1].length == 2 ? pixelPairs.length : pixelPairs.length - 1;
-
-  for (let i = 0; i < iterations; i++) {
-    const pixelA = pixelPairs[i][0];
-    const pixelB = pixelPairs[i][1];
-    const [pair, bit] = decryptDEPair(pixelA, pixelB)
-    decryptedPairs.push(pair)
+  for (let i = 0; i < readOrder.length; i++) {
+    const pixelIdx = readOrder[i];
+    const pixelA = pixelPairs[pixelIdx][0];
+    const pixelB = pixelPairs[pixelIdx][1];
+    const [pair, bit] = decryptDEPair(pixelA, pixelB);
+    pixelPairs[pixelIdx] = pair;
     decryptedBits.push(bit);
   }
+  return decryptedBits;
+}
 
-  if (iterations != pixelPairs.length) {
-    decryptedPairs.push(pixelPairs[pixelPairs.length - 1]);
+function decryptFromLocMapInPairs(pixelPairs: number[][], locMap7: number[]): number[] {
+  const decryptedBits = [];
+  for (let i = 0; i < pixelPairs.length; i++) {
+    if (locMap7[i]) {
+      const pixelA = pixelPairs[i][0];
+      const pixelB = pixelPairs[i][1];
+      const [pair, bit] = decryptDEPair(pixelA, pixelB)
+      decryptedBits.push(bit);
+      pixelPairs[i] = pair;
+    }
   }
-
-  const encryptedBytes = bitsToByteArray(decryptedBits);
-  return [decryptedPairs, encryptedBytes];
+  return decryptedBits;
 }
 
 function encryptDEValue(pixelA: number, pixelB: number, bitValue: number): number[] {
   const diff = (pixelA - pixelB) & 0xFF;
   const avg = (pixelB + (diff >>> 1)) & 0xFF
 
-  const newDiff = (((diff + 64) & 0xFF) << 1 | bitValue) & 0xFF;
+  const newDiff = (diff << 1 | bitValue) & 0xFF;
 
   const x = avg + Math.floor(0.5 * (newDiff + 1)) & 0xFF;
   const y = avg - Math.floor(0.5 * (newDiff)) & 0xFF;
@@ -88,7 +155,7 @@ function decryptDEPair(pixelA: number, pixelB: number): [number[], number] {
   const diff = (pixelA - pixelB) & 0xFF;
   const avg = (pixelB + (diff >>> 1)) & 0xFF
 
-  const newDiff = ((diff >> 1) - 64) & 0xFF;
+  const newDiff = (diff >> 1) & 0xFF;
   const bit = diff & 0x1;
 
   const x = avg + Math.floor(0.5 * (newDiff + 1)) & 0xFF;
@@ -109,13 +176,12 @@ function bmpToPixelPairs(bmp: BMP): number[][] {
   return pairs;
 }
 
-function pixelPairsToBMP(pairs: number[][], pixelDepth: number, width: number): BMP {
+function pixelPairsToPixelArray(pairs: number[][], pixelDepth: number): number[][] {
   const channelsFlat = flatMap(pairs);
   const channelLength = channelsFlat.length / pixelDepth;
   const channels = []
   for (let pos = 0; pos < channelsFlat.length; pos = pos + channelLength) {
     channels.push(channelsFlat.slice(pos, pos + channelLength))
   }
-  const pixelArray = channelArrayToPixelArray(channels, pixelDepth);
-  return BMP.fromPixelArrayData(pixelArray, width)
+  return channelArrayToPixelArray(channels, pixelDepth);
 }
