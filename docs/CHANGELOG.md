@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.7.1]] - 2021-11-13 _(MJ)_
+
+###### _([diff: 0.7.0-0.7.1])_
+
+Added:
+
+- Decoded Image Display on Main Website.
+  - ![Displaying Images](./img/changelog/071_decoded_display.gif)
+
+Changed:
+
+- More meaningful identifiers for HTML Elements.
+
+## [[0.7.0]] - 2021-11-13 _(MJ)_
+
+###### _([diff: 0.6.2-0.7.0])_
+
+Added:
+
+- Image Loading to main website.
+  - ![Displaying Images](./img/changelog/070_image_display_on_page.png)
+- Handling all user inputs
+- Safe Checks
+- Tooltip updates depending on the missing information
+
+Changed:
+
+- Code Flow in [`main.ts`]
+- Compile target from  `es2019` to `es2021`
+- Module from `commonjs` to `esnext`
+
+
+
 ## [[0.6.2]] - 2021-11-01 _(KS)_
 
 ## [[0.6.1]] - 2021-10-30 _(KS)_
@@ -178,6 +211,8 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.7.0-0.7.1]: https://github.com/Luzkan/CryptoImage/compare/0.7.0...0.7.1
+[diff: 0.6.2-0.7.0]: https://github.com/Luzkan/CryptoImage/compare/0.6.2...0.7.0
 [diff: 0.6.1-0.6.2]: https://github.com/Luzkan/CryptoImage/compare/0.6.1...0.6.2
 [diff: 0.6.0-0.6.1]: https://github.com/Luzkan/CryptoImage/compare/0.6.0...0.6.1
 [diff: 0.5.1-0.6.0]: https://github.com/Luzkan/CryptoImage/compare/0.5.1...0.6.0
@@ -190,6 +225,8 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[0.7.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.7.1
+[0.7.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.7.0
 [0.6.2]: https://github.com/Luzkan/CryptoImage/releases/tag/0.6.2
 [0.6.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.6.1
 [0.6.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.6.0

@@ -63,6 +63,14 @@ The project is written in [TypeScript](https://www.typescriptlang.org/). If you 
 
 There's only one requirement: the [npm](https://www.npmjs.com/) package manager and `npm install -g typescript` command ran at least once to install the TypeScript language.
 
+### Packages:
+
+- [Node Types](https://www.npmjs.com/package/@types/node):
+  - It is used to make TypeScript aware of the Node.js API and provide type definitions.
+  - `npm i -g @types/node`
+- [Blueimp Load Image](https://www.npmjs.com/package/blueimp-load-image)
+  - `npm i blueimp-load-image`
+
 ---
 
 ---
