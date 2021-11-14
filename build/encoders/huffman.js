@@ -34,8 +34,7 @@ function generateHuffmanMap(node, code, map = {}) {
 }
 function huffmanMap(bytesStrToEncode) {
     const frequencyMap = bytesStrToEncode.reduce((dict, byte) => {
-        var _a;
-        dict[byte] = ((_a = dict[byte]) !== null && _a !== void 0 ? _a : 0) + 1;
+        dict[byte] = (dict[byte] ?? 0) + 1;
         return dict;
     }, {});
     const q = Object
