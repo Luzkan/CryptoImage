@@ -1,15 +1,26 @@
 "use strict";
 // -------------------------------------------------------------
 // Difference expansion algorithm
-function bytesToWriteDE(bmp, compressedMapLen, diffBitsMap) {
-    if (!compressedMapLen || !diffBitsMap) {
+const diffShift = 0;
+function bytesToWriteDE(bmp, compressedMapLen, diffs) {
+    if (!compressedMapLen || !diffs) {
         const pixelPairs = bmpToPixelPairs(bmp);
-        diffBitsMap = createDiffBitsMap(pixelPairs);
-        const locMap7 = createLocationMap(diffBitsMap, 7);
+        diffs = createDiffBitsMap(pixelPairs);
+        console.log("8: ", diffs.filter(item => item === 8).length);
+        console.log("7: ", diffs.filter(item => item === 7).length);
+        console.log("6: ", diffs.filter(item => item === 6).length);
+        console.log("5: ", diffs.filter(item => item === 5).length);
+        console.log("4: ", diffs.filter(item => item === 4).length);
+        console.log("3: ", diffs.filter(item => item === 3).length);
+        console.log("2: ", diffs.filter(item => item === 2).length);
+        console.log("1: ", diffs.filter(item => item === 1).length);
+        console.log("0: ", diffs.filter(item => item === 0).length);
+        console.log("NaN: ", diffs.filter(item => isNaN(item)).length);
+        const locMap7 = createLocationMap(diffs, 7);
         const bytes = bitsToByteArray(locMap7);
         compressedMapLen = huffmanCompress(bytes).length;
     }
-    const availableToWrite = diffBitsMap.filter(item => item !== 8);
+    const availableToWrite = diffs.filter(item => item !== 8);
     const mapAvailableSize = availableToWrite.filter(item => item !== 7).length;
     const availableSize = availableToWrite.length;
     const messageSize = Math.floor((availableSize - compressedMapLen) / 8);
@@ -34,7 +45,7 @@ function differentialExpansionEncrypt(bmp, asciiMessage) {
 function differentialExpansionDecrypt(bmp) {
     const pixelPairs = bmpToPixelPairs(bmp);
     const mapBytesLength = Math.floor((pixelPairs.length - 1) / 8) + 1;
-    const diffBitsMap = createDiffBitsMap(pixelPairs);
+    const diffBitsMap = createDiffBitsMap(pixelPairs, true);
     const compressed = decodeUpTo7DiffInPairs(pixelPairs, diffBitsMap);
     const [locMap7, payload1] = huffmanDecompress(compressed, mapBytesLength);
     const payload2 = decryptFromLocMapInPairs(pixelPairs, locMap7);
@@ -45,7 +56,7 @@ function differentialExpansionDecrypt(bmp) {
     const tailBeginIdx = message.indexOf(String.fromCharCode(0));
     return [orgBmp, message.slice(0, tailBeginIdx)];
 }
-function createDiffBitsMap(pairs) {
+function createDiffBitsMap(pairs, decoding = false) {
     // console.log("8: ", diffs.filter(item => item === 8).length);
     // console.log("7: ", diffs.filter(item => item === 7).length);
     // console.log("6: ", diffs.filter(item => item === 6).length);
@@ -60,7 +71,7 @@ function createDiffBitsMap(pairs) {
         if (pair.length < 2) {
             return NaN;
         }
-        const diff = (pair[0] - pair[1]) & 0xFF;
+        const diff = (pair[0] - pair[1] + (decoding ? 0 : diffShift)) & 0xFF;
         let diffOrder = 0x80;
         for (let i = 8; i >= 0; i--) {
             if ((diff & diffOrder) === diffOrder) {
@@ -127,7 +138,7 @@ function decryptFromLocMapInPairs(pixelPairs, locMap7) {
 function encryptDEValue(pixelA, pixelB, bitValue) {
     const diff = (pixelA - pixelB) & 0xFF;
     const avg = (pixelB + (diff >>> 1)) & 0xFF;
-    const newDiff = (diff << 1 | bitValue) & 0xFF;
+    const newDiff = (((diff + diffShift) & 0xFF) << 1 | bitValue) & 0xFF;
     const x = avg + Math.floor(0.5 * (newDiff + 1)) & 0xFF;
     const y = avg - Math.floor(0.5 * (newDiff)) & 0xFF;
     return [x, y];
@@ -135,7 +146,7 @@ function encryptDEValue(pixelA, pixelB, bitValue) {
 function decryptDEPair(pixelA, pixelB) {
     const diff = (pixelA - pixelB) & 0xFF;
     const avg = (pixelB + (diff >>> 1)) & 0xFF;
-    const newDiff = (diff >> 1) & 0xFF;
+    const newDiff = ((diff >> 1) - diffShift) & 0xFF;
     const bit = diff & 0x1;
     const x = avg + Math.floor(0.5 * (newDiff + 1)) & 0xFF;
     const y = avg - Math.floor(0.5 * (newDiff)) & 0xFF;
