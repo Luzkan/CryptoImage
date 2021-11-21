@@ -21,6 +21,7 @@ class EncryptedFile {
 let image_output = null; // EncryptedFile Holder
 let encrypted_text = null; // Textfield Text Value
 let bmp = null; // BMP Holder
+let created_images = new Array();
 // -------------------------------------------------------------
 // HTML Elements
 // Method Checkboxes
@@ -67,6 +68,21 @@ function enableEncryptButton() {
         pEncryptTooltip.classList.add("permamently-transparent");
     }
 }
+function markImage(image) {
+    created_images.push(image);
+    image.classList.add("encoded-image-display");
+}
+function deletePreviouslyAddedDisplayImage() {
+    var displayImage = document.getElementsByClassName("display-original-img");
+    for (let i = 0; i < displayImage.length; i++) {
+        displayImage[i].remove();
+    }
+    // TODO: addedImages.forEach(element: => element.remove())
+}
+function deletePreviouslyAddedEncryptedImages() {
+    created_images.forEach(element => element.remove());
+    created_images = new Array();
+}
 // -------------------------------------------------------------
 // Logic
 function encryptAndDecrypt(bmp, encrypted_text) {
@@ -98,8 +114,12 @@ inputImage.addEventListener('input', async (e) => {
     const originalImage = e.target.files[0];
     // Decode & Create Pixel 3D Array
     bmp = await BMP.from(originalImage);
+    // Deleting Images that could've been added on previous execution of input
+    deletePreviouslyAddedDisplayImage();
     // Loading Original Image into Website
-    loadImage(originalImage, function (img) { originalImageDiv.appendChild(img); }, { maxWidth: 1100 });
+    loadImage(originalImage, function (img) { img.classList.add("display-original-img"); originalImageDiv.appendChild(img); }, {
+    // maxWidth: 600, contain: true, cover: true
+    });
     // Attempt to enable the encrypt button
     tryEnableEncryptButton();
     if (DEBUG) {
@@ -112,12 +132,13 @@ btnEncrypt.addEventListener("click", function () {
         return;
     }
     image_output = encryptAndDecrypt(bmp, encrypted_text);
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { diffExpEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { histShiftEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { singValDecompEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { diffExpDecodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { histShiftDecodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { singValDecompDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    deletePreviouslyAddedEncryptedImages();
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); diffExpEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); histShiftEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); singValDecompEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); diffExpDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); histShiftDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); singValDecompDecodedDiv.appendChild(img); }, { maxWidth: 300 });
 });
 btnEncrypt.addEventListener('click', function () {
     if (checkbox1 && image_output && checkbox1.checked) {

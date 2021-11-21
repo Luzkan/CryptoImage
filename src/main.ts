@@ -21,10 +21,10 @@ class EncryptedFile {
 }
 
 // Globally scoped variables
-let image_output: EncryptedFile | null = null;        // EncryptedFile Holder
-let encrypted_text: string | null = null;             // Textfield Text Value
-let bmp: BMP | null = null;                           // BMP Holder
-
+let image_output: EncryptedFile | null = null;                      // EncryptedFile Holder
+let encrypted_text: string | null = null;                           // Textfield Text Value
+let bmp: BMP | null = null;                                         // BMP Holder
+let created_images: Array<any> = new Array();
 
 // -------------------------------------------------------------
 // HTML Elements
@@ -35,15 +35,15 @@ const checkbox2 = document.getElementById("method-2-checkbox") as HTMLInputEleme
 const checkbox3 = document.getElementById("method-3-checkbox") as HTMLInputElement;
 
 // Images
-const originalImageDiv = document.getElementById("original-image") as HTMLInputElement;
+const originalImageDiv = document.getElementById("original-image") as HTMLDivElement;
 
-const diffExpEncodedDiv = document.getElementById("diff-exp-encoded-image") as HTMLInputElement;
-const histShiftEncodedDiv = document.getElementById("hist-shift-encoded-image") as HTMLInputElement;
-const singValDecompEncodedDiv = document.getElementById("sing-val-decomp-encoded-image") as HTMLInputElement;
+const diffExpEncodedDiv = document.getElementById("diff-exp-encoded-image") as HTMLDivElement;
+const histShiftEncodedDiv = document.getElementById("hist-shift-encoded-image") as HTMLDivElement;
+const singValDecompEncodedDiv = document.getElementById("sing-val-decomp-encoded-image") as HTMLDivElement;
 
-const diffExpDecodedDiv = document.getElementById("diff-exp-decoded-image") as HTMLInputElement;
-const histShiftDecodedDiv = document.getElementById("hist-shift-decoded-image") as HTMLInputElement;
-const singValDecompDecodedDiv = document.getElementById("sing-val-decomp-decoded-image") as HTMLInputElement;
+const diffExpDecodedDiv = document.getElementById("diff-exp-decoded-image") as HTMLDivElement;
+const histShiftDecodedDiv = document.getElementById("hist-shift-decoded-image") as HTMLDivElement;
+const singValDecompDecodedDiv = document.getElementById("sing-val-decomp-decoded-image") as HTMLDivElement;
 
 // Label Counters
 const imageSizeCounterLabel = document.getElementById("image-size-counter") as HTMLSpanElement;
@@ -73,6 +73,22 @@ function enableEncryptButton() {
     btnEncrypt.disabled = false;
     pEncryptTooltip.classList.add("permamently-transparent");
   }
+}
+
+function markImage(image: any) {
+  created_images.push(image);
+  image.classList.add("encoded-image-display");
+ }
+
+function deletePreviouslyAddedDisplayImage() {
+  var displayImage: HTMLCollectionOf<Element> = document.getElementsByClassName("display-original-img")
+  for (let i = 0; i < displayImage.length; i++) { displayImage[i].remove(); }
+  // TODO: addedImages.forEach(element: => element.remove())
+}
+
+function deletePreviouslyAddedEncryptedImages() {
+  created_images.forEach(element => element.remove())
+  created_images = new Array()
 }
 
 
@@ -123,8 +139,14 @@ inputImage.addEventListener('input', async e => {
   // Decode & Create Pixel 3D Array
   bmp = await BMP.from(originalImage);
 
+  // Deleting Images that could've been added on previous execution of input
+  deletePreviouslyAddedDisplayImage()
+
   // Loading Original Image into Website
-  loadImage(originalImage, function (img: any) { originalImageDiv.appendChild(img); }, { maxWidth: 1100 });
+  loadImage(originalImage, function (img: any) { img.classList.add("display-original-img"); originalImageDiv.appendChild(img); },
+   {
+      // maxWidth: 600, contain: true, cover: true
+  });
 
   // Attempt to enable the encrypt button
   tryEnableEncryptButton();
@@ -136,13 +158,15 @@ btnEncrypt.addEventListener("click", function() {
 
   image_output = encryptAndDecrypt(bmp, encrypted_text);
 
-  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { diffExpEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { histShiftEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { singValDecompEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+  deletePreviouslyAddedEncryptedImages()
 
-  loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img: any) { diffExpDecodedDiv.appendChild(img); }, { maxWidth: 300 });
-  loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img: any) { histShiftDecodedDiv.appendChild(img); }, { maxWidth: 300 });
-  loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img: any) { singValDecompDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { markImage(img); diffExpEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { markImage(img); histShiftEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+  loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img: any) { markImage(img); singValDecompEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+
+  loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img: any) { markImage(img); diffExpDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+  loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img: any) { markImage(img); histShiftDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+  loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img: any) { markImage(img); singValDecompDecodedDiv.appendChild(img); }, { maxWidth: 300 });
 
 });
 

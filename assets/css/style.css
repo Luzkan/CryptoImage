@@ -539,3 +539,44 @@ input[type="file"]::file-selector-button {
 .results-grouped .alt-project-grid:hover .desc {
   opacity: 1;
 }
+
+
+.display-original-img {
+  width: auto;
+  height: auto;
+  max-width:100%;
+  max-height:100%;
+  position: relative;
+  background: linear-gradient(0deg, #000, #272727);
+}
+
+.image-container-original:before, .image-container-original:after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  background: linear-gradient(45deg, #8c7676, #bbc09c, #a89898,#dbba5f, #ebd451, #b99c65,  #ebd58e, #e6b371,#fad635, #dfcbad);
+  background-size: 320%;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  z-index: -1;
+  animation: steam 20s linear infinite;
+}
+
+
+@keyframes steam {
+  0% { background-position: 0 0; }
+  50% { background-position: 320% 0; }
+  100% { background-position: 0 0; }
+}
+
+.image-container-original:after {
+  filter: blur(50px);
+}
+
+.encoded-image-display {
+  /* Create slightly rounded corners at the edges */
+  border-radius: 10px;
+  border: 2px solid #8c7676;
+
+}
