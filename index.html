@@ -37,7 +37,7 @@
     <script src="assets/js/modernizr-2.6.2.min.js"></script>
   </head>
 
-  <body>
+  <body id="top-page">
     <section id="section-main" data-section="main">
       <div class="section-main">
         <div class="container">
@@ -97,7 +97,7 @@
                         <div class="encoder-decoder-step-container">
                           <i class="icon-user-secret to-animate-2"></i>
                           <div class="encoder-decoder-step to-animate">
-                            <h3>Choose Encryption Method</h3>
+                            <h3>Download by Encryption Method</h3>
                             <div class="form-check form-check-inline">
                               <input
                                 class="form-check-input"
@@ -166,10 +166,10 @@
                             </button>
                             <p
                               class="hidden-tooltip"
-                              id="btn-encrypt-tooltip"
+                              id="p-encrypt-tooltip"
                               style="margin-top: 8px"
                             >
-                              Upload an image first.
+                              Upload an image first and type in text.
                             </p>
                           </div>
                         </div>
@@ -188,10 +188,10 @@
                     class="data-counter js-counter"
                     id="image-size-counter"
                     data-from="0"
-                    data-to="1024"
-                    data-speed="6000"
-                    data-refresh-interval="50"
-                  ></span>
+                    data-to="0"
+                    data-speed="12000"
+                    data-refresh-interval="30"
+                  >test</span>
                   <span class="data-counter-label">Image Size (KB)</span>
                 </div>
                 <div class="col-md-4 text-center">
@@ -199,12 +199,12 @@
                     class="data-counter js-counter"
                     id="availalbe-size-counter"
                     data-from="0"
-                    data-to="896"
-                    data-speed="6000"
-                    data-refresh-interval="50"
+                    data-to="0"
+                    data-speed="9000"
+                    data-refresh-interval="30"
                   ></span>
                   <span class="data-counter-label"
-                    >Available Information Data (KB)</span
+                    >Capacity in Ascii Letters</span
                   >
                 </div>
                 <div class="col-md-4 text-center">
@@ -212,7 +212,7 @@
                     class="data-counter js-counter"
                     id="decode-size-counter"
                     data-from="0"
-                    data-to="128"
+                    data-to="0"
                     data-speed="6000"
                     data-refresh-interval="50"
                   ></span>
@@ -223,13 +223,15 @@
           </div>
         </div>
       </div>
+      <span id="results-section-scroll-hook"></span>
     </section>
 
+    <div id="section-results-div" style="display: none; visibility: hidden;">
     <section id="section-results" data-section="results">
       <div class="container">
         <div class="row">
           <div class="col-md-12 section-heading text-center">
-            <h2 class="to-animate">Image Processing Completed</h2>
+            <h2 class="to-animate" id="image-processing-completed">Image Processing Completed</h2>
             <div class="row">
               <div class="col-md-8 col-md-offset-2 subtext to-animate">
                 <h3>Save it via mouse right click.</h3>
@@ -273,77 +275,11 @@
                   </div>
               </div>
             </div>
-            <!-- <div class="to-animate">
-              <div class="col-md-4 text-center to-animate alt-project-grid" id="diff-exp-decoded-image">
-                  <div class="desc">
-                    <span>Decoded</span>
-                  </div>
-              </div>
-              <div class="col-md-4 text-center to-animate alt-project-grid" id="hist-shift-decoded-image">
-                  <div class="desc">
-                    <span>Decoded</span>
-                  </div>
-              </div>
-              <div class="col-md-4 text-center to-animate alt-project-grid" id="sing-val-decomp-decoded-image">
-                  <div class="desc">
-                    <span>Decoded</span>
-                  </div>
-              </div>
-            </div> -->
-
-
-            <!-- <div class="col-md-12 text-center">
-              <div
-                class="project-grid to-animate alt-project-grid"
-                style="background-image: url(assets/img/img-original.jpg)"
-              >
-                <div class="desc">
-                  <h3><a href="#">Original Image</a></h3>
-                  <span>This is the decoded, clean & original image.</span>
-                  <div id="original-image"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12 text-center">
-              <div
-                class="project-grid to-animate"
-                style="background-image: url(assets/img/img-from-m1.jpg)"
-              >
-                <div class="desc">
-                  <h3><a href="#">Method #1</a></h3>
-                  <span>Simple Explanation of Method #1</span>
-                  <div id="diff-exp-encoded-image"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12 text-center">
-              <div
-                class="project-grid to-animate"
-                style="background-image: url(assets/img/img-from-m2.jpg)"
-              >
-                <div class="desc">
-                  <h3><a href="#">Method #2</a></h3>
-                  <span>Simple Explanation of Method #2</span>
-                  <div id="hist-shift-encoded-image"></div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-12 text-center">
-              <div
-                class="project-grid to-animate"
-                style="background-image: url(assets/img/img-from-m3.jpg)"
-              >
-                <div class="desc">
-                  <h3><a href="#">Method #3</a></h3>
-                  <span>Simple Explanation of Method #3</span>
-                  <div id="sing-val-decomp-encoded-image"></div>
-                </div>
-              </div>
-            </div> -->
           </div>
         </div>
       </div>
     </section>
+    </div>
 
     <section id="section-team" data-section="team">
       <div class="section-team">
@@ -354,8 +290,7 @@
               <div class="row">
                 <div class="col-md-8 col-md-offset-2 subtext">
                   <h3 class="to-animate">
-                    We are not responsible for the generated content via
-                    website, but here we are.
+                    We are not responsible for the content generated via website, but here we are.
                   </h3>
                 </div>
               </div>
@@ -366,20 +301,20 @@
               <div class="team-box text-center to-animate-2">
                 <div class="user">
                   <img
-                    class="img-reponsive"
+                    class="img-reponsive author-photo"
                     src="assets/img/marcel.jpg"
                     alt="Marcel JErzyk"
                   />
                 </div>
                 <h3>Marcel Jerzyk</h3>
-                <span class="position">- mój-sub-opis-xD -</span>
+                <span class="position">- Half-Raw Croissant -</span>
                 <p>
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
+                  Fullstack Designer<br />
+                  Code Smell Enjoyer<br />
+                  <br />
+                  Automation, CI/CD, DevOps<br />
+                  Python Developer at work.<br />
+                  <br />
                 </p>
                 <ul class="social-media">
                   <li>
@@ -419,20 +354,20 @@
               <div class="team-box text-center to-animate-2">
                 <div class="user">
                   <img
-                    class="img-reponsive"
+                    class="img-reponsive author-photo"
                     src="assets/img/krzysiek.jpg"
                     alt="Krzysztof Szafraniak"
                   />
                 </div>
                 <h3>Krzysztof Szafraniak</h3>
-                <span class="position">- wasz-sub-opis -</span>
+                <span class="position">- sample text -</span>
                 <p>
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
+                  - ' sample text ' -<br />
+                  - ' sample text ' -<br />
+                  <br />
+                  Angular Developer<br />
+                  Front-End Developer<br />
+                  <br />
                 </p>
                 <ul class="social-media">
                   <li>
@@ -464,20 +399,20 @@
               <div class="team-box text-center to-animate-2">
                 <div class="user">
                   <img
-                    class="img-reponsive"
+                    class="img-reponsive author-photo"
                     src="assets/img/jacek.jpg"
                     alt="Jacek Wernikowski"
                   />
                 </div>
                 <h3>Jacek Wernikowski</h3>
-                <span class="position">- wasz-sub-opis -</span>
+                <span class="position">- sample text -</span>
                 <p>
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
-                  - ' dłuższy opis ' -<br />
+                  - ' sample text ' -<br />
+                  - ' sample text ' -<br />
+                  <br />
+                  - ' sample text ' -<br />
+                  - ' sample text ' -<br />
+                  <br />
                 </p>
                 <ul class="social-media">
                   <li>
@@ -520,13 +455,10 @@
     <script src="assets/js/jquery.countTo.js"></script>
     <!-- Website Frontend/Looks Specific -->
     <script src="assets/js/website_main.js"></script>
-
-    <!-- Node Modules-->
     <!-- Image Loading -->
-
     <script src="assets/js/load-image.all.min.js"></script>
+
     <!-- Entry Point -->
-    
     <script src="build/utils.js"></script>
     <script src="build/encoders/huffman.js"></script>
     <script src="build/encoders/bmp.js"></script>

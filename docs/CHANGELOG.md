@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.9.0]] - 2021-11-25 _(MJ)_
+
+Added:
+
+- Now the results section is hidden until encryption/decryption operation is executed by user
+- After encryption, website smoothly navigates to the results section
+- Counters are now functional
+- Borders in Credits Section
+
 ## [[0.8.0]] - 2021-11-21 _(MJ)_
 
 Added:

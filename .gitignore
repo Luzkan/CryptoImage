@@ -5,7 +5,7 @@
 /httpRequests/
 .idea
 
-# Personal irectory with testing files
+# Personal directory with testing files
 example
 example/*
 node_modules
@@ -13,3 +13,6 @@ node_modules
 # Support Type Dir
 build/types/*
 build/types
+
+# Personal files
+marcel-old.jpg

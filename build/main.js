@@ -40,21 +40,30 @@ const singValDecompDecodedDiv = document.getElementById("sing-val-decomp-decoded
 const imageSizeCounterLabel = document.getElementById("image-size-counter");
 const availableSizeCounterLabel = document.getElementById("availalbe-size-counter");
 const decodeSizeCounterLabel = document.getElementById("decode-size-counter");
+// @ts-ignore
+const imageSizeCounterLabelJQ = $('#image-size-counter');
+// @ts-ignore
+const availableSizeCounterLabelJQ = $('#availalbe-size-counter');
+// @ts-ignore
+const decodeSizeCounterLabelJQ = $('#decode-size-counter');
 // Encryption Form (ImageInput, Textfield, Button and Tooltip)
 const inputImage = document.getElementById("form-input-image");
 const textareaMessage = document.getElementById("crypto-image-message");
 const btnEncrypt = document.getElementById("btn-encrypt");
-const pEncryptTooltip = document.getElementById("btn-encrypt-tooltip");
+const pEncryptTooltip = document.getElementById("p-encrypt-tooltip");
 // -------------------------------------------------------------
 // Misc Functions
 function tryEnableEncryptButton() {
-    if (!bmp || !encrypted_text) {
+    console.log(!bmp && !encrypted_text);
+    console.log(!bmp && encrypted_text);
+    console.log(bmp && !encrypted_text);
+    if (!bmp && !encrypted_text) {
+        pEncryptTooltip.innerHTML = "Upload an image first and type in text.";
+    }
+    else if (!bmp && encrypted_text) {
         pEncryptTooltip.innerHTML = "Upload an image first.";
     }
-    else if (!bmp) {
-        pEncryptTooltip.innerHTML = "Upload an image first.";
-    }
-    else if (!encrypted_text) {
+    else if (bmp && !encrypted_text) {
         pEncryptTooltip.innerHTML = "Type in encryption text first.";
     }
     else {
@@ -83,6 +92,35 @@ function deletePreviouslyAddedEncryptedImages() {
     created_images.forEach(element => element.remove());
     created_images = new Array();
 }
+function smoothScrollToTopAfterReload() {
+    window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+    });
+}
+function smoothScrollToResultsSection() {
+    const imageProcessingCompletedHeading = document.getElementById("results-section-scroll-hook");
+    imageProcessingCompletedHeading.scrollIntoView({ behavior: 'smooth' });
+}
+function displayResultsSection() {
+    const resultsSectionDiv = document.getElementById("section-results-div");
+    resultsSectionDiv.style.display = "block";
+    resultsSectionDiv.style.visibility = "visible";
+}
+function loadResultImagesToResultSection(image_output) {
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); diffExpEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); histShiftEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); singValDecompEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); diffExpDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); histShiftDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); singValDecompDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+}
+function updateCounters(bmp) {
+    imageSizeCounterLabelJQ.countTo({ from: parseInt(imageSizeCounterLabel.innerHTML), to: bmp.fileSize });
+    availableSizeCounterLabelJQ.countTo({ from: parseInt(availableSizeCounterLabel.innerHTML), to: bytesToWriteDE(bmp) });
+    decodeSizeCounterLabelJQ.countTo({ from: parseInt(decodeSizeCounterLabel.innerHTML), to: bytesToWriteDE(bmp) });
+}
 // -------------------------------------------------------------
 // Logic
 function encryptAndDecrypt(bmp, encrypted_text) {
@@ -104,6 +142,10 @@ textareaMessage.addEventListener('input', (event) => {
     if (event) {
         encrypted_text = event.target.value;
     }
+    // if (bmp) {
+    //   // @ts-ignore
+    //   availableSizeCounterLabelJQ.countTo({ from: parseInt(availableSizeCounterLabel.innerHTML), to: bytesToWriteDE(bmp)-encrypted_text?.length});
+    // }
     if (DEBUG) {
         console.log(encrypted_text);
     }
@@ -114,18 +156,10 @@ inputImage.addEventListener('input', async (e) => {
     const originalImage = e.target.files[0];
     // Decode & Create Pixel 3D Array
     bmp = await BMP.from(originalImage);
-    // Deleting Images that could've been added on previous execution of input
     deletePreviouslyAddedDisplayImage();
-    // Loading Original Image into Website
-    loadImage(originalImage, function (img) { img.classList.add("display-original-img"); originalImageDiv.appendChild(img); }, {
-    // maxWidth: 600, contain: true, cover: true
-    });
-    // Attempt to enable the encrypt button
+    loadImage(originalImage, function (img) { img.classList.add("display-original-img"); originalImageDiv.appendChild(img); }, {});
+    updateCounters(bmp);
     tryEnableEncryptButton();
-    if (DEBUG) {
-        console.log(bmp);
-        console.log(`# Capacity Ascii Letters: ${bytesToWriteDE(bmp)}`);
-    }
 });
 btnEncrypt.addEventListener("click", function () {
     if (!bmp || !encrypted_text) {
@@ -133,12 +167,9 @@ btnEncrypt.addEventListener("click", function () {
     }
     image_output = encryptAndDecrypt(bmp, encrypted_text);
     deletePreviouslyAddedEncryptedImages();
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); diffExpEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); histShiftEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); singValDecompEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); diffExpDecodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); histShiftDecodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); singValDecompDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadResultImagesToResultSection(image_output);
+    displayResultsSection();
+    smoothScrollToResultsSection();
 });
 btnEncrypt.addEventListener('click', function () {
     if (checkbox1 && image_output && checkbox1.checked) {
@@ -158,3 +189,5 @@ btnEncrypt.addEventListener('click', function () {
         console.log(image_output.message);
     }
 });
+// After Page Load
+smoothScrollToTopAfterReload();

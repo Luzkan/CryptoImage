@@ -580,3 +580,7 @@ input[type="file"]::file-selector-button {
   border: 2px solid #8c7676;
 
 }
+
+.author-photo {
+  border: 2px solid #8c7676;
+}
