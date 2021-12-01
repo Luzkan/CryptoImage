@@ -578,9 +578,50 @@ input[type="file"]::file-selector-button {
   /* Create slightly rounded corners at the edges */
   border-radius: 10px;
   border: 2px solid #8c7676;
+  transition: transform 0.33s ease;
+}
 
+.encoded-image-display:hover {
+  -webkit-transform:scale(1.08);
+  transform:scale(1.08);
+  cursor: pointer;
 }
 
 .author-photo {
   border: 2px solid #8c7676;
+}
+
+.fullscreen {
+  visibility: hidden;
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  background: rgba(0,0,0,0.9);
+  align-items: center;
+  text-align: center;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.fullscreen img{
+  max-width: 90%;
+  max-height: 90%;
+  width: auto;
+  height: auto;
+  transform: scale(0.95);
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.fullscreen:target {
+  visibility: visible;
+  outline: none;
+  cursor: default;
+}
+
+.fullscreen:target img {
+  transform: scale(1);
 }

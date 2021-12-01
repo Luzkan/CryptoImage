@@ -7,7 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.10.0]] - 2021-12-01 _(MJ)_
+
+###### _([diff: 0.9.0-0.10.0])_
+
+Added:
+
+- The results images are now clickable!
+  - After the click, image is enlarged to full screen in ala "lightbox" like effect (it is always horizontally & vertically centred).
+  - The second click will not use fade-in animations deliberately for faster responsiveness.
+- Now, the _CAPACITY IN ASCII LETTERS_ counter live-updates itself based on the number of characters used in the input.
+
+Changed:
+
+- Counters are now much faster.
+
+Fixed:
+
+- Image Size now properly displays the number in `KB` instead of `B`.
+
+
 ## [[0.9.0]] - 2021-11-25 _(MJ)_
+
+###### _([diff: 0.8.0-0.9.0])_
 
 Added:
 
@@ -17,6 +39,8 @@ Added:
 - Borders in Credits Section
 
 ## [[0.8.0]] - 2021-11-21 _(MJ)_
+
+###### _([diff: 0.7.3-0.8.0])_
 
 Added:
 
@@ -243,6 +267,8 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.9.0-0.10.0]: https://github.com/Luzkan/CryptoImage/compare/0.9.0...0.10.0
+[diff: 0.8.0-0.9.0]: https://github.com/Luzkan/CryptoImage/compare/0.8.0...0.9.0
 [diff: 0.7.3-0.8.0]: https://github.com/Luzkan/CryptoImage/compare/0.7.3...0.8.0
 [diff: 0.7.2-0.7.3]: https://github.com/Luzkan/CryptoImage/compare/0.7.2...0.7.3
 [diff: 0.7.1-0.7.2]: https://github.com/Luzkan/CryptoImage/compare/0.7.1...0.7.2
@@ -260,6 +286,8 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[0.10.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.10.0
+[0.9.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.9.0
 [0.8.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.8.0
 [0.7.3]: https://github.com/Luzkan/CryptoImage/releases/tag/0.7.3
 [0.7.2]: https://github.com/Luzkan/CryptoImage/releases/tag/0.7.2

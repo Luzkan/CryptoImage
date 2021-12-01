@@ -18,24 +18,34 @@ class EncryptedFile {
     }
 }
 // Globally scoped variables
-let image_output = null; // EncryptedFile Holder
-let encrypted_text = null; // Textfield Text Value
-let bmp = null; // BMP Holder
+let image_output = null;
+let encrypted_text = null;
+let bmp = null;
 let created_images = new Array();
+let current_bytes_to_write_de = 0;
 // -------------------------------------------------------------
 // HTML Elements
 // Method Checkboxes
 const checkbox1 = document.getElementById("method-1-checkbox");
 const checkbox2 = document.getElementById("method-2-checkbox");
 const checkbox3 = document.getElementById("method-3-checkbox");
-// Images
+const fullPage = document.getElementById('fullpage-image');
+// Image Original
 const originalImageDiv = document.getElementById("original-image");
+// Immges Encoded
 const diffExpEncodedDiv = document.getElementById("diff-exp-encoded-image");
+const diffExpEncodedFullscreenDiv = document.getElementById("diff-exp-encoded-image-fullscreen");
 const histShiftEncodedDiv = document.getElementById("hist-shift-encoded-image");
+const histShiftEncodedFullscreenDiv = document.getElementById("hist-shift-encoded-image-fullscreen");
 const singValDecompEncodedDiv = document.getElementById("sing-val-decomp-encoded-image");
+const singValDecompEncodedFullscreenDiv = document.getElementById("sing-val-decomp-encoded-image-fullscreen");
+// Immges Decoded
 const diffExpDecodedDiv = document.getElementById("diff-exp-decoded-image");
+const diffExpDecodedFullscreenDiv = document.getElementById("diff-exp-decoded-image-fullscreen");
 const histShiftDecodedDiv = document.getElementById("hist-shift-decoded-image");
+const histShiftDecodedFullscreenDiv = document.getElementById("hist-shift-decoded-image-fullscreen");
 const singValDecompDecodedDiv = document.getElementById("sing-val-decomp-decoded-image");
+const singValDecompDecodedFullscreenDiv = document.getElementById("sing-val-decomp-decoded-image-fullscreen");
 // Label Counters
 const imageSizeCounterLabel = document.getElementById("image-size-counter");
 const availableSizeCounterLabel = document.getElementById("availalbe-size-counter");
@@ -54,9 +64,6 @@ const pEncryptTooltip = document.getElementById("p-encrypt-tooltip");
 // -------------------------------------------------------------
 // Misc Functions
 function tryEnableEncryptButton() {
-    console.log(!bmp && !encrypted_text);
-    console.log(!bmp && encrypted_text);
-    console.log(bmp && !encrypted_text);
     if (!bmp && !encrypted_text) {
         pEncryptTooltip.innerHTML = "Upload an image first and type in text.";
     }
@@ -77,9 +84,20 @@ function enableEncryptButton() {
         pEncryptTooltip.classList.add("permamently-transparent");
     }
 }
-function markImage(image) {
-    created_images.push(image);
+function markResultImage(image, fullscreenContainer) {
     image.classList.add("encoded-image-display");
+    image.addEventListener('click', function () {
+        fullscreenContainer.style.display = 'flex';
+        fullscreenContainer.style.visibility = 'visible';
+        fullscreenContainer.style.opacity = '1';
+    });
+    created_images.push(image);
+}
+function makeHiddenOnClick(element) {
+    element.addEventListener('click', function () { element.style.display = 'none'; });
+}
+function markResultFullScreenImage(image) {
+    created_images.push(image);
 }
 function deletePreviouslyAddedDisplayImage() {
     var displayImage = document.getElementsByClassName("display-original-img");
@@ -109,17 +127,30 @@ function displayResultsSection() {
     resultsSectionDiv.style.visibility = "visible";
 }
 function loadResultImagesToResultSection(image_output) {
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); diffExpEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); histShiftEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markImage(img); singValDecompEncodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); diffExpDecodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); histShiftDecodedDiv.appendChild(img); }, { maxWidth: 300 });
-    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markImage(img); singValDecompDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markResultImage(img, diffExpEncodedFullscreenDiv); diffExpEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markResultImage(img, histShiftEncodedFullscreenDiv); histShiftEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markResultImage(img, singValDecompEncodedFullscreenDiv); singValDecompEncodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markResultImage(img, diffExpDecodedFullscreenDiv); diffExpDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markResultImage(img, histShiftDecodedFullscreenDiv); histShiftDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markResultImage(img, singValDecompDecodedFullscreenDiv); singValDecompDecodedDiv.appendChild(img); }, { maxWidth: 300 });
+}
+function loadResultImagesToFullscreenContainers(image_output) {
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markResultFullScreenImage(img); diffExpEncodedFullscreenDiv.appendChild(img); }, {});
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markResultFullScreenImage(img); histShiftEncodedFullscreenDiv.appendChild(img); }, {});
+    loadImage(image_output.diffExpBMPEncrypted.toBlob(), function (img) { markResultFullScreenImage(img); singValDecompEncodedFullscreenDiv.appendChild(img); }, {});
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markResultFullScreenImage(img); diffExpDecodedFullscreenDiv.appendChild(img); }, {});
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markResultFullScreenImage(img); histShiftDecodedFullscreenDiv.appendChild(img); }, {});
+    loadImage(image_output.diffExpBMPDecrypted.toBlob(), function (img) { markResultFullScreenImage(img); singValDecompDecodedFullscreenDiv.appendChild(img); }, {});
 }
 function updateCounters(bmp) {
-    imageSizeCounterLabelJQ.countTo({ from: parseInt(imageSizeCounterLabel.innerHTML), to: bmp.fileSize });
-    availableSizeCounterLabelJQ.countTo({ from: parseInt(availableSizeCounterLabel.innerHTML), to: bytesToWriteDE(bmp) });
-    decodeSizeCounterLabelJQ.countTo({ from: parseInt(decodeSizeCounterLabel.innerHTML), to: bytesToWriteDE(bmp) });
+    current_bytes_to_write_de = bytesToWriteDE(bmp);
+    let target_bytes_number = current_bytes_to_write_de;
+    if (encrypted_text) {
+        target_bytes_number = current_bytes_to_write_de - encrypted_text?.length;
+    }
+    imageSizeCounterLabelJQ.countTo({ from: parseInt(imageSizeCounterLabel.innerHTML), to: Math.floor(bmp.fileSize / 1024) });
+    availableSizeCounterLabelJQ.countTo({ from: parseInt(availableSizeCounterLabel.innerHTML), to: target_bytes_number });
+    decodeSizeCounterLabelJQ.countTo({ from: parseInt(decodeSizeCounterLabel.innerHTML), to: target_bytes_number });
 }
 // -------------------------------------------------------------
 // Logic
@@ -142,12 +173,8 @@ textareaMessage.addEventListener('input', (event) => {
     if (event) {
         encrypted_text = event.target.value;
     }
-    // if (bmp) {
-    //   // @ts-ignore
-    //   availableSizeCounterLabelJQ.countTo({ from: parseInt(availableSizeCounterLabel.innerHTML), to: bytesToWriteDE(bmp)-encrypted_text?.length});
-    // }
-    if (DEBUG) {
-        console.log(encrypted_text);
+    if (encrypted_text) {
+        availableSizeCounterLabel.innerHTML = (current_bytes_to_write_de - encrypted_text?.length).toString();
     }
     tryEnableEncryptButton();
 });
@@ -168,6 +195,7 @@ btnEncrypt.addEventListener("click", function () {
     image_output = encryptAndDecrypt(bmp, encrypted_text);
     deletePreviouslyAddedEncryptedImages();
     loadResultImagesToResultSection(image_output);
+    loadResultImagesToFullscreenContainers(image_output);
     displayResultsSection();
     smoothScrollToResultsSection();
 });
@@ -191,3 +219,9 @@ btnEncrypt.addEventListener('click', function () {
 });
 // After Page Load
 smoothScrollToTopAfterReload();
+makeHiddenOnClick(diffExpEncodedFullscreenDiv);
+makeHiddenOnClick(histShiftEncodedFullscreenDiv);
+makeHiddenOnClick(singValDecompEncodedFullscreenDiv);
+makeHiddenOnClick(diffExpDecodedFullscreenDiv);
+makeHiddenOnClick(histShiftDecodedFullscreenDiv);
+makeHiddenOnClick(singValDecompDecodedFullscreenDiv);
