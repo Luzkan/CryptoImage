@@ -29,7 +29,6 @@ let current_bytes_to_write_de = 0;
 const checkbox1 = document.getElementById("method-1-checkbox");
 const checkbox2 = document.getElementById("method-2-checkbox");
 const checkbox3 = document.getElementById("method-3-checkbox");
-const fullPage = document.getElementById('fullpage-image');
 // Image Original
 const originalImageDiv = document.getElementById("original-image");
 // Immges Encoded

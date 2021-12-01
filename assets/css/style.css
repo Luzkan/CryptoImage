@@ -578,13 +578,14 @@ input[type="file"]::file-selector-button {
   /* Create slightly rounded corners at the edges */
   border-radius: 10px;
   border: 2px solid #8c7676;
-  transition: transform 0.33s ease;
+  transition: transform 0.66s ease;
 }
 
 .encoded-image-display:hover {
-  -webkit-transform:scale(1.08);
-  transform:scale(1.08);
+  -webkit-transform: scale(1.15);
+  transform: scale(1.15);
   cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
 .author-photo {
@@ -607,13 +608,21 @@ input[type="file"]::file-selector-button {
   transition: opacity 0.2s, visibility 0.2s;
 }
 
-.fullscreen img{
+.fullscreen img {
   max-width: 90%;
   max-height: 90%;
   width: auto;
   height: auto;
   transform: scale(0.95);
   transition: opacity 0.2s, visibility 0.2s;
+  transition: transform 0.4s ease;
+  border: 2px solid #8c7676;
+}
+
+.fullscreen img:hover {
+  cursor: pointer;
+  transform: scale(1.3);
+  transition: transform 0.25s ease;
 }
 
 .fullscreen:target {

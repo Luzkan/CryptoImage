@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.10.1]] - 2021-12-01 _(MJ)_
+
+###### _([diff: 0.10.0-0.10.1])_
+
+Changed:
+
+- Customized animation times for hover in and out
+- A bit more styling for the enlarged image
+
 ## [[0.10.0]] - 2021-12-01 _(MJ)_
 
 ###### _([diff: 0.9.0-0.10.0])_
@@ -267,6 +276,7 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.10.0-0.10.1]: https://github.com/Luzkan/CryptoImage/compare/0.10.0...0.10.1
 [diff: 0.9.0-0.10.0]: https://github.com/Luzkan/CryptoImage/compare/0.9.0...0.10.0
 [diff: 0.8.0-0.9.0]: https://github.com/Luzkan/CryptoImage/compare/0.8.0...0.9.0
 [diff: 0.7.3-0.8.0]: https://github.com/Luzkan/CryptoImage/compare/0.7.3...0.8.0
@@ -286,6 +296,7 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[0.10.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.10.1
 [0.10.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.10.0
 [0.9.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.9.0
 [0.8.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.8.0

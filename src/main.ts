@@ -35,8 +35,6 @@ const checkbox1 = document.getElementById("method-1-checkbox") as HTMLInputEleme
 const checkbox2 = document.getElementById("method-2-checkbox") as HTMLInputElement;
 const checkbox3 = document.getElementById("method-3-checkbox") as HTMLInputElement;
 
-const fullPage: HTMLDivElement = document.getElementById('fullpage-image') as HTMLDivElement;
-
 // Image Original
 const originalImageDiv = document.getElementById("original-image") as HTMLDivElement;
 
@@ -162,7 +160,7 @@ function loadResultImagesToFullscreenContainers(image_output: any){
 
 function updateCounters(bmp: BMP){
   current_bytes_to_write_de = bytesToWriteDE(bmp)
-  let target_bytes_number = current_bytes_to_write_de
+  let target_bytes_number: number = current_bytes_to_write_de
   if (encrypted_text) {
     target_bytes_number = current_bytes_to_write_de-encrypted_text?.length;
   }
