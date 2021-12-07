@@ -38,7 +38,7 @@ function differentialExpansionEncrypt(bmp: BMP, asciiMessage: string): BMP {
   const locMap7Bytes = bitsToByteArray(locMap7);
   const locMap7compressed = huffmanCompress(locMap7Bytes);
 
-  if (bytesToWriteDE(bmp, locMap7compressed.length, diffBitsMap) < asciiMessage.length * 8) {
+  if (bytesToWriteDE(bmp, locMap7compressed.length, diffBitsMap) < asciiMessage.length) {
     throw new Error("Cannot embed that message in provided image")
   }
 
@@ -66,16 +66,6 @@ function differentialExpansionDecrypt(bmp: BMP): [BMP, string] {
 }
 
 function createDiffBitsMap(pairs: number[][], decoding = false): number[] {
-  // console.log("8: ", diffs.filter(item => item === 8).length);
-  // console.log("7: ", diffs.filter(item => item === 7).length);
-  // console.log("6: ", diffs.filter(item => item === 6).length);
-  // console.log("5: ", diffs.filter(item => item === 5).length);
-  // console.log("4: ", diffs.filter(item => item === 4).length);
-  // console.log("3: ", diffs.filter(item => item === 3).length);
-  // console.log("2: ", diffs.filter(item => item === 2).length);
-  // console.log("1: ", diffs.filter(item => item === 1).length);
-  // console.log("0: ", diffs.filter(item => item === 0).length);
-  // console.log("NaN: ", diffs.filter(item => item === NaN).length);
   return pairs.map((pair) => {
     if (pair.length < 2) {
       return NaN;
@@ -90,10 +80,6 @@ function createDiffBitsMap(pairs: number[][], decoding = false): number[] {
     }
     return NaN;
   });
-}
-
-function createLocationMap(diffBitsMap: number[], diffBits: number): number[] {
-  return diffBitsMap.map(item => item === diffBits ? 1 : 0);
 }
 
 function encryptDEInPairs(pixelPairs: number[][], diffBitsMap: number[], payloadBits: number[]): void {

@@ -56,3 +56,18 @@ function bitsToByteArray(bitsArray) {
     }
     return bytes;
 }
+function createLocationMap(values, searchValue) {
+    return values.map(item => item === searchValue ? 1 : 0);
+}
+function flatMap(array) {
+    const flat = [];
+    for (let i = 0; i < array.length; i++)
+        for (let inner = array[i], j = 0; j < inner.length; j++)
+            flat.push(inner[j]);
+    return flat;
+}
+function addArrayValues(array, values) {
+    for (let i = 0; i < values.length; i++)
+        array.push(values[i]);
+    return array;
+}
