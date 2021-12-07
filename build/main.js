@@ -61,9 +61,9 @@ formInputImage.addEventListener('input', async (e) => {
     }
     console.log("# Capacity Ascii Letters:", bytesToWriteDE(bmp));
     const ipsum = "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vivamus ornare, lorem eget lacinia congue, erat nibh dictum ante, eu cursus ligula erat non nibh. Morbi tellus odio, porta a leo ac, faucibus egestas nibh. Vivamus leo dui, varius vel laoreet vel, luctus at est. Donec enim diam, commodo sit amet pretium egestas, varius et orci. Suspendisse ac lorem quam. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean ac purus in lacus dictum vehicula. Aliquam erat volutpat. Donec venenatis elit in tincidunt tincidunt. Phasellus efficitur, odio scelerisque luctus laoreet, sem libero imperdiet erat, congue porttitor lacus libero in sapien. Mauris tincidunt posuere nisi non pellentesque. Donec purus odio, imperdiet nec eros in, tincidunt luctus ex. In ut rhoncus sapien. Quisque hendrerit nunc neque. Maecenas vulputate lacus vel libero tincidunt, sit amet laoreet nisi suscipit.";
-    const bmpE = differentialExpansionEncrypt(bmp, ipsum);
+    const bmpE = singularValueDecompositionEncrypt(bmp, ipsum);
     downloadBMP(bmpE, "ipsum-encoded.bmp");
-    const [bmpD, message] = differentialExpansionDecrypt(bmpE);
+    const [bmpD, message] = singularValueDecompositionDecrypt(bmpE);
     downloadBMP(bmpD, "ipsum-decoded.bmp");
     console.log("Decoded:");
     console.log(message);
@@ -71,7 +71,7 @@ formInputImage.addEventListener('input', async (e) => {
     // Refer: algorithms.js
     const encodedImage1 = differentialExpansionEncrypt(bmp, ipsum);
     const encodedImage2 = histogramShiftingEncrypt(bmp);
-    const encodedImage3 = singularValueDecompositionEncrypt(bmp);
+    const encodedImage3 = singularValueDecompositionEncrypt(bmp, ipsum);
     // Output is in global scope
     image_output = new EncryptedFile(file.name, encodedImage1, encodedImage2, encodedImage3);
     // Enable Convert Button

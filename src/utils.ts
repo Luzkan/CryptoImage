@@ -45,6 +45,19 @@ function toBitArray(byteArray: number[]): number[] {
   return bits
 }
 
+function toBitArrays(byteArray: number[]): number[][] {
+  const bits = [];
+  for (let pos = 0; pos < byteArray.length; pos++) {
+    const byte = byteArray[pos];
+    const currentBitArray = [];
+    for (let bit = 7; bit >= 0; bit--) {
+      currentBitArray.push((byte >>> bit) & 0x1);
+    }
+    bits.push(currentBitArray);
+  }
+  return bits;
+}
+
 function bitsToByteArray(bitsArray: number[]): number[] {
   let zeroes = bitsArray.length % 8;
   zeroes = zeroes === 0 ? 0 : 8 - zeroes;

@@ -4,7 +4,12 @@
     "tsc": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "tsc": "^2.0.3",
+    "blueimp-load-image": "^5.16.0",
+    "tsc": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/blueimp-load-image": "^5.14.4",
+    "@types/node": "^16.11.7",
     "typescript": "^4.4.4"
   }
 }

@@ -465,3 +465,77 @@ input[type="file"]::file-selector-button {
 .permamently-transparent {
   color: transparent !important;
 }
+
+/* Image container */
+
+.image-container {
+  display: flex;
+  justify-content: center;
+}
+
+.results-grouped .alt-project-grid {
+  background-size: cover;
+  background-position: center center;
+  position: relative;
+  margin-bottom: 30px;
+  display: table;
+}
+
+@media screen and (max-width: 768px) {
+  .results-grouped .alt-project-grid {
+    height: 400px;
+  }
+}
+
+.results-grouped .alt-project-grid .desc {
+  vertical-align: middle;
+  width: 100%;
+  height: 90px;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  -webkit-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+}
+
+@media screen and (max-width: 768px) {
+  .results-grouped .alt-project-grid .desc {
+    opacity: 1;
+  }
+}
+
+.results-grouped .alt-project-grid .desc h3 {
+  margin-bottom: 10px;
+}
+
+.results-grouped .alt-project-grid .desc h3 a {
+  color: #fff;
+}
+
+.results-grouped .alt-project-grid .desc h3 a:focus, .results-grouped .alt-project-grid .desc h3 a:hover {
+  text-decoration: none;
+}
+
+.results-grouped .alt-project-grid .desc span {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 2px;
+}
+
+.results-grouped .alt-project-grid .desc p {
+  padding: 0;
+}
+
+.results-grouped .alt-project-grid .desc p a {
+  padding: 0;
+  color: #fff;
+}
+
+.results-grouped .alt-project-grid .desc p a:focus, .results-grouped .alt-project-grid .desc p a:hover {
+  text-decoration: none;
+}
+
+.results-grouped .alt-project-grid:hover .desc {
+  opacity: 1;
+}
