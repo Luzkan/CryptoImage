@@ -2,6 +2,7 @@
 function littleEndianBytesToNumber(byteArray) {
     return byteArray.reduce((sum, byte, idx) => sum + (byte << (idx * 8)), 0);
 }
+
 function toArray(byteArray) {
     const length = byteArray.length;
     const array = new Array(length);
@@ -21,13 +22,6 @@ function littleEndianNumberToBytes(number, length) {
 }
 function generateArrayOfZeroes(length) {
     return new Array(length).fill(0);
-}
-function flatMap(array) {
-    const flat = [];
-    for (let i = 0; i < array.length; i++)
-        for (let inner = array[i], j = 0; j < inner.length; j++)
-            flat.push(inner[j]);
-    return flat;
 }
 class BMP {
     constructor(fileSize, width, height, pixels3D, pixelsArrayData, pixelPlainData, bytesPerPixel) {

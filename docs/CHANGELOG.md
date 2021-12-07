@@ -7,6 +7,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.10.1]] - 2021-12-01 _(MJ)_
+
+###### _([diff: 0.10.0-0.10.1])_
+
+Changed:
+
+- Customized animation times for hover in and out
+- A bit more styling for the enlarged image
+
+## [[0.10.0]] - 2021-12-01 _(MJ)_
+
+###### _([diff: 0.9.0-0.10.0])_
+
+Added:
+
+- The results images are now clickable!
+  - After the click, image is enlarged to full screen in ala "lightbox" like effect (it is always horizontally & vertically centred).
+  - The second click will not use fade-in animations deliberately for faster responsiveness.
+- Now, the _CAPACITY IN ASCII LETTERS_ counter live-updates itself based on the number of characters used in the input.
+
+Changed:
+
+- Counters are now much faster.
+
+Fixed:
+
+- Image Size now properly displays the number in `KB` instead of `B`.
+
+
+## [[0.9.0]] - 2021-11-25 _(MJ)_
+
+###### _([diff: 0.8.0-0.9.0])_
+
+Added:
+
+- Now the results section is hidden until encryption/decryption operation is executed by user
+- After encryption, website smoothly navigates to the results section
+- Counters are now functional
+- Borders in Credits Section
+
+## [[0.8.0]] - 2021-11-21 _(MJ)_
+
+###### _([diff: 0.7.3-0.8.0])_
+
+Added:
+
+- Big shiny animated border to catch users attention
+  - ![Animated Border](./img/changelog/080_image_display.gif)
+- Handling the situation when user, after inserting an image, adds another one to the website.
+- Properly inserting the preview of the image after input.
+- Added styling to the encoded images (rounded corners, themed border)
+
+
+## [[0.7.3]] - 2021-11-14 _(KS)_
+
+###### _([diff: 0.7.2-0.7.3])_
+
+Difference Expansion
+
+## [[0.7.2]] - 2021-11-13 _(KS)_
+
+###### _([diff: 0.7.1-0.7.2])_
+
+Huffman Compression
+
 ## [[0.7.1]] - 2021-11-13 _(MJ)_
 
 ###### _([diff: 0.7.0-0.7.1])_
@@ -211,6 +276,12 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.10.0-0.10.1]: https://github.com/Luzkan/CryptoImage/compare/0.10.0...0.10.1
+[diff: 0.9.0-0.10.0]: https://github.com/Luzkan/CryptoImage/compare/0.9.0...0.10.0
+[diff: 0.8.0-0.9.0]: https://github.com/Luzkan/CryptoImage/compare/0.8.0...0.9.0
+[diff: 0.7.3-0.8.0]: https://github.com/Luzkan/CryptoImage/compare/0.7.3...0.8.0
+[diff: 0.7.2-0.7.3]: https://github.com/Luzkan/CryptoImage/compare/0.7.2...0.7.3
+[diff: 0.7.1-0.7.2]: https://github.com/Luzkan/CryptoImage/compare/0.7.1...0.7.2
 [diff: 0.7.0-0.7.1]: https://github.com/Luzkan/CryptoImage/compare/0.7.0...0.7.1
 [diff: 0.6.2-0.7.0]: https://github.com/Luzkan/CryptoImage/compare/0.6.2...0.7.0
 [diff: 0.6.1-0.6.2]: https://github.com/Luzkan/CryptoImage/compare/0.6.1...0.6.2
@@ -225,6 +296,12 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[0.10.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.10.1
+[0.10.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.10.0
+[0.9.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.9.0
+[0.8.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.8.0
+[0.7.3]: https://github.com/Luzkan/CryptoImage/releases/tag/0.7.3
+[0.7.2]: https://github.com/Luzkan/CryptoImage/releases/tag/0.7.2
 [0.7.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.7.1
 [0.7.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.7.0
 [0.6.2]: https://github.com/Luzkan/CryptoImage/releases/tag/0.6.2

@@ -25,14 +25,6 @@ function generateArrayOfZeroes(length: number): number[] {
   return new Array(length).fill(0);
 }
 
-function flatMap<T>(array: T[][]): (T)[] {
-  const flat = [];
-  for (let i = 0; i < array.length; i++)
-    for (let inner = array[i], j = 0; j < inner.length; j++)
-      flat.push(inner[j]);
-  return flat;
-}
-
 class BMP {
   private constructor(
     public readonly fileSize: number,

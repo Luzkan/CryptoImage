@@ -74,3 +74,21 @@ function bitsToByteArray(bitsArray: number[]): number[] {
   }
   return bytes;
 }
+
+function createLocationMap(values: number[], searchValue: number): number[] {
+  return values.map(item => item === searchValue ? 1 : 0);
+}
+
+function flatMap<T>(array: T[][]): (T)[] {
+  const flat = [];
+  for (let i = 0; i < array.length; i++)
+    for (let inner = array[i], j = 0; j < inner.length; j++)
+      flat.push(inner[j]);
+  return flat;
+}
+
+function addArrayValues<T>(array: T[], values: T[]): (T)[] {
+  for (let i = 0; i < values.length; i++)
+    array.push(values[i]);
+  return array;
+}

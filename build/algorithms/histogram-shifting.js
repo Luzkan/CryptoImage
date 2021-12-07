@@ -1,46 +1,98 @@
 "use strict";
-// -------------------------------------------------------------
-// Things that possibly could get exported out to a separate file
-class RGB {
-    constructor(index, red, green, blue, transparency) {
-        this.index = index;
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.transparency = transparency;
+function bytesToWriteHist(bmp, payloadHeader, writeLocationMap) {
+    if (!payloadHeader || !writeLocationMap) {
+        const plainData = bmp.pixelPlainData;
+        const histogram = buildHistogram(plainData);
+        const { valueWithMinCount, valueWithMaxCount, minValueCount } = analyzeHistogram(histogram);
+        if (valueWithMinCount === valueWithMaxCount) {
+            throw new Error("Cannot embed any message in provided image");
+        }
+        payloadHeader = preparePayloadHeader(plainData, valueWithMinCount, minValueCount);
+        writeLocationMap = prepareWriteLocationMap(plainData, valueWithMinCount, valueWithMaxCount);
     }
+    const bytesCapacity = writeLocationMap.filter(value => value === 1).length;
+    if (bytesCapacity < payloadHeader.length) {
+        throw new Error("Cannot embed any message in provided image");
+    }
+    return bytesCapacity - payloadHeader.length;
 }
-// -------------------------------------------------------------
-// Histogram shifting algorithm
-function histogramShiftingEncrypt(bmp) {
-    const channelArray = pixelArrayToChannelArray(bmp.pixelsArrayData);
-    const encryptedChannels = channelArray.map(encryptInChannel);
-    const pixelArray = channelArrayToPixelArray(encryptedChannels, bmp.bytesPerPixel);
-    return BMP.fromPixelArrayData(pixelArray, bmp.width);
+function histogramShiftingEncrypt(bmp, asciiMessage) {
+    const plainData = bmp.pixelPlainData;
+    const histogram = buildHistogram(plainData);
+    const { valueWithMinCount, valueWithMaxCount, minValueCount } = analyzeHistogram(histogram);
+    if (valueWithMinCount === valueWithMaxCount) {
+        throw new Error("Cannot embed any message in provided image");
+    }
+    const payload = preparePayloadHeader(plainData, valueWithMinCount, minValueCount);
+    const writeLocationMap = prepareWriteLocationMap(plainData, valueWithMinCount, valueWithMaxCount);
+    if (bytesToWriteHist(bmp, payload, writeLocationMap) < asciiMessage.length) {
+        throw new Error("Cannot embed that message in provided image");
+    }
+    addArrayValues(payload, asciiStringToCharCode(asciiMessage));
+    const shifted = shiftHistogram(plainData, valueWithMinCount, valueWithMaxCount);
+    const encrypted = writeBytes(writeLocationMap, shifted, payload);
+    return [BMP.fromPlainData(encrypted, bmp.width, bmp.height), [valueWithMinCount, valueWithMaxCount]];
 }
-function encryptInChannel(channel) {
-    const histogram = channelToHistogram(channel);
-    const minValueCount = Math.min(...histogram);
-    const maxValueCount = Math.max(...histogram);
-    const minValue = histogram.indexOf(minValueCount);
-    const maxValue = histogram.indexOf(maxValueCount);
-    const channel1 = minValue > 0 ? appendMinValuePixels(channel, minValue) : channel;
-    const shifted = shiftHistogram(channel1, minValue, maxValue);
-    const encrypted = encryptMessage(shifted, maxValue);
-    // TODO:
-    return channel;
+function prepareWriteLocationMap(plainData, valueWithMinCount, valueWithMaxCount) {
+    const writeConditionValue = valueWithMinCount < valueWithMaxCount ? valueWithMaxCount - 1 : valueWithMaxCount + 1;
+    return createLocationMap(plainData, writeConditionValue);
 }
-function channelToHistogram(channel) {
+function writeBytes(writeLocationMap, shifted, bytesToWrite) {
+    let writeIdx = 0;
+    const bytesToWriteLen = bytesToWrite.length;
+    return writeLocationMap.map((isWritable, idx) => {
+        if (isWritable === 1 && writeIdx < bytesToWriteLen) {
+            return bytesToWrite[writeIdx++];
+        }
+        else {
+            return shifted[idx];
+        }
+    });
+}
+function preparePayloadHeader(plainData, valueWithMinCount, minValueCount) {
+    // if minValueCount === 0 location map is not included in bytes to write
+    if (minValueCount === 0) {
+        return [minValueCount];
+    }
+    const locationMap = createLocationMap(plainData, valueWithMinCount);
+    const locMapBytes = bitsToByteArray(locationMap);
+    const locMapCompressed = huffmanCompress(locMapBytes);
+    locMapCompressed.unshift(minValueCount);
+    return locMapCompressed;
+}
+function analyzeHistogram(histogram) {
+    let valueWithMinCount = 0;
+    let valueWithMaxCount = 0;
+    let minValueCount = histogram[valueWithMinCount];
+    let maxValueCount = histogram[valueWithMaxCount];
+    histogram.forEach((valueCount, value) => {
+        if (minValueCount > valueCount) {
+            minValueCount = valueCount;
+            valueWithMinCount = value;
+        }
+        if (maxValueCount < valueCount) {
+            maxValueCount = valueCount;
+            valueWithMaxCount = value;
+        }
+    });
+    return { valueWithMinCount, valueWithMaxCount, minValueCount, maxValueCount };
+}
+function buildHistogram(channel) {
     const hist = new Array(256).fill(0);
     channel.forEach(value => hist[value]++);
     return hist;
 }
-function appendMinValuePixels(channel, minValue) {
-    // Append positions and value of pixels with the least frequent value to the encrypted message
-}
-function shiftHistogram(channel, minValue, maxValue) {
-    // Shift Histogram
-}
-function encryptMessage(channel, maxValue) {
-    // Encrypt the Message
+function shiftHistogram(data, valueWithMinCount, valueWithMaxCount) {
+    const isMinSmaller = valueWithMinCount < valueWithMaxCount;
+    const min = isMinSmaller ? valueWithMinCount : valueWithMaxCount;
+    const max = isMinSmaller ? valueWithMaxCount : valueWithMinCount;
+    const diff = isMinSmaller ? -1 : 1;
+    return data.map(value => {
+        if (value > min && value < max) {
+            return value + diff;
+        }
+        else {
+            return value;
+        }
+    });
 }
