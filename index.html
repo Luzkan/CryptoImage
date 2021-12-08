@@ -64,19 +64,26 @@
           </div>
           <div class="row">
             <div class="subsection-encoder-decoder">
-              <!-- This will be replaced with Canvas for image manipulation display/read/transform I guess. -->
               <div
-                id="original-image"
-                class="grid2 to-animate image-container image-container-original"
+                id="original-image-div"
+                class="
+                  grid2
+                  to-animate
+                  image-container image-container-original
+                "
                 style="background-image: url(assets/img/background.jpg)"
               >
-              <img src="assets/img/background.jpg" alt="Image Placeholder" class="display-original-img" />
+                <img
+                  src="assets/img/background.jpg"
+                  id="orignal-image-img"
+                  alt="Original Image"
+                  class="display-original-img"
+                />
               </div>
               <div class="grid2">
                 <div class="subsection-e-d">
                   <div class="row">
                     <div class="col-md-12">
-                      <!-- Inside a form just in-case. Can be removed, depends on the implementation. -->
                       <form>
                         <div class="encoder-decoder-step-container">
                           <i class="icon-cloud-upload to-animate-2"></i>
@@ -97,44 +104,44 @@
                         <div class="encoder-decoder-step-container">
                           <i class="icon-user-secret to-animate-2"></i>
                           <div class="encoder-decoder-step to-animate">
-                            <h3>Download by Encryption Method</h3>
+                            <h3>Download Instantly</h3>
                             <div class="form-check form-check-inline">
-                              <input
-                                class="form-check-input"
-                                type="checkbox"
-                                id="method-1-checkbox"
-                                value="method-1-option"
-                              />
                               <label
                                 class="form-check-label"
                                 for="method-1-checkbox"
-                                >Differential Expansion</label
+                                ><input
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  id="method-1-checkbox"
+                                  value="method-1-option"
+                                /><span class="checkbox-custom"></span>
+                                Differential Expansion</label
                               >
                             </div>
                             <div class="form-check form-check-inline">
-                              <input
-                                class="form-check-input"
-                                type="checkbox"
-                                id="method-2-checkbox"
-                                value="method-2-option"
-                              />
                               <label
                                 class="form-check-label"
                                 for="method-2-checkbox"
-                                >Histogram Shifting</label
+                                ><input
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  id="method-2-checkbox"
+                                  value="method-2-option"
+                                /><span class="checkbox-custom"></span>
+                                Histogram Shifting</label
                               >
                             </div>
                             <div class="form-check form-check-inline">
-                              <input
-                                class="form-check-input"
-                                type="checkbox"
-                                id="method-3-checkbox"
-                                value="method-3-option"
-                              />
                               <label
                                 class="form-check-label"
                                 for="method-3-checkbox"
-                                >Singular Value Decomposition</label
+                                ><input
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  id="method-3-checkbox"
+                                  value="method-3-option"
+                                /><span class="checkbox-custom"></span> Singular
+                                Value Decomposition</label
                               >
                             </div>
                           </div>
@@ -191,13 +198,14 @@
                     data-to="0"
                     data-speed="1250"
                     data-refresh-interval="15"
-                  >test</span>
-                  <span class="data-counter-label">Image Size (B)</span>
+                    >test</span
+                  >
+                  <span class="data-counter-label">Image Size (KB)</span>
                 </div>
                 <div class="col-md-4 text-center">
                   <span
                     class="data-counter js-counter"
-                    id="availalbe-size-counter"
+                    id="available-size-counter"
                     data-from="0"
                     data-to="0"
                     data-speed="1250"
@@ -226,65 +234,121 @@
       <span id="results-section-scroll-hook"></span>
     </section>
 
-    <div id="section-results-div" style="display: none; visibility: hidden;">
-    <div id="diff-exp-encoded-image-fullscreen" class="fullscreen"></div>
-    <div id="diff-exp-decoded-image-fullscreen" class="fullscreen"></div>
-    <div id="hist-shift-encoded-image-fullscreen" class="fullscreen"></div>
-    <div id="hist-shift-decoded-image-fullscreen" class="fullscreen"></div>
-    <div id="sing-val-decomp-encoded-image-fullscreen" class="fullscreen"></div>
-    <div id="sing-val-decomp-decoded-image-fullscreen" class="fullscreen"></div>
-    <section id="section-results" data-section="results">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 section-heading text-center">
-            <h2 class="to-animate" id="image-processing-completed">Image Processing Completed</h2>
-            <div class="row">
-              <div class="col-md-8 col-md-offset-2 subtext to-animate">
-                <h3>Save it via mouse right click.</h3>
+    <div id="section-results-div" style="display: none; visibility: hidden">
+      <div id="fullscreen-div" class="fullscreen">
+        <img
+          id="fullscreen-img"
+          alt="Fullscreen Image - Left click anywhere to close."
+        />
+      </div>
+      <section id="section-results" data-section="results">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 section-heading text-center">
+              <h2 class="to-animate" id="image-processing-completed">
+                Image Processing Completed
+              </h2>
+              <div class="row">
+                <div class="col-md-8 col-md-offset-2 subtext to-animate">
+                  <h3>Save it via mouse right click.</h3>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="results-grouped">
-        <div class="container">
-          <div class="row">
-            <div class="to-animate">
-              <div class="col-md-4 text-center to-animate alt-project-grid" id="diff-exp-decoded-image">
+        <div class="results-grouped">
+          <div class="container">
+            <div class="row">
+              <div class="to-animate">
+                <div class="col-md-4 text-center to-animate alt-project-grid">
                   <div class="desc">
                     <h3><a href="#">Differential Expansion</a></h3>
                     <span>Encoded</span>
                   </div>
-                  <div id="diff-exp-encoded-image"></div>
-                  <div class="desc" style="margin-top: 6rem; margin-bottom: 1.5rem; height: 4rem;">
+                  <div>
+                    <img
+                      id="diff-exp-encoded-image"
+                      class="encoded-image-display"
+                      alt="Differential Expansion Encoded Image"
+                    />
+                  </div>
+                  <div
+                    class="desc"
+                    style="
+                      margin-top: 6rem;
+                      margin-bottom: 1.5rem;
+                      height: 4rem;
+                    "
+                  >
                     <span>Decoded</span>
                   </div>
-              </div>
-              <div class="col-md-4 text-center to-animate alt-project-grid" id="hist-shift-decoded-image">
+                  <img
+                    id="diff-exp-decoded-image"
+                    class="encoded-image-display"
+                    alt="Differential Expansion Decoded Image"
+                  />
+                </div>
+                <div class="col-md-4 text-center to-animate alt-project-grid">
                   <div class="desc">
                     <h3><a href="#">Histogram Shifting</a></h3>
                     <span>Encoded</span>
                   </div>
-                  <div id="hist-shift-encoded-image"></div>
-                  <div class="desc" style="margin-top: 6rem; margin-bottom: 1.5rem; height: 4rem;">
+                  <div>
+                    <img
+                      id="hist-shift-encoded-image"
+                      class="encoded-image-display"
+                      alt="Histogram Shifting Encoded Image"
+                    />
+                  </div>
+                  <div
+                    class="desc"
+                    style="
+                      margin-top: 6rem;
+                      margin-bottom: 1.5rem;
+                      height: 4rem;
+                    "
+                  >
                     <span>Decoded</span>
                   </div>
-              </div>
-              <div class="col-md-4 text-center to-animate alt-project-grid" id="sing-val-decomp-decoded-image">
+                  <img
+                    id="hist-shift-decoded-image"
+                    class="encoded-image-display"
+                    alt="Histogram Shifting Decoded Image"
+                  />
+                </div>
+                <div class="col-md-4 text-center to-animate alt-project-grid">
                   <div class="desc">
                     <h3><a href="#">Singular Value Decomposition</a></h3>
                     <span>Encoded</span>
                   </div>
-                  <div id="sing-val-decomp-encoded-image"></div>
-                  <div class="desc" style="margin-top: 6rem; margin-bottom: 1.5rem; height: 4rem;">
+                  <div>
+                    <img
+                      id="sing-val-decomp-encoded-image"
+                      class="encoded-image-display"
+                      alt="Singular Value Decomposition Encoded Image"
+                    />
+                  </div>
+                  <div
+                    class="desc"
+                    style="
+                      margin-top: 6rem;
+                      margin-bottom: 1.5rem;
+                      height: 4rem;
+                    "
+                  >
                     <span>Decoded</span>
                   </div>
+                  <img
+                    id="sing-val-decomp-decoded-image"
+                    class="encoded-image-display"
+                    alt="Singular Value Decomposition Decoded Image"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
     </div>
 
     <section id="section-team" data-section="team">
@@ -296,7 +360,8 @@
               <div class="row">
                 <div class="col-md-8 col-md-offset-2 subtext">
                   <h3 class="to-animate">
-                    We are not responsible for the content generated via website, but here we are.
+                    We are not responsible for the content generated via
+                    website, but here we are.
                   </h3>
                 </div>
               </div>
@@ -461,8 +526,6 @@
     <script src="assets/js/jquery.countTo.js"></script>
     <!-- Website Frontend/Looks Specific -->
     <script src="assets/js/website_main.js"></script>
-    <!-- Image Loading -->
-    <script src="assets/js/load-image.all.min.js"></script>
 
     <!-- Entry Point -->
     <script src="build/utils.js"></script>

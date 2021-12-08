@@ -151,10 +151,9 @@ function twoDimArraysToPixel3DArray(twoDimArrays) {
 function singularValueDecompositionDecrypt(bmp) {
     const arrays = pixel3DArrayTo2DArrays(bmp.pixels3D);
     arrays.map(decrypt2DArray);
-    console.log('Decoded bits', duplicationDecoder.message);
     const decodedMessage = charCodeArrayToString(bitsToByteArray(duplicationDecoder.message));
-    console.log(`Correctly encoded ${correctBlocks}/${totalBlocks} blocks (${Math.round((correctBlocks * 10000) / totalBlocks) / 100}%)`);
-    console.log(`Correctly decoded ${correctCorrectBlockBits}/${totalCorrectBlockBits} bits (${Math.round((correctCorrectBlockBits * 10000) / totalCorrectBlockBits) / 100}%)`);
+    console.log(`SVD: Correctly encoded ${correctBlocks}/${totalBlocks} blocks (${Math.round((correctBlocks * 10000) / totalBlocks) / 100}%)`);
+    console.log(`SVD: Correctly decoded ${correctCorrectBlockBits}/${totalCorrectBlockBits} bits (${Math.round((correctCorrectBlockBits * 10000) / totalCorrectBlockBits) / 100}%)`);
     return [BMP.from3DArray(twoDimArraysToPixel3DArray(arrays)), decodedMessage];
 }
 function decrypt2DArray(twoDimArray) {

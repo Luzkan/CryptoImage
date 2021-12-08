@@ -460,6 +460,7 @@ input[type="file"]::file-selector-button {
 
 .encoder-decoder-step:hover .hidden-tooltip {
   color: red;
+  font-weight: 700;
 }
 
 .permamently-transparent {
@@ -575,10 +576,10 @@ input[type="file"]::file-selector-button {
 }
 
 .encoded-image-display {
-  /* Create slightly rounded corners at the edges */
   border-radius: 10px;
   border: 2px solid #8c7676;
   transition: transform 0.66s ease;
+  max-width: 300px;
 }
 
 .encoded-image-display:hover {
@@ -633,4 +634,57 @@ input[type="file"]::file-selector-button {
 
 .fullscreen:target img {
   transform: scale(1);
+}
+
+.form-control:focus{
+  border-color: #8c7676;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.form-check-label input {
+  opacity: 0;
+  position: absolute;
+}
+
+.form-check-label {
+  display: flex;
+  align-items: center;
+}
+
+.form-check-label .checkbox-custom {
+  background: #393e46;
+  border: 1px solid black;
+  border-radius: 5px;
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+}
+
+.form-check-label .checkbox-custom::after {
+  content: "✓";
+  font-size: 13px;
+  color: white;
+  opacity: 0;
+}
+
+.checkbox-custom:hover {
+  cursor: pointer;
+}
+
+.checkbox-custom {
+  margin-bottom: 2px;
+  margin-right: 7px;
+}
+
+.form-check-label input:checked ~.checkbox-custom {
+  background-color: #8c7676;
+}
+
+.form-check-label input:checked ~.checkbox-custom::after {
+  color: black;
+  left: 2px;
+  opacity: 1;
+  position: relative;
+  top: -9px
 }

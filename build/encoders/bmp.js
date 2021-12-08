@@ -2,7 +2,6 @@
 function littleEndianBytesToNumber(byteArray) {
     return byteArray.reduce((sum, byte, idx) => sum + (byte << (idx * 8)), 0);
 }
-
 function toArray(byteArray) {
     const length = byteArray.length;
     const array = new Array(length);

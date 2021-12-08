@@ -19,12 +19,6 @@
       <a href="#Introduction">Introduction</a>
     </li>
     <li>
-      <a href="#Features">Features</a>
-    </li>
-    <li>
-      <a href="#Usage">Usage</a>
-    </li>
-    <li>
       <a href="#Development">Development</a>
     </li>
     <li>
@@ -35,7 +29,7 @@
     </li>
   </ol>
 
-**Notice:** Version History of the project can be found in the changelog file: "**[`CHANGELOG.md`](./docs/CHANGELOG.md)**".
+##### _**Notice:** Version History of the project can be found in the changelog file: "**[`CHANGELOG.md`](./docs/CHANGELOG.md)**"._
 
 </details>
 
@@ -45,9 +39,10 @@
 
 ## Introduction 👋
 
-Hey!
+Hey! This is our project app for _Information Acquisition and Protection Engineering Course_.
 
-This is our project app for _Information Acquisition and Protection Engineering Course_.
+With this web application you can encrypt messages inside `.bmp` _([example online converter to bmp](https://image.online-convert.com/convert-to-bmp))_ images and decrypt them back as you need it! We implemented this feature with three different algorithms so you can choose whichever you find best for your needs.
+
 
 ---
 
@@ -68,10 +63,8 @@ There's only one requirement: the [npm](https://www.npmjs.com/) package manager 
 - [Node Types](https://www.npmjs.com/package/@types/node):
   - It is used to make TypeScript aware of the Node.js API and provide type definitions.
   - `npm i -g @types/node`
-- [Blueimp Load Image](https://www.npmjs.com/package/blueimp-load-image)
-  - `npm i blueimp-load-image`
 
----
+
 
 ---
 

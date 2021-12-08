@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.11.0]] - 2021-12-08 _(MJ)_
+
+###### _([diff: 0.10.3-0.11.0])_
+
+Added:
+
+- Custom Themed Checkboxes
+- Two paragraphs in [`README.md`](../README.md) in Introduction.
+- **Images are now downloadable** via right mouse click.
+
+Changed:
+
+- **Now images are loaded in a new way, w/o external libraries**
+- Stylized focus color to match the them of all inputs.
+- Increased the font weight of error tooltip.
+- Cleaned up [`main.ts`](../src/main.ts)
+- Cleaned up [`index.html`](../index.html)
+
+![](./img/changelog/0110_stylized_inputs.png)
+
+Removed:
+
+- External library for image loading.
+
+## [[0.10.3]] - 2021-12-08 _(JW)_
+
+###### _([diff: 0.10.2-0.10.3])_
+
+Singular Value Decomposition - Encoding Implementation
+
+## [[0.10.2]] - 2021-12-08 _(KS)_
+
+###### _([diff: 0.10.1-0.10.2])_
+
+Histogram Shifting - Encoding Implementation
+
 ## [[0.10.1]] - 2021-12-01 _(MJ)_
 
 ###### _([diff: 0.10.0-0.10.1])_
@@ -276,6 +312,9 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.10.3-0.11.0]: https://github.com/Luzkan/CryptoImage/compare/0.10.3...0.11.0
+[diff: 0.10.2-0.10.3]: https://github.com/Luzkan/CryptoImage/compare/0.10.2...0.10.3
+[diff: 0.10.1-0.10.2]: https://github.com/Luzkan/CryptoImage/compare/0.10.1...0.10.2
 [diff: 0.10.0-0.10.1]: https://github.com/Luzkan/CryptoImage/compare/0.10.0...0.10.1
 [diff: 0.9.0-0.10.0]: https://github.com/Luzkan/CryptoImage/compare/0.9.0...0.10.0
 [diff: 0.8.0-0.9.0]: https://github.com/Luzkan/CryptoImage/compare/0.8.0...0.9.0
@@ -296,6 +335,9 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[0.11.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.11.0
+[0.10.3]: https://github.com/Luzkan/CryptoImage/releases/tag/0.10.3
+[0.10.2]: https://github.com/Luzkan/CryptoImage/releases/tag/0.10.2
 [0.10.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.10.1
 [0.10.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.10.0
 [0.9.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.9.0
