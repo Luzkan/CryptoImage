@@ -139,15 +139,17 @@ function loadResultImagesToResultSection(image_output: any){
   diffExpEncodedImg.src = URL.createObjectURL( image_output.diffExpBMPEncrypted.toBlob() );
   makeFullscreenOnClick(diffExpEncodedImg);
   histShiftEncodedImg.src = URL.createObjectURL( image_output.diffExpBMPEncrypted.toBlob() );
+  // TODO histShiftEncodedImg.src = URL.createObjectURL( image_output.histShiftBMPEncrypted.toBlob() );
   makeFullscreenOnClick(histShiftEncodedImg);
-  singValDecompEncodedImg.src = URL.createObjectURL( image_output.diffExpBMPEncrypted.toBlob() );
+  singValDecompEncodedImg.src = URL.createObjectURL( image_output.singValDecompBMPEncrypted.toBlob() );
   makeFullscreenOnClick(singValDecompEncodedImg);
 
-  diffExpDecodedImg.src = URL.createObjectURL( image_output.diffExpBMPEncrypted.toBlob() );
+  diffExpDecodedImg.src = URL.createObjectURL( image_output.diffExpBMPDecrypted.toBlob() );
   makeFullscreenOnClick(diffExpDecodedImg);
-  histShiftDecodedImg.src = URL.createObjectURL( image_output.diffExpBMPEncrypted.toBlob() );
+  histShiftDecodedImg.src = URL.createObjectURL( image_output.diffExpBMPDecrypted.toBlob() );
+  // TODO histShiftDecodedImg.src = URL.createObjectURL( image_output.histShiftBMPDecrypted.toBlob() );
   makeFullscreenOnClick(histShiftDecodedImg);
-  singValDecompDecodedImg.src = URL.createObjectURL( image_output.diffExpBMPEncrypted.toBlob() );
+  singValDecompDecodedImg.src = URL.createObjectURL( image_output.singValDecompBMPDecrypted.toBlob() );
   makeFullscreenOnClick(singValDecompDecodedImg);
 }
 
@@ -175,10 +177,10 @@ function encryptAndDecrypt(bmp: BMP, encrypted_text: string) {
     "output",
     diffExpMsgDecrypted,
     diffExpBMPEncrypted,
-    null,  // histShiftBMPEncrypted
+    null, // TODO histShiftBMPEncrypted,
     singValDecompBMPEncrypted,
     diffExpBMPDecrypted,
-    null,
+    null, // TODO histShiftBMPDecrypted
     singValDecompBMPDecrypted
   );
 }

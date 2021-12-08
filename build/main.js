@@ -121,14 +121,16 @@ function loadResultImagesToResultSection(image_output) {
     diffExpEncodedImg.src = URL.createObjectURL(image_output.diffExpBMPEncrypted.toBlob());
     makeFullscreenOnClick(diffExpEncodedImg);
     histShiftEncodedImg.src = URL.createObjectURL(image_output.diffExpBMPEncrypted.toBlob());
+    // TODO histShiftEncodedImg.src = URL.createObjectURL( image_output.histShiftBMPEncrypted.toBlob() );
     makeFullscreenOnClick(histShiftEncodedImg);
-    singValDecompEncodedImg.src = URL.createObjectURL(image_output.diffExpBMPEncrypted.toBlob());
+    singValDecompEncodedImg.src = URL.createObjectURL(image_output.singValDecompBMPEncrypted.toBlob());
     makeFullscreenOnClick(singValDecompEncodedImg);
-    diffExpDecodedImg.src = URL.createObjectURL(image_output.diffExpBMPEncrypted.toBlob());
+    diffExpDecodedImg.src = URL.createObjectURL(image_output.diffExpBMPDecrypted.toBlob());
     makeFullscreenOnClick(diffExpDecodedImg);
-    histShiftDecodedImg.src = URL.createObjectURL(image_output.diffExpBMPEncrypted.toBlob());
+    histShiftDecodedImg.src = URL.createObjectURL(image_output.diffExpBMPDecrypted.toBlob());
+    // TODO histShiftDecodedImg.src = URL.createObjectURL( image_output.histShiftBMPDecrypted.toBlob() );
     makeFullscreenOnClick(histShiftDecodedImg);
-    singValDecompDecodedImg.src = URL.createObjectURL(image_output.diffExpBMPEncrypted.toBlob());
+    singValDecompDecodedImg.src = URL.createObjectURL(image_output.singValDecompBMPDecrypted.toBlob());
     makeFullscreenOnClick(singValDecompDecodedImg);
 }
 function deletePreviouslyAddedDisplayImage() {
@@ -145,8 +147,9 @@ function encryptAndDecrypt(bmp, encrypted_text) {
     const singValDecompBMPEncrypted = singularValueDecompositionEncrypt(bmp, encrypted_text);
     const [singValDecompBMPDecrypted, singValDecompMsgDecrypted] = singularValueDecompositionDecrypt(singValDecompBMPEncrypted);
     // TODO if (!(diffExpMsgDecrypted === histShiftMsgDecrypted) || !(diffExpMsgDecrypted === singValDecompMsgDecrypted)) { console.log('Decryption Error!');}
-    return new EncryptedFile("output", diffExpMsgDecrypted, diffExpBMPEncrypted, null, // histShiftBMPEncrypted
-    singValDecompBMPEncrypted, diffExpBMPDecrypted, null, singValDecompBMPDecrypted);
+    return new EncryptedFile("output", diffExpMsgDecrypted, diffExpBMPEncrypted, null, // TODO histShiftBMPEncrypted,
+    singValDecompBMPEncrypted, diffExpBMPDecrypted, null, // TODO histShiftBMPDecrypted
+    singValDecompBMPDecrypted);
 }
 // -------------------------------------------------------------
 // Actions
