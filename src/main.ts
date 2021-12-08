@@ -136,21 +136,24 @@ function updateCounters(bmp: BMP){
 // Misc Functions
 
 function loadResultImagesToResultSection(image_output: any){
-  diffExpEncodedImg.src = URL.createObjectURL( image_output.diffExpBMPEncrypted.toBlob() );
-  makeFullscreenOnClick(diffExpEncodedImg);
-  histShiftEncodedImg.src = URL.createObjectURL( image_output.diffExpBMPEncrypted.toBlob() );
-  // TODO histShiftEncodedImg.src = URL.createObjectURL( image_output.histShiftBMPEncrypted.toBlob() );
-  makeFullscreenOnClick(histShiftEncodedImg);
-  singValDecompEncodedImg.src = URL.createObjectURL( image_output.singValDecompBMPEncrypted.toBlob() );
-  makeFullscreenOnClick(singValDecompEncodedImg);
-
-  diffExpDecodedImg.src = URL.createObjectURL( image_output.diffExpBMPDecrypted.toBlob() );
-  makeFullscreenOnClick(diffExpDecodedImg);
-  histShiftDecodedImg.src = URL.createObjectURL( image_output.diffExpBMPDecrypted.toBlob() );
-  // TODO histShiftDecodedImg.src = URL.createObjectURL( image_output.histShiftBMPDecrypted.toBlob() );
-  makeFullscreenOnClick(histShiftDecodedImg);
-  singValDecompDecodedImg.src = URL.createObjectURL( image_output.singValDecompBMPDecrypted.toBlob() );
-  makeFullscreenOnClick(singValDecompDecodedImg);
+  if (image_output.diffExpBMPEncrypted) {
+    diffExpEncodedImg.src = URL.createObjectURL( image_output.diffExpBMPEncrypted.toBlob() );
+    makeFullscreenOnClick(diffExpEncodedImg);
+    diffExpDecodedImg.src = URL.createObjectURL( image_output.diffExpBMPDecrypted.toBlob() );
+    makeFullscreenOnClick(diffExpDecodedImg);
+  }
+  if (image_output.histShiftBMPEncrypted) {
+    histShiftEncodedImg.src = URL.createObjectURL( image_output.histShiftBMPEncrypted.toBlob() );
+    makeFullscreenOnClick(histShiftEncodedImg);
+    histShiftDecodedImg.src = URL.createObjectURL( image_output.histShiftBMPDecrypted.toBlob() );
+    makeFullscreenOnClick(histShiftDecodedImg);
+  }
+  if (image_output.singValDecompBMPEncrypted) {
+    singValDecompEncodedImg.src = URL.createObjectURL( image_output.singValDecompBMPEncrypted.toBlob() );
+    makeFullscreenOnClick(singValDecompEncodedImg);
+    singValDecompDecodedImg.src = URL.createObjectURL( image_output.singValDecompBMPDecrypted.toBlob() );
+    makeFullscreenOnClick(singValDecompDecodedImg);
+  }
 }
 
 function deletePreviouslyAddedDisplayImage() {
@@ -161,26 +164,43 @@ function deletePreviouslyAddedDisplayImage() {
 // -------------------------------------------------------------
 // Logic
 
+
+
 function encryptAndDecrypt(bmp: BMP, encrypted_text: string) {
+
+  function histogram_shifting(): [BMP | null, BMP | null, string | null]{
+    try {
+      const histShiftBMPEncrypted = histogramShiftingEncrypt(bmp, encrypted_text)[0];
+      const [histShiftBMPDecrypted, histShiftMsgDecrypted] = differentialExpansionDecrypt(diffExpBMPEncrypted);
+      return [histShiftBMPEncrypted, histShiftBMPDecrypted, histShiftMsgDecrypted]
+    } catch (error) {
+      return [null, null, null]
+    }
+  }
+
   const diffExpBMPEncrypted = differentialExpansionEncrypt(bmp, encrypted_text);
   const [diffExpBMPDecrypted, diffExpMsgDecrypted] = differentialExpansionDecrypt(diffExpBMPEncrypted);
   
-  // TODO const histShiftBMPEncrypted = histogramShiftingEncrypt(bmp, encrypted_text);
-  // TODO const [histShiftBMPDecrypted, histShiftMsgDecrypted] = differentialExpansionDecrypt(diffExpBMPEncrypted);
+  const [histShiftBMPEncrypted, histShiftBMPDecrypted, histShiftMsgDecrypted] = histogram_shifting();
 
   const singValDecompBMPEncrypted = singularValueDecompositionEncrypt(bmp, encrypted_text);
   const [singValDecompBMPDecrypted, singValDecompMsgDecrypted] = singularValueDecompositionDecrypt(singValDecompBMPEncrypted);
 
-  // TODO if (!(diffExpMsgDecrypted === histShiftMsgDecrypted) || !(diffExpMsgDecrypted === singValDecompMsgDecrypted)) { console.log('Decryption Error!');}
+  if (!(diffExpMsgDecrypted === histShiftMsgDecrypted) || !(diffExpMsgDecrypted === singValDecompMsgDecrypted)) {
+    console.log('Message Decryption Error!');
+    console.log(`Differential Expansion: ${diffExpMsgDecrypted}`);
+    console.log(`Histogram Shifting: ${histShiftMsgDecrypted}`);
+    console.log(`Singular Value Decomposition: ${singValDecompMsgDecrypted}`);
+  }
 
   return new EncryptedFile(
     "output",
     diffExpMsgDecrypted,
     diffExpBMPEncrypted,
-    null, // TODO histShiftBMPEncrypted,
+    histShiftBMPEncrypted,
     singValDecompBMPEncrypted,
     diffExpBMPDecrypted,
-    null, // TODO histShiftBMPDecrypted
+    histShiftBMPDecrypted,
     singValDecompBMPDecrypted
   );
 }
