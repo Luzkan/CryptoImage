@@ -49,6 +49,7 @@ function huffmanMap(bytesStrToEncode) {
     const root = q[0];
     return generateHuffmanMap(root, []);
 }
+// Return bits array
 function huffmanCompress(byteToEncode) {
     const bytesStr = byteToEncode.map(byte => byte.toString(2).padStart(8, '0'));
     const huffMap = huffmanMap(bytesStr);

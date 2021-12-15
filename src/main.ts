@@ -135,7 +135,7 @@ function updateCounters(bmp: BMP){
 // -------------------------------------------------------------
 // Misc Functions
 
-function loadResultImagesToResultSection(image_output: any){
+function loadResultImagesToResultSection(image_output: EncryptedFile){
   if (image_output.diffExpBMPEncrypted) {
     diffExpEncodedImg.src = URL.createObjectURL( image_output.diffExpBMPEncrypted.toBlob() );
     makeFullscreenOnClick(diffExpEncodedImg);
@@ -145,7 +145,7 @@ function loadResultImagesToResultSection(image_output: any){
   if (image_output.histShiftBMPEncrypted) {
     histShiftEncodedImg.src = URL.createObjectURL( image_output.histShiftBMPEncrypted.toBlob() );
     makeFullscreenOnClick(histShiftEncodedImg);
-    histShiftDecodedImg.src = URL.createObjectURL( image_output.histShiftBMPDecrypted.toBlob() );
+    histShiftDecodedImg.src = URL.createObjectURL( image_output.histShiftBMPDecrypted!.toBlob() );
     makeFullscreenOnClick(histShiftDecodedImg);
   }
   if (image_output.singValDecompBMPEncrypted) {
@@ -166,12 +166,12 @@ function deletePreviouslyAddedDisplayImage() {
 
 
 
-function encryptAndDecrypt(bmp: BMP, encrypted_text: string) {
+function encryptAndDecrypt(bmp: BMP, encrypted_text: string): EncryptedFile {
 
   function histogram_shifting(): [BMP | null, BMP | null, string | null]{
     try {
-      const histShiftBMPEncrypted = histogramShiftingEncrypt(bmp, encrypted_text)[0];
-      const [histShiftBMPDecrypted, histShiftMsgDecrypted] = differentialExpansionDecrypt(diffExpBMPEncrypted);
+      const [histShiftBMPEncrypted, histShiftKeys] = histogramShiftingEncrypt(bmp, encrypted_text);
+      const [histShiftBMPDecrypted, histShiftMsgDecrypted] = histogramShiftingDecrypt(histShiftBMPEncrypted, histShiftKeys);
       return [histShiftBMPEncrypted, histShiftBMPDecrypted, histShiftMsgDecrypted]
     } catch (error) {
       return [null, null, null]
@@ -180,7 +180,7 @@ function encryptAndDecrypt(bmp: BMP, encrypted_text: string) {
 
   const diffExpBMPEncrypted = differentialExpansionEncrypt(bmp, encrypted_text);
   const [diffExpBMPDecrypted, diffExpMsgDecrypted] = differentialExpansionDecrypt(diffExpBMPEncrypted);
-  
+
   const [histShiftBMPEncrypted, histShiftBMPDecrypted, histShiftMsgDecrypted] = histogram_shifting();
 
   const singValDecompBMPEncrypted = singularValueDecompositionEncrypt(bmp, encrypted_text);

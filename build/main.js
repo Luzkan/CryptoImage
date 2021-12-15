@@ -146,8 +146,8 @@ function deletePreviouslyAddedDisplayImage() {
 function encryptAndDecrypt(bmp, encrypted_text) {
     function histogram_shifting() {
         try {
-            const histShiftBMPEncrypted = histogramShiftingEncrypt(bmp, encrypted_text)[0];
-            const [histShiftBMPDecrypted, histShiftMsgDecrypted] = differentialExpansionDecrypt(diffExpBMPEncrypted);
+            const [histShiftBMPEncrypted, histShiftKeys] = histogramShiftingEncrypt(bmp, encrypted_text);
+            const [histShiftBMPDecrypted, histShiftMsgDecrypted] = histogramShiftingDecrypt(histShiftBMPEncrypted, histShiftKeys);
             return [histShiftBMPEncrypted, histShiftBMPDecrypted, histShiftMsgDecrypted];
         }
         catch (error) {

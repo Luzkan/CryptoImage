@@ -1,64 +1,67 @@
 "use strict";
-function bytesToWriteHist(bmp, payloadHeader, writeLocationMap) {
-    if (!payloadHeader || !writeLocationMap) {
+function bytesToWriteHist(bmp, payloadHeader, valueWithMaxCount) {
+    if (!payloadHeader || Number.isNaN(valueWithMaxCount)) {
         const plainData = bmp.pixelPlainData;
         const histogram = buildHistogram(plainData);
         const { valueWithMinCount, valueWithMaxCount, minValueCount } = analyzeHistogram(histogram);
-        if (valueWithMinCount === valueWithMaxCount) {
-            throw new Error("Cannot embed any message in provided image");
+        if (Math.abs(valueWithMinCount - valueWithMaxCount) < 2) {
+            throw new Error("Cannot embed any message in provided image: Math.abs(valueWithMinCount - valueWithMaxCount) < 2");
         }
         payloadHeader = preparePayloadHeader(plainData, valueWithMinCount, minValueCount);
-        writeLocationMap = prepareWriteLocationMap(plainData, valueWithMinCount, valueWithMaxCount);
     }
-    const bytesCapacity = writeLocationMap.filter(value => value === 1).length;
-    if (bytesCapacity < payloadHeader.length) {
-        throw new Error("Cannot embed any message in provided image");
+    const bitsGrossCapacity = bmp.pixelPlainData.filter(value => value === valueWithMaxCount).length;
+    const bitsNetCapacity = bitsGrossCapacity - payloadHeader.length;
+    const bytesNetCapacity = Math.floor(bitsNetCapacity / 8);
+    console.log("Hist: Net bytes capacity:", bytesNetCapacity);
+    if (bytesNetCapacity <= 0) {
+        throw new Error("Cannot embed any message in provided image: payloadHeader use all bmp capacity");
     }
-    return bytesCapacity - payloadHeader.length;
+    return bytesNetCapacity;
 }
 function histogramShiftingEncrypt(bmp, asciiMessage) {
     const plainData = bmp.pixelPlainData;
     const histogram = buildHistogram(plainData);
     const { valueWithMinCount, valueWithMaxCount, minValueCount } = analyzeHistogram(histogram);
-    if (valueWithMinCount === valueWithMaxCount) {
-        throw new Error("Cannot embed any message in provided image");
+    if (Math.abs(valueWithMinCount - valueWithMaxCount) < 2) {
+        throw new Error("Cannot embed any message in provided image: Math.abs(valueWithMinCount - valueWithMaxCount) < 2");
     }
-    const payload = preparePayloadHeader(plainData, valueWithMinCount, minValueCount);
-    const writeLocationMap = prepareWriteLocationMap(plainData, valueWithMinCount, valueWithMaxCount);
-    if (bytesToWriteHist(bmp, payload, writeLocationMap) < asciiMessage.length) {
-        throw new Error("Cannot embed that message in provided image");
+    const payloadBits = preparePayloadHeader(plainData, valueWithMinCount, minValueCount);
+    if (bytesToWriteHist(bmp, payloadBits, valueWithMaxCount) < asciiMessage.length) {
+        throw new Error("Cannot embed that message in provided image: Message to long");
     }
-    addArrayValues(payload, asciiStringToCharCode(asciiMessage));
+    addArrayValues(payloadBits, toBitArray(asciiStringToCharCode(asciiMessage)));
     const shifted = shiftHistogram(plainData, valueWithMinCount, valueWithMaxCount);
-    const encrypted = writeBytes(writeLocationMap, shifted, payload);
+    const encrypted = writeBytes(shifted, payloadBits, valueWithMinCount, valueWithMaxCount);
     return [BMP.fromPlainData(encrypted, bmp.width, bmp.height), [valueWithMinCount, valueWithMaxCount]];
 }
-function prepareWriteLocationMap(plainData, valueWithMinCount, valueWithMaxCount) {
-    const writeConditionValue = valueWithMinCount < valueWithMaxCount ? valueWithMaxCount - 1 : valueWithMaxCount + 1;
-    return createLocationMap(plainData, writeConditionValue);
+function histogramShiftingDecrypt(bmp, keys) {
+    return [bmp, ''];
 }
-function writeBytes(writeLocationMap, shifted, bytesToWrite) {
+function writeBytes(shifted, bitsToWrite, valueWithMinCount, valueWithMaxCount) {
+    const diff = valueWithMinCount < valueWithMaxCount ? -1 : 1;
     let writeIdx = 0;
-    const bytesToWriteLen = bytesToWrite.length;
-    return writeLocationMap.map((isWritable, idx) => {
-        if (isWritable === 1 && writeIdx < bytesToWriteLen) {
-            return bytesToWrite[writeIdx++];
+    const bitsToWriteLen = bitsToWrite.length;
+    return shifted.map(value => {
+        if (value !== valueWithMaxCount || writeIdx === bitsToWriteLen || bitsToWrite[writeIdx++] === 0) {
+            return value;
         }
         else {
-            return shifted[idx];
+            return value + diff;
         }
     });
 }
+// return bits
 function preparePayloadHeader(plainData, valueWithMinCount, minValueCount) {
     // if minValueCount === 0 location map is not included in bytes to write
     if (minValueCount === 0) {
         return [minValueCount];
     }
+    console.log('Hist: payload extended mode!');
     const locationMap = createLocationMap(plainData, valueWithMinCount);
     const locMapBytes = bitsToByteArray(locationMap);
-    const locMapCompressed = huffmanCompress(locMapBytes);
-    locMapCompressed.unshift(minValueCount);
-    return locMapCompressed;
+    const locMapCompressedBits = huffmanCompress(locMapBytes);
+    locMapCompressedBits.unshift(1);
+    return locMapCompressedBits;
 }
 function analyzeHistogram(histogram) {
     let valueWithMinCount = 0;
