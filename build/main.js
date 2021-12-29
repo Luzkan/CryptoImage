@@ -22,12 +22,19 @@ let image_output = null;
 let encrypted_text = null;
 let bmp = null;
 let current_bytes_to_write_de = 0;
+let current_bytes_to_write_hs = 0;
+let current_bytes_to_write_svd = 0;
+let maximumSize = 0;
 // -------------------------------------------------------------
 // HTML Elements
 // Method Checkboxes
 const checkbox1 = document.getElementById("method-1-checkbox");
 const checkbox2 = document.getElementById("method-2-checkbox");
 const checkbox3 = document.getElementById("method-3-checkbox");
+// Method Labels
+const labelDE = document.getElementById("method-de-label");
+const labelHS = document.getElementById("method-hs-label");
+const labelSVD = document.getElementById("method-svd-label");
 // Image Original
 const originalImageDiv = document.getElementById("original-image-div");
 const originalImageImg = document.getElementById("orignal-image-img");
@@ -42,13 +49,21 @@ const singValDecompEncodedImg = document.getElementById("sing-val-decomp-encoded
 const diffExpDecodedImg = document.getElementById("diff-exp-decoded-image");
 const histShiftDecodedImg = document.getElementById("hist-shift-decoded-image");
 const singValDecompDecodedImg = document.getElementById("sing-val-decomp-decoded-image");
-// Label Counters
+// Available Size Counters
+const availableSizeDiffExpCounterLabel = document.getElementById("available-diff-exp-counter");
+const availableSizeHistShiftCounterLabel = document.getElementById("available-hist-shift-counter");
+const availableSizeSingValDecompCounterLabel = document.getElementById("available-sing-val-decomp-counter");
+// @ts-ignore
+const availableSizeDiffExpCounterLabelJQ = $('#available-diff-exp-counter'); // @ts-ignore
+const availableSizeHistShiftCounterLabelJQ = $('#available-hist-shift-counter'); // @ts-ignore
+const availableSizeSingValDecompCounterLabelJQ = $('#available-sing-val-decomp-counter');
+// Info Counters
 const imageSizeCounterLabel = document.getElementById("image-size-counter");
-const availableSizeCounterLabel = document.getElementById("available-size-counter");
+const maximumSizeCounterLabel = document.getElementById("maximum-size-counter");
 const decodeSizeCounterLabel = document.getElementById("decode-size-counter");
 // @ts-ignore
 const imageSizeCounterLabelJQ = $('#image-size-counter'); // @ts-ignore
-const availableSizeCounterLabelJQ = $('#available-size-counter'); // @ts-ignore
+const maximumSizeCounterLabelJQ = $('#maximum-size-counter'); // @ts-ignore
 const decodeSizeCounterLabelJQ = $('#decode-size-counter');
 // Encryption Form (ImageInput, Textfield, Button and Tooltip)
 const inputImg = document.getElementById("form-input-image");
@@ -108,12 +123,41 @@ function enableEncryptButton() {
         encryptTooltip.classList.add("permamently-transparent");
     }
 }
+function handleDownloadButtonsAvailability() {
+    function checkWhetherCounterPassedZeroAndHandle(currentCount, label) {
+        if (currentCount - (encrypted_text?.length ?? 0) < 0) {
+            label.classList.add("disabled-download-option");
+            label.children[2].innerHTML = "- no capacity";
+        }
+        else {
+            label.classList.remove("disabled-download-option");
+            label.children[2].innerHTML = "";
+        }
+    }
+    checkWhetherCounterPassedZeroAndHandle(current_bytes_to_write_de, labelDE);
+    checkWhetherCounterPassedZeroAndHandle(current_bytes_to_write_hs, labelHS);
+    checkWhetherCounterPassedZeroAndHandle(current_bytes_to_write_svd, labelSVD);
+}
 function updateCounters(bmp) {
-    current_bytes_to_write_de = bytesToWriteDE(bmp);
-    const target_bytes_number = current_bytes_to_write_de - (encrypted_text?.length ?? 0);
-    imageSizeCounterLabelJQ.countTo({ from: parseInt(imageSizeCounterLabel.innerHTML), to: Math.floor(bmp.fileSize / 1024) });
-    availableSizeCounterLabelJQ.countTo({ from: parseInt(availableSizeCounterLabel.innerHTML), to: target_bytes_number });
-    decodeSizeCounterLabelJQ.countTo({ from: parseInt(decodeSizeCounterLabel.innerHTML), to: target_bytes_number });
+    function updateCapacityCounters() {
+        current_bytes_to_write_de = bytesToWriteDE(bmp);
+        current_bytes_to_write_hs = bytesToWriteDE(bmp); // TODO: ... = bytesToWriteHS(bmp)
+        current_bytes_to_write_svd = bytesToWriteDE(bmp); // TODO: ... = bytesToWriteSVD(bmp)
+        const target_bytes_number_de = current_bytes_to_write_de - (encrypted_text?.length ?? 0);
+        const target_bytes_number_hs = current_bytes_to_write_hs - (encrypted_text?.length ?? 0);
+        const target_bytes_number_svd = current_bytes_to_write_svd - (encrypted_text?.length ?? 0);
+        availableSizeDiffExpCounterLabelJQ.countTo({ from: parseInt(availableSizeDiffExpCounterLabel.innerHTML), to: target_bytes_number_de });
+        availableSizeHistShiftCounterLabelJQ.countTo({ from: parseInt(availableSizeHistShiftCounterLabel.innerHTML), to: target_bytes_number_hs });
+        availableSizeSingValDecompCounterLabelJQ.countTo({ from: parseInt(availableSizeSingValDecompCounterLabel.innerHTML), to: target_bytes_number_svd });
+    }
+    function updateInfoCounters() {
+        maximumSize = Math.max(current_bytes_to_write_de, current_bytes_to_write_hs, current_bytes_to_write_svd) - (encrypted_text?.length ?? 0);
+        imageSizeCounterLabelJQ.countTo({ from: parseInt(imageSizeCounterLabel.innerHTML), to: Math.floor(bmp.fileSize / 1024) });
+        maximumSizeCounterLabelJQ.countTo({ from: parseInt(maximumSizeCounterLabel.innerHTML), to: maximumSize });
+        decodeSizeCounterLabelJQ.countTo({ from: parseInt(decodeSizeCounterLabel.innerHTML), to: Math.floor(bmp.fileSize / 1024) });
+    }
+    updateCapacityCounters();
+    updateInfoCounters();
 }
 // -------------------------------------------------------------
 // Misc Functions
@@ -174,8 +218,18 @@ messageTextarea.addEventListener('input', (event) => {
         encrypted_text = event.target.value;
     }
     if (encrypted_text) {
-        availableSizeCounterLabel.innerHTML = (current_bytes_to_write_de - encrypted_text?.length).toString();
+        availableSizeDiffExpCounterLabel.innerHTML = (current_bytes_to_write_de - encrypted_text?.length).toString();
     }
+    if (encrypted_text) {
+        availableSizeHistShiftCounterLabel.innerHTML = (current_bytes_to_write_hs - encrypted_text?.length).toString();
+    }
+    if (encrypted_text) {
+        availableSizeSingValDecompCounterLabel.innerHTML = (current_bytes_to_write_svd - encrypted_text?.length).toString();
+    }
+    if (encrypted_text) {
+        maximumSizeCounterLabel.innerHTML = (maximumSize - encrypted_text?.length).toString();
+    }
+    handleDownloadButtonsAvailability();
     tryEnableEncryptButton();
 });
 inputImg.addEventListener('input', async (e) => {

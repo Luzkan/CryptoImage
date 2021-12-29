@@ -1,5 +1,5 @@
 "use strict";
-function bytesToWriteHist(bmp, payloadHeader, valueWithMaxCount) {
+function bytesToWriteHS(bmp, payloadHeader, valueWithMaxCount) {
     if (!payloadHeader || Number.isNaN(valueWithMaxCount)) {
         const plainData = bmp.pixelPlainData;
         const histogram = buildHistogram(plainData);
@@ -26,7 +26,7 @@ function histogramShiftingEncrypt(bmp, asciiMessage) {
         throw new Error("Cannot embed any message in provided image: Math.abs(valueWithMinCount - valueWithMaxCount) < 2");
     }
     const payloadBits = preparePayloadHeader(plainData, valueWithMinCount, minValueCount);
-    if (bytesToWriteHist(bmp, payloadBits, valueWithMaxCount) < asciiMessage.length) {
+    if (bytesToWriteHS(bmp, payloadBits, valueWithMaxCount) < asciiMessage.length) {
         throw new Error("Cannot embed that message in provided image: Message to long");
     }
     addArrayValues(payloadBits, toBitArray(asciiStringToCharCode(asciiMessage)));

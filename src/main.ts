@@ -25,6 +25,9 @@ let image_output: EncryptedFile | null = null;
 let encrypted_text: string | null = null;
 let bmp: BMP | null = null;
 let current_bytes_to_write_de: number = 0;
+let current_bytes_to_write_hs: number = 0;
+let current_bytes_to_write_svd: number = 0;
+let maximumSize: number = 0;
 
 // -------------------------------------------------------------
 // HTML Elements
@@ -33,6 +36,11 @@ let current_bytes_to_write_de: number = 0;
 const checkbox1 = document.getElementById("method-1-checkbox") as HTMLInputElement;
 const checkbox2 = document.getElementById("method-2-checkbox") as HTMLInputElement;
 const checkbox3 = document.getElementById("method-3-checkbox") as HTMLInputElement;
+
+// Method Labels
+const labelDE = document.getElementById("method-de-label") as HTMLLabelElement;
+const labelHS = document.getElementById("method-hs-label") as HTMLLabelElement;
+const labelSVD = document.getElementById("method-svd-label") as HTMLLabelElement;
 
 // Image Original
 const originalImageDiv = document.getElementById("original-image-div") as HTMLDivElement;
@@ -52,13 +60,22 @@ const diffExpDecodedImg = document.getElementById("diff-exp-decoded-image") as H
 const histShiftDecodedImg = document.getElementById("hist-shift-decoded-image") as HTMLImageElement;
 const singValDecompDecodedImg = document.getElementById("sing-val-decomp-decoded-image") as HTMLImageElement;
 
-// Label Counters
+// Available Size Counters
+const availableSizeDiffExpCounterLabel = document.getElementById("available-diff-exp-counter") as HTMLSpanElement;
+const availableSizeHistShiftCounterLabel = document.getElementById("available-hist-shift-counter") as HTMLSpanElement;
+const availableSizeSingValDecompCounterLabel = document.getElementById("available-sing-val-decomp-counter") as HTMLSpanElement;
+                                                                                 // @ts-ignore
+const availableSizeDiffExpCounterLabelJQ = $('#available-diff-exp-counter')      // @ts-ignore
+const availableSizeHistShiftCounterLabelJQ = $('#available-hist-shift-counter')  // @ts-ignore
+const availableSizeSingValDecompCounterLabelJQ = $('#available-sing-val-decomp-counter')
+
+// Info Counters
 const imageSizeCounterLabel = document.getElementById("image-size-counter") as HTMLSpanElement;
-const availableSizeCounterLabel = document.getElementById("available-size-counter") as HTMLSpanElement;
+const maximumSizeCounterLabel = document.getElementById("maximum-size-counter") as HTMLSpanElement;
 const decodeSizeCounterLabel = document.getElementById("decode-size-counter") as HTMLSpanElement;
-                                                                  // @ts-ignore
-const imageSizeCounterLabelJQ = $('#image-size-counter')          // @ts-ignore
-const availableSizeCounterLabelJQ = $('#available-size-counter')  // @ts-ignore
+                                                                                 // @ts-ignore
+const imageSizeCounterLabelJQ = $('#image-size-counter')                         // @ts-ignore
+const maximumSizeCounterLabelJQ = $('#maximum-size-counter')                     // @ts-ignore
 const decodeSizeCounterLabelJQ = $('#decode-size-counter')
 
 // Encryption Form (ImageInput, Textfield, Button and Tooltip)
@@ -122,13 +139,47 @@ function enableEncryptButton() {
   }
 }
 
-function updateCounters(bmp: BMP){
-  current_bytes_to_write_de = bytesToWriteDE(bmp)
-  const target_bytes_number: number = current_bytes_to_write_de - (encrypted_text?.length ?? 0);
+function handleDownloadButtonsAvailability() {
+  function checkWhetherCounterPassedZeroAndHandle(currentCount: number, label: HTMLLabelElement) {
+    if (currentCount - (encrypted_text?.length ?? 0) < 0) {
+      label.classList.add("disabled-download-option");
+      label.children[2].innerHTML = "- no capacity";
+    } else {
+      label.classList.remove("disabled-download-option");
+      label.children[2].innerHTML = "";
+    }
+  }
 
-  imageSizeCounterLabelJQ.countTo({from: parseInt(imageSizeCounterLabel.innerHTML), to: Math.floor(bmp.fileSize/1024)});
-  availableSizeCounterLabelJQ.countTo({from: parseInt(availableSizeCounterLabel.innerHTML), to: target_bytes_number});
-  decodeSizeCounterLabelJQ.countTo({from: parseInt(decodeSizeCounterLabel.innerHTML), to: target_bytes_number});
+  checkWhetherCounterPassedZeroAndHandle(current_bytes_to_write_de, labelDE)
+  checkWhetherCounterPassedZeroAndHandle(current_bytes_to_write_hs, labelHS)
+  checkWhetherCounterPassedZeroAndHandle(current_bytes_to_write_svd, labelSVD)
+}
+
+function updateCounters(bmp: BMP){
+  function updateCapacityCounters() {
+    current_bytes_to_write_de = bytesToWriteDE(bmp)
+    current_bytes_to_write_hs = bytesToWriteDE(bmp)  // TODO: ... = bytesToWriteHS(bmp)
+    current_bytes_to_write_svd = bytesToWriteDE(bmp) // TODO: ... = bytesToWriteSVD(bmp)
+    const target_bytes_number_de: number = current_bytes_to_write_de - (encrypted_text?.length ?? 0);
+    const target_bytes_number_hs: number = current_bytes_to_write_hs - (encrypted_text?.length ?? 0);
+    const target_bytes_number_svd: number = current_bytes_to_write_svd - (encrypted_text?.length ?? 0);
+  
+    availableSizeDiffExpCounterLabelJQ.countTo({from: parseInt(availableSizeDiffExpCounterLabel.innerHTML), to: target_bytes_number_de});
+    availableSizeHistShiftCounterLabelJQ.countTo({from: parseInt(availableSizeHistShiftCounterLabel.innerHTML), to: target_bytes_number_hs});
+    availableSizeSingValDecompCounterLabelJQ.countTo({from: parseInt(availableSizeSingValDecompCounterLabel.innerHTML), to: target_bytes_number_svd});
+  }
+
+  function updateInfoCounters() {
+    maximumSize = Math.max(current_bytes_to_write_de, current_bytes_to_write_hs, current_bytes_to_write_svd) - (encrypted_text?.length ?? 0);
+
+    imageSizeCounterLabelJQ.countTo({from: parseInt(imageSizeCounterLabel.innerHTML), to: Math.floor(bmp.fileSize/1024)});
+    maximumSizeCounterLabelJQ.countTo({from: parseInt(maximumSizeCounterLabel.innerHTML), to: maximumSize});
+    decodeSizeCounterLabelJQ.countTo({from: parseInt(decodeSizeCounterLabel.innerHTML), to: Math.floor(bmp.fileSize/1024)});
+  }
+
+  updateCapacityCounters();
+  updateInfoCounters();
+
 }
 
 
@@ -210,7 +261,11 @@ function encryptAndDecrypt(bmp: BMP, encrypted_text: string): EncryptedFile {
 
 messageTextarea.addEventListener('input', (event: Event) => {
   if (event) { encrypted_text = (event.target as any).value; }
-  if (encrypted_text) { availableSizeCounterLabel.innerHTML = (current_bytes_to_write_de-encrypted_text?.length).toString(); }
+  if (encrypted_text) { availableSizeDiffExpCounterLabel.innerHTML = (current_bytes_to_write_de-encrypted_text?.length).toString(); }
+  if (encrypted_text) { availableSizeHistShiftCounterLabel.innerHTML = (current_bytes_to_write_hs-encrypted_text?.length).toString(); }
+  if (encrypted_text) { availableSizeSingValDecompCounterLabel.innerHTML = (current_bytes_to_write_svd-encrypted_text?.length).toString(); }
+  if (encrypted_text) { maximumSizeCounterLabel.innerHTML = (maximumSize-encrypted_text?.length).toString(); }
+  handleDownloadButtonsAvailability();
   tryEnableEncryptButton();
 });
 

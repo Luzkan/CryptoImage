@@ -171,7 +171,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .subsection-encoder-decoder .grid2 .subsection-e-d {
-  padding: 40px;
+  padding-top: 15px;
+  padding-right: 40px;
+  padding-bottom: 5px;
+  padding-left: 40px;
 }
 
 .subsection-encoder-decoder .grid2 .subsection-e-d h3 {
@@ -668,17 +671,40 @@ input[type="file"]::file-selector-button {
   opacity: 0;
 }
 
-.checkbox-custom:hover {
-  cursor: pointer;
-}
-
 .checkbox-custom {
   margin-bottom: 2px;
   margin-right: 7px;
 }
 
+.checkbox-custom:hover {
+  cursor: pointer;
+  border-color: #8c7676;
+  box-shadow: 0 0 0 2px #8c76768f;
+}
+
+.form-check-input:hover {
+  cursor: pointer;
+  border-color: #8c7676;
+}
+
+.form-check-label:hover {
+  cursor: pointer;
+  border-color: #8c7676;
+}
+
 .form-check-label input:checked ~.checkbox-custom {
   background-color: #8c7676;
+}
+
+.disabled-download-option {
+  color: red;
+  cursor: not-allowed !important;
+}
+
+
+.form-check-label:hover .capacity-counter-info {
+  opacity: 1;
+  transition: 0.3s;
 }
 
 .form-check-label input:checked ~.checkbox-custom::after {
@@ -687,4 +713,25 @@ input[type="file"]::file-selector-button {
   opacity: 1;
   position: relative;
   top: -9px
+}
+
+.capacity-counter-text {
+  color: rgba(202, 202, 202, 0.5);
+}
+
+.capacity-counters {
+  float: right;
+}
+
+.capacity-counter-width {
+  display: inline-block;
+  text-align: center;
+  
+}
+
+.capacity-counter-info {
+  opacity: 0;
+  transition: 0.3s;
+  font-weight: 400;
+  color: #8c7676;
 }

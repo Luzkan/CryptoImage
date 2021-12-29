@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.12.0]] - 2021-12-29 _(MJ)_
+
+###### _([diff: 0.11.3-0.12.0])_
+
+Added:
+
+- UI: Separate Ascii Characters Left Counters for each algorithm
+- UX: Colorizing the algorithms for which the message has exceed the available capacity
+
+![](./img/changelog/0120_counters.png)
+
+## [[0.11.3]] - 2021-12-15 _(KS)_
+
+###### _([diff: 0.11.2-0.11.3])_
+
+Histogram Shifting
+
 ## [[0.11.2]] - 2021-12-08 _(MJ)_
 
 ###### _([diff: 0.11.1-0.11.2])_
@@ -334,6 +351,8 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.11.3-0.12.0]: https://github.com/Luzkan/CryptoImage/compare/0.11.3...0.12.0
+[diff: 0.11.2-0.11.3]: https://github.com/Luzkan/CryptoImage/compare/0.11.2...0.11.3
 [diff: 0.11.1-0.11.2]: https://github.com/Luzkan/CryptoImage/compare/0.11.1...0.11.2
 [diff: 0.11.0-0.11.1]: https://github.com/Luzkan/CryptoImage/compare/0.11.0...0.11.1
 [diff: 0.10.3-0.11.0]: https://github.com/Luzkan/CryptoImage/compare/0.10.3...0.11.0
@@ -359,6 +378,8 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[0.12.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.12.0
+[0.11.3]: https://github.com/Luzkan/CryptoImage/releases/tag/0.11.3
 [0.11.2]: https://github.com/Luzkan/CryptoImage/releases/tag/0.11.2
 [0.11.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.11.1
 [0.11.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.11.0

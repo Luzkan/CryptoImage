@@ -1,4 +1,4 @@
-function bytesToWriteHist(bmp: BMP, payloadHeader?: number[], valueWithMaxCount?: number): number {
+function bytesToWriteHS(bmp: BMP, payloadHeader?: number[], valueWithMaxCount?: number): number {
   if (!payloadHeader || Number.isNaN(valueWithMaxCount)) {
     const plainData = bmp.pixelPlainData;
     const histogram = buildHistogram(plainData)
@@ -30,7 +30,7 @@ function histogramShiftingEncrypt(bmp: BMP, asciiMessage: string): [BMP, [number
   }
 
   const payloadBits = preparePayloadHeader(plainData, valueWithMinCount, minValueCount);
-  if (bytesToWriteHist(bmp, payloadBits, valueWithMaxCount) < asciiMessage.length) {
+  if (bytesToWriteHS(bmp, payloadBits, valueWithMaxCount) < asciiMessage.length) {
     throw new Error("Cannot embed that message in provided image: Message to long")
   }
 

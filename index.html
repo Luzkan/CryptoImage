@@ -109,40 +109,43 @@
                               <label
                                 class="form-check-label"
                                 for="method-1-checkbox"
+                                id="method-de-label"
                                 ><input
                                   class="form-check-input"
                                   type="checkbox"
                                   id="method-1-checkbox"
                                   value="method-1-option"
                                 /><span class="checkbox-custom"></span>
-                                Differential Expansion</label
-                              >
+                                Differential Expansion&nbsp;<span class="capacity-counter-info"></span>
+                              </label>
                             </div>
                             <div class="form-check form-check-inline">
                               <label
                                 class="form-check-label"
                                 for="method-2-checkbox"
+                                id="method-hs-label"
                                 ><input
                                   class="form-check-input"
                                   type="checkbox"
                                   id="method-2-checkbox"
                                   value="method-2-option"
                                 /><span class="checkbox-custom"></span>
-                                Histogram Shifting</label
-                              >
+                                Histogram Shifting&nbsp;<span class="capacity-counter-info"></span>
+                              </label>
                             </div>
                             <div class="form-check form-check-inline">
                               <label
                                 class="form-check-label"
                                 for="method-3-checkbox"
+                                id="method-svd-label"
                                 ><input
                                   class="form-check-input"
                                   type="checkbox"
                                   id="method-3-checkbox"
                                   value="method-3-option"
                                 /><span class="checkbox-custom"></span> Singular
-                                Value Decomposition</label
-                              >
+                                Value Decomposition&nbsp;<span class="capacity-counter-info"></span>
+                              </label>
                             </div>
                           </div>
                         </div>
@@ -150,6 +153,52 @@
                           <i class="icon-pencil to-animate-2"></i>
                           <div class="encoder-decoder-step to-animate">
                             <h3>Your Message</h3>
+                            <div>
+                              <p>
+                                <span class="capacity-counter-title">Capacity:</span>
+
+                                <span class="capacity-counters">
+                                  <span class="capacity-counter-width capacity-counter-text"
+                                    >&nbsp;
+                                    <span
+                                      class="data-counter js-counter"
+                                      id="available-diff-exp-counter"
+                                      data-from="0"
+                                      data-to="0"
+                                      data-speed="1250"
+                                      data-refresh-interval="15"
+                                    ></span
+                                    >&nbsp;<span class="">DE</span>&nbsp;
+                                  </span>
+
+                                  <span class="capacity-counter-width capacity-counter-text"
+                                    >&nbsp;
+                                    <span
+                                      class="data-counter js-counter"
+                                      id="available-hist-shift-counter"
+                                      data-from="0"
+                                      data-to="0"
+                                      data-speed="1250"
+                                      data-refresh-interval="15"
+                                    ></span
+                                    >&nbsp;<span class="">HS</span>&nbsp;
+                                  </span>
+
+                                  <span class="capacity-counter-width capacity-counter-text"
+                                    >&nbsp;
+                                    <span
+                                      class="data-counter js-counter"
+                                      id="available-sing-val-decomp-counter"
+                                      data-from="0"
+                                      data-to="0"
+                                      data-speed="1250"
+                                      data-refresh-interval="15"
+                                    ></span
+                                    >&nbsp;<span class="">SVD</span>
+                                  </span>
+                                </span>
+                              </p>
+                            </div>
                             <div class="form-group">
                               <textarea
                                 class="form-control message-input"
@@ -159,6 +208,7 @@
                             </div>
                           </div>
                         </div>
+
                         <div class="encoder-decoder-step-container">
                           <i class="icon-gear to-animate-2"></i>
                           <div class="encoder-decoder-step to-animate">
@@ -198,21 +248,20 @@
                     data-to="0"
                     data-speed="1250"
                     data-refresh-interval="15"
-                    >test</span
-                  >
+                  ></span>
                   <span class="data-counter-label">Image Size (KB)</span>
                 </div>
                 <div class="col-md-4 text-center">
                   <span
                     class="data-counter js-counter"
-                    id="available-size-counter"
+                    id="maximum-size-counter"
                     data-from="0"
                     data-to="0"
                     data-speed="1250"
                     data-refresh-interval="15"
                   ></span>
                   <span class="data-counter-label"
-                    >Capacity in Ascii Letters</span
+                    >Maximum Available Capacity</span
                   >
                 </div>
                 <div class="col-md-4 text-center">
