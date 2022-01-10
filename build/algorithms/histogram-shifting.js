@@ -12,6 +12,7 @@ function bytesToWriteHS(bmp, payloadHeader, valueWithMaxCount) {
     const bitsGrossCapacity = bmp.pixelPlainData.filter(value => value === valueWithMaxCount).length;
     const bitsNetCapacity = bitsGrossCapacity - payloadHeader.length;
     const bytesNetCapacity = Math.floor(bitsNetCapacity / 8);
+    console.log("Hist: Gross bytes capacity:", Math.floor(bitsGrossCapacity / 8));
     console.log("Hist: Net bytes capacity:", bytesNetCapacity);
     if (bytesNetCapacity <= 0) {
         throw new Error("Cannot embed any message in provided image: payloadHeader use all bmp capacity");
@@ -35,7 +36,14 @@ function histogramShiftingEncrypt(bmp, asciiMessage) {
     return [BMP.fromPlainData(encrypted, bmp.width, bmp.height), [valueWithMinCount, valueWithMaxCount]];
 }
 function histogramShiftingDecrypt(bmp, keys) {
-    return [bmp, ''];
+    const [valueWithMinCount, valueWithMaxCount] = keys;
+    const plainData = bmp.pixelPlainData;
+    const [shifted, payloadBits] = readBytes(plainData, valueWithMinCount, valueWithMaxCount);
+    const [locMap, messageBits] = decodeHeader(payloadBits, plainData);
+    const decodedImage = unshiftHistogram(shifted, valueWithMinCount, valueWithMaxCount, locMap);
+    const message = charCodeArrayToString(bitsToByteArray(messageBits));
+    const tailBeginIdx = message.indexOf(String.fromCharCode(0));
+    return [BMP.fromPlainData(decodedImage, bmp.width, bmp.height), message.slice(0, tailBeginIdx)];
 }
 function writeBytes(shifted, bitsToWrite, valueWithMinCount, valueWithMaxCount) {
     const diff = valueWithMinCount < valueWithMaxCount ? -1 : 1;
@@ -50,11 +58,28 @@ function writeBytes(shifted, bitsToWrite, valueWithMinCount, valueWithMaxCount) 
         }
     });
 }
+function readBytes(encryptedData, valueWithMinCount, valueWithMaxCount) {
+    const diff = valueWithMinCount < valueWithMaxCount ? -1 : 1;
+    const zeroesValue = valueWithMaxCount;
+    const onesValue = valueWithMaxCount + diff;
+    const payloadBits = [];
+    const decodedData = encryptedData.map(value => {
+        if (onesValue == value) {
+            payloadBits.push(1);
+            return value - diff;
+        }
+        else if (zeroesValue === value) {
+            payloadBits.push(0);
+        }
+        return value;
+    });
+    return [decodedData, payloadBits];
+}
 // return bits
 function preparePayloadHeader(plainData, valueWithMinCount, minValueCount) {
     // if minValueCount === 0 location map is not included in bytes to write
     if (minValueCount === 0) {
-        return [minValueCount];
+        return [0];
     }
     console.log('Hist: payload extended mode!');
     const locationMap = createLocationMap(plainData, valueWithMinCount);
@@ -62,6 +87,15 @@ function preparePayloadHeader(plainData, valueWithMinCount, minValueCount) {
     const locMapCompressedBits = huffmanCompress(locMapBytes);
     locMapCompressedBits.unshift(1);
     return locMapCompressedBits;
+}
+function decodeHeader(headerBits, plainData) {
+    const headerData = headerBits.slice(1);
+    if (headerBits[0] === 0) {
+        return [undefined, headerData];
+    }
+    const mapBytesLength = Math.floor((plainData.length - 1) / 8) + 1;
+    const [locMapBytes, messageBits] = huffmanDecompress(headerData, mapBytesLength);
+    return [locMapBytes, messageBits];
 }
 function analyzeHistogram(histogram) {
     let valueWithMinCount = 0;
@@ -98,4 +132,26 @@ function shiftHistogram(data, valueWithMinCount, valueWithMaxCount) {
             return value;
         }
     });
+}
+function unshiftHistogram(data, valueWithMinCount, valueWithMaxCount, locMap) {
+    const isMinSmaller = valueWithMinCount < valueWithMaxCount;
+    const min = isMinSmaller ? valueWithMinCount : valueWithMaxCount;
+    const max = isMinSmaller ? valueWithMaxCount : valueWithMinCount;
+    const diff = isMinSmaller ? 1 : -1;
+    const unShifted = data.map(value => {
+        if (value > min - diff && value < max - diff) {
+            return value + diff;
+        }
+        else {
+            return value;
+        }
+    });
+    if (locMap) {
+        locMap.forEach((value, idx) => {
+            if (value === 1) {
+                unShifted[idx] = valueWithMinCount;
+            }
+        });
+    }
+    return unShifted;
 }
