@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[0.15.0]] - 2022-01-15 _(MJ)_
+
+###### _([diff: 0.14.0-0.15.0])_
+
+Added:
+
+- Exceeded Capacity Check for Image Generation
+
+Changed:
+
+- Massive refactor of [`main.ts`](./src/main.ts) file.
+- Removed the Work in Progress label from Histogram Shifting
+
 ## [[0.14.0]] - 2022-01-15 _(MJ)_
 
 ###### _([diff: 0.13.0-0.14.0])_
@@ -367,6 +380,7 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.14.0-0.15.0]: https://github.com/Luzkan/CryptoImage/compare/0.14.0...0.15.0
 [diff: 0.13.0-0.14.0]: https://github.com/Luzkan/CryptoImage/compare/0.13.0...0.14.0
 [diff: 0.12.0-0.13.0]: https://github.com/Luzkan/CryptoImage/compare/0.12.0...0.13.0
 [diff: 0.11.3-0.12.0]: https://github.com/Luzkan/CryptoImage/compare/0.11.3...0.12.0
@@ -396,6 +410,7 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[0.15.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.15.0
 [0.14.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.14.0
 [0.13.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.13.0
 [0.12.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.12.0

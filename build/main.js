@@ -6,269 +6,307 @@ const DEBUG = true;
 // Data Storages
 // Class storing the variables for the image
 class EncryptedFile {
-    constructor(name, message, diffExpBMPEncrypted, histShiftBMPEncrypted, singValDecompBMPEncrypted, diffExpBMPDecrypted, histShiftBMPDecrypted, singValDecompBMPDecrypted) {
-        this.name = name;
+    constructor(differentialExpansion, histogramShifting, singularValueDecomposition) {
+        this.differentialExpansion = differentialExpansion;
+        this.histogramShifting = histogramShifting;
+        this.singularValueDecomposition = singularValueDecomposition;
+    }
+    checkMessageValidity() {
+        if (!this.differentialExpansion || !this.histogramShifting || !this.singularValueDecomposition)
+            return;
+        const prinout = (msg1, msg2) => {
+            console.log(`Message #1:\n${msg1}`);
+            console.log(`Message #2:\n${msg2}`);
+        };
+        if (this.differentialExpansion.message !== this.histogramShifting.message) {
+            prinout(this.differentialExpansion.message, this.histogramShifting.message);
+            throw new Error("Differential Expansion and Histogram Shifting have different messages!");
+        }
+        if (this.differentialExpansion.message !== this.singularValueDecomposition.message) {
+            prinout(this.differentialExpansion.message, this.singularValueDecomposition.message);
+            throw new Error("Differential Expansion and Singular Value Decomposition have different messages!");
+        }
+    }
+}
+class EncryptedDecryptedImage {
+    constructor(encrypted, decrypted, message) {
+        this.encrypted = encrypted;
+        this.decrypted = decrypted;
         this.message = message;
-        this.diffExpBMPEncrypted = diffExpBMPEncrypted;
-        this.histShiftBMPEncrypted = histShiftBMPEncrypted;
-        this.singValDecompBMPEncrypted = singValDecompBMPEncrypted;
-        this.diffExpBMPDecrypted = diffExpBMPDecrypted;
-        this.histShiftBMPDecrypted = histShiftBMPDecrypted;
-        this.singValDecompBMPDecrypted = singValDecompBMPDecrypted;
     }
 }
 // Globally scoped variables
-let image_output = null;
-let encrypted_text = null;
-let bmp = null;
-let current_bytes_to_write_de = 0;
-let current_bytes_to_write_hs = 0;
-let current_bytes_to_write_svd = 0;
-let maximumSize = 0;
+let encryptedText = null;
+let inputImageInfo = null;
+let maximumSizeValue = 0;
 // -------------------------------------------------------------
 // HTML Elements
-// Method Checkboxes
-const checkbox1 = document.getElementById("method-1-checkbox");
-const checkbox2 = document.getElementById("method-2-checkbox");
-const checkbox3 = document.getElementById("method-3-checkbox");
-// Method Labels
-const labelDE = document.getElementById("method-de-label");
-const labelHS = document.getElementById("method-hs-label");
-const labelSVD = document.getElementById("method-svd-label");
-// Image Original
-const originalImageDiv = document.getElementById("original-image-div");
-const originalImageImg = document.getElementById("orignal-image-img");
 // Fullscreen
 const fullscreenDiv = document.getElementById("fullscreen-div");
 const fullscreenImg = document.getElementById("fullscreen-img");
-// Immges Encoded
-const diffExpEncodedImg = document.getElementById("diff-exp-encoded-image");
-const histShiftEncodedImg = document.getElementById("hist-shift-encoded-image");
-const singValDecompEncodedImg = document.getElementById("sing-val-decomp-encoded-image");
-// Immges Decoded
-const diffExpDecodedImg = document.getElementById("diff-exp-decoded-image");
-const histShiftDecodedImg = document.getElementById("hist-shift-decoded-image");
-const singValDecompDecodedImg = document.getElementById("sing-val-decomp-decoded-image");
-// Available Size Counters
-const availableSizeDiffExpCounterLabel = document.getElementById("available-diff-exp-counter");
-const availableSizeHistShiftCounterLabel = document.getElementById("available-hist-shift-counter");
-const availableSizeSingValDecompCounterLabel = document.getElementById("available-sing-val-decomp-counter");
+// Counters (JQuery Getter)
 // @ts-ignore
-const availableSizeDiffExpCounterLabelJQ = $('#available-diff-exp-counter'); // @ts-ignore
-const availableSizeHistShiftCounterLabelJQ = $('#available-hist-shift-counter'); // @ts-ignore
+const availableSizeDiffExpCounterLabelJQ = $('#available-diff-exp-counter');
+// @ts-ignore
+const availableSizeHistShiftCounterLabelJQ = $('#available-hist-shift-counter');
+// @ts-ignore
 const availableSizeSingValDecompCounterLabelJQ = $('#available-sing-val-decomp-counter');
-// Info Counters
-const imageSizeCounterLabel = document.getElementById("image-size-counter");
-const maximumSizeCounterLabel = document.getElementById("maximum-size-counter");
-const decodeSizeCounterLabel = document.getElementById("decode-size-counter");
 // @ts-ignore
-const imageSizeCounterLabelJQ = $('#image-size-counter'); // @ts-ignore
-const maximumSizeCounterLabelJQ = $('#maximum-size-counter'); // @ts-ignore
+const imageSizeCounterLabelJQ = $('#image-size-counter');
+// @ts-ignore
+const maximumSizeCounterLabelJQ = $('#maximum-size-counter');
+// @ts-ignore
 const decodeSizeCounterLabelJQ = $('#decode-size-counter');
+// Available Size Counters
+class CapacityCounter {
+    constructor(label, labelJQ, bytesToWrite) {
+        this.currentBytesCapacity = 0;
+        this.label = label;
+        this.labelJQ = labelJQ;
+        this.bytesToWrite = bytesToWrite;
+    }
+    update(encrypted_message_length) {
+        this.label.innerHTML = (this.currentBytesCapacity - encrypted_message_length).toString();
+    }
+    countTo() {
+        if (!inputImageInfo)
+            return;
+        const getBytesToWriteCapacity = (inputImage) => {
+            try {
+                return this.bytesToWrite(inputImage);
+            }
+            catch (e) {
+                console.log(e);
+                return 0;
+            }
+        };
+        this.currentBytesCapacity = getBytesToWriteCapacity(inputImageInfo);
+        this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: this.currentBytesCapacity - (encryptedText?.length ?? 0) });
+    }
+}
+class Algorithm {
+    constructor(counter, methodLabel, checkbox, imageEncoded, imageDecoded) {
+        this.counter = counter;
+        this.methodLabel = methodLabel;
+        this.checkbox = checkbox;
+        this.imageEncoded = imageEncoded;
+        this.imageDecoded = imageDecoded;
+    }
+    isCapacityExceeded() {
+        return this.counter.currentBytesCapacity - (encryptedText?.length ?? 0) < 0;
+    }
+    checkWhetherCounterPassedZeroAndHandle() {
+        if (this.isCapacityExceeded()) {
+            this.methodLabel.classList.add("disabled-download-option");
+            this.methodLabel.children[2].innerHTML = "- no capacity";
+        }
+        else {
+            this.methodLabel.classList.remove("disabled-download-option");
+            this.methodLabel.children[2].innerHTML = "";
+        }
+    }
+    loadResultsImagesToResultSection(image) {
+        if (!image)
+            return;
+        function makeFullscreenOnClick(image) {
+            image.addEventListener('click', function () {
+                fullscreenImg.src = image.src;
+                fullscreenDiv.style.display = 'flex';
+                fullscreenDiv.style.visibility = 'visible';
+                fullscreenDiv.style.opacity = '1';
+            });
+        }
+        this.imageEncoded.src = URL.createObjectURL(image.encrypted.toBlob());
+        makeFullscreenOnClick(this.imageEncoded);
+        this.imageDecoded.src = URL.createObjectURL(image.decrypted.toBlob());
+        makeFullscreenOnClick(this.imageDecoded);
+    }
+    download() {
+        if (!this.checkbox.checked)
+            return;
+        const link = document.createElement('a');
+        link.download = this.methodLabel.children[0].innerHTML + ".bmp";
+        link.href = this.imageEncoded.src;
+        link.click();
+    }
+}
+class InfoCounter {
+    constructor(label, labelJQ) {
+        this.label = label;
+        this.labelJQ = labelJQ;
+    }
+    countTo() {
+        if (!inputImageInfo)
+            return;
+        this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: Math.floor(inputImageInfo.fileSize / 1024) });
+    }
+}
+const diffExp = new Algorithm(new CapacityCounter(document.getElementById("available-diff-exp-counter"), availableSizeDiffExpCounterLabelJQ, bytesToWriteDE), document.getElementById("method-de-label"), document.getElementById("method-de-checkbox"), document.getElementById("diff-exp-encoded-image"), document.getElementById("diff-exp-decoded-image"));
+const histShift = new Algorithm(new CapacityCounter(document.getElementById("available-hist-shift-counter"), availableSizeHistShiftCounterLabelJQ, bytesToWriteHS), document.getElementById("method-hs-label"), document.getElementById("method-hs-checkbox"), document.getElementById("hist-shift-encoded-image"), document.getElementById("hist-shift-decoded-image"));
+const singValDecomp = new Algorithm(new CapacityCounter(document.getElementById("available-sing-val-decomp-counter"), availableSizeSingValDecompCounterLabelJQ, bytesToWriteDE // TODO, change to bytesToWriteSVD
+), document.getElementById("method-svd-label"), document.getElementById("method-svd-checkbox"), document.getElementById("sing-val-decomp-encoded-image"), document.getElementById("sing-val-decomp-decoded-image"));
 // Encryption Form (ImageInput, Textfield, Button and Tooltip)
-const inputImg = document.getElementById("form-input-image");
-const messageTextarea = document.getElementById("crypto-image-message");
-const encryptBtn = document.getElementById("btn-encrypt");
 const encryptTooltip = document.getElementById("p-encrypt-tooltip");
-// -------------------------------------------------------------
-// Navigation Functions
-function smoothScrollToTopAfterReload() {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-}
-function smoothScrollToResultsSection() {
-    const imageProcessingCompletedHeading = document.getElementById("results-section-scroll-hook");
-    imageProcessingCompletedHeading.scrollIntoView({ behavior: 'smooth' });
-}
-// -------------------------------------------------------------
-// Display Related Functions
-function makeFullscreenOnClick(image) {
-    image.addEventListener('click', function () {
-        fullscreenImg.src = image.src;
-        fullscreenDiv.style.display = 'flex';
-        fullscreenDiv.style.visibility = 'visible';
-        fullscreenDiv.style.opacity = '1';
-    });
-}
-function makeHiddenOnClick(element) {
-    element.addEventListener('click', function () {
-        element.style.opacity = '0';
-        element.style.visibility = 'hidden';
-    });
-}
-function displayResultsSection() {
-    const resultsSectionDiv = document.getElementById("section-results-div");
-    resultsSectionDiv.style.display = "block";
-    resultsSectionDiv.style.visibility = "visible";
-}
+// Info Counters
+const imageSize = new InfoCounter(document.getElementById("image-size-counter"), imageSizeCounterLabelJQ);
+const maximumSize = new InfoCounter(document.getElementById("maximum-size-counter"), maximumSizeCounterLabelJQ);
+const decodeSize = new InfoCounter(document.getElementById("decode-size-counter"), decodeSizeCounterLabelJQ);
 // -------------------------------------------------------------
 // User Controls Related Functions
 function tryEnableEncryptButton() {
-    if (!bmp && !encrypted_text) {
+    function enableEncryptButton() {
+        if (!encryptBtn || !encryptTooltip)
+            return;
+        encryptBtn.disabled = false;
+        encryptTooltip.classList.add("permamently-transparent");
+    }
+    if (!inputImageInfo && !encryptedText) {
         encryptTooltip.innerHTML = "Upload an image first and type in text.";
     }
-    else if (!bmp && encrypted_text) {
+    else if (!inputImageInfo && encryptedText) {
         encryptTooltip.innerHTML = "Upload an image first.";
     }
-    else if (bmp && !encrypted_text) {
+    else if (inputImageInfo && !encryptedText) {
         encryptTooltip.innerHTML = "Type in encryption text first.";
     }
     else {
         enableEncryptButton();
     }
 }
-function enableEncryptButton() {
-    // Enables the encrypt button if the textfield is not empty
-    if (encryptBtn && encryptTooltip) {
-        encryptBtn.disabled = false;
-        encryptTooltip.classList.add("permamently-transparent");
-    }
-}
-function handleDownloadButtonsAvailability() {
-    function checkWhetherCounterPassedZeroAndHandle(currentCount, label) {
-        if (currentCount - (encrypted_text?.length ?? 0) < 0) {
-            label.classList.add("disabled-download-option");
-            label.children[2].innerHTML = "- no capacity";
-        }
-        else {
-            label.classList.remove("disabled-download-option");
-            label.children[2].innerHTML = "";
-        }
-    }
-    checkWhetherCounterPassedZeroAndHandle(current_bytes_to_write_de, labelDE);
-    checkWhetherCounterPassedZeroAndHandle(current_bytes_to_write_hs, labelHS);
-    checkWhetherCounterPassedZeroAndHandle(current_bytes_to_write_svd, labelSVD);
-}
-function updateCounters(bmp) {
-    function updateCapacityCounters() {
-        current_bytes_to_write_de = bytesToWriteDE(bmp);
-        current_bytes_to_write_hs = bytesToWriteHS(bmp);
-        current_bytes_to_write_svd = bytesToWriteDE(bmp); // TODO: ... = bytesToWriteSVD(bmp)
-        const target_bytes_number_de = current_bytes_to_write_de - (encrypted_text?.length ?? 0);
-        const target_bytes_number_hs = current_bytes_to_write_hs - (encrypted_text?.length ?? 0);
-        const target_bytes_number_svd = current_bytes_to_write_svd - (encrypted_text?.length ?? 0);
-        availableSizeDiffExpCounterLabelJQ.countTo({ from: parseInt(availableSizeDiffExpCounterLabel.innerHTML), to: target_bytes_number_de });
-        availableSizeHistShiftCounterLabelJQ.countTo({ from: parseInt(availableSizeHistShiftCounterLabel.innerHTML), to: target_bytes_number_hs });
-        availableSizeSingValDecompCounterLabelJQ.countTo({ from: parseInt(availableSizeSingValDecompCounterLabel.innerHTML), to: target_bytes_number_svd });
-    }
-    function updateInfoCounters() {
-        maximumSize = Math.max(current_bytes_to_write_de, current_bytes_to_write_hs, current_bytes_to_write_svd) - (encrypted_text?.length ?? 0);
-        imageSizeCounterLabelJQ.countTo({ from: parseInt(imageSizeCounterLabel.innerHTML), to: Math.floor(bmp.fileSize / 1024) });
-        maximumSizeCounterLabelJQ.countTo({ from: parseInt(maximumSizeCounterLabel.innerHTML), to: maximumSize });
-        decodeSizeCounterLabelJQ.countTo({ from: parseInt(decodeSizeCounterLabel.innerHTML), to: Math.floor(bmp.fileSize / 1024) });
-    }
-    updateCapacityCounters();
-    updateInfoCounters();
-}
-// -------------------------------------------------------------
-// Misc Functions
-function loadResultImagesToResultSection(image_output) {
-    if (image_output.diffExpBMPEncrypted) {
-        diffExpEncodedImg.src = URL.createObjectURL(image_output.diffExpBMPEncrypted.toBlob());
-        makeFullscreenOnClick(diffExpEncodedImg);
-        diffExpDecodedImg.src = URL.createObjectURL(image_output.diffExpBMPDecrypted.toBlob());
-        makeFullscreenOnClick(diffExpDecodedImg);
-    }
-    if (image_output.histShiftBMPEncrypted) {
-        histShiftEncodedImg.src = URL.createObjectURL(image_output.histShiftBMPEncrypted.toBlob());
-        makeFullscreenOnClick(histShiftEncodedImg);
-        histShiftDecodedImg.src = URL.createObjectURL(image_output.histShiftBMPDecrypted.toBlob());
-        makeFullscreenOnClick(histShiftDecodedImg);
-    }
-    if (image_output.singValDecompBMPEncrypted) {
-        singValDecompEncodedImg.src = URL.createObjectURL(image_output.singValDecompBMPEncrypted.toBlob());
-        makeFullscreenOnClick(singValDecompEncodedImg);
-        singValDecompDecodedImg.src = URL.createObjectURL(image_output.singValDecompBMPDecrypted.toBlob());
-        makeFullscreenOnClick(singValDecompDecodedImg);
-    }
-}
-function deletePreviouslyAddedDisplayImage() {
-    var displayImage = document.getElementsByClassName("display-original-img");
-    Array.from(displayImage).forEach(function (element) { element.remove(); });
-}
 // -------------------------------------------------------------
 // Logic
 function encryptAndDecrypt(bmp, encrypted_text) {
-    function histogram_shifting() {
+    function getDifferentialExpansionImages() {
+        if (diffExp.isCapacityExceeded())
+            return null;
+        try {
+            const diffExpBMPEncrypted = differentialExpansionEncrypt(bmp, encrypted_text);
+            const [diffExpBMPDecrypted, diffExpMsgDecrypted] = differentialExpansionDecrypt(diffExpBMPEncrypted);
+            return { encrypted: diffExpBMPEncrypted, decrypted: diffExpBMPDecrypted, message: diffExpMsgDecrypted };
+        }
+        catch (error) {
+            return null;
+        }
+    }
+    function getHistogramShiftingImages() {
+        if (histShift.isCapacityExceeded())
+            return null;
         try {
             const [histShiftBMPEncrypted, histShiftKeys] = histogramShiftingEncrypt(bmp, encrypted_text);
             const [histShiftBMPDecrypted, histShiftMsgDecrypted] = histogramShiftingDecrypt(histShiftBMPEncrypted, histShiftKeys);
-            return [histShiftBMPEncrypted, histShiftBMPDecrypted, histShiftMsgDecrypted];
+            return { encrypted: histShiftBMPEncrypted, decrypted: histShiftBMPDecrypted, message: histShiftMsgDecrypted };
         }
         catch (error) {
-            return [null, null, null];
+            return null;
         }
     }
-    const diffExpBMPEncrypted = differentialExpansionEncrypt(bmp, encrypted_text);
-    const [diffExpBMPDecrypted, diffExpMsgDecrypted] = differentialExpansionDecrypt(diffExpBMPEncrypted);
-    const [histShiftBMPEncrypted, histShiftBMPDecrypted, histShiftMsgDecrypted] = histogram_shifting();
-    const singValDecompBMPEncrypted = singularValueDecompositionEncrypt(bmp, encrypted_text);
-    const [singValDecompBMPDecrypted, singValDecompMsgDecrypted] = singularValueDecompositionDecrypt(singValDecompBMPEncrypted);
-    if (!(diffExpMsgDecrypted === histShiftMsgDecrypted) || !(diffExpMsgDecrypted === singValDecompMsgDecrypted)) {
-        console.log('Message Decryption Error!');
-        console.log(`Differential Expansion: ${diffExpMsgDecrypted}`);
-        console.log(`Histogram Shifting: ${histShiftMsgDecrypted}`);
-        console.log(`Singular Value Decomposition: ${singValDecompMsgDecrypted}`);
+    function getSingularValueDecompositionImages() {
+        if (singValDecomp.isCapacityExceeded())
+            return null;
+        try {
+            const singValDecompBMPEncrypted = singularValueDecompositionEncrypt(bmp, encrypted_text);
+            const [singValDecompBMPDecrypted, singValDecompMsgDecrypted] = singularValueDecompositionDecrypt(singValDecompBMPEncrypted);
+            return { encrypted: singValDecompBMPEncrypted, decrypted: singValDecompBMPDecrypted, message: singValDecompMsgDecrypted };
+        }
+        catch (error) {
+            return null;
+        }
     }
-    return new EncryptedFile("output", diffExpMsgDecrypted, diffExpBMPEncrypted, histShiftBMPEncrypted, singValDecompBMPEncrypted, diffExpBMPDecrypted, histShiftBMPDecrypted, singValDecompBMPDecrypted);
+    return new EncryptedFile(getDifferentialExpansionImages(), getHistogramShiftingImages(), getSingularValueDecompositionImages());
 }
 // -------------------------------------------------------------
 // Actions
-messageTextarea.addEventListener('input', (event) => {
+const messageTextArea = document.getElementById("crypto-image-message");
+messageTextArea.addEventListener('input', (event) => {
     if (event) {
-        encrypted_text = event.target.value;
+        encryptedText = event.target.value;
     }
-    if (encrypted_text) {
-        availableSizeDiffExpCounterLabel.innerHTML = (current_bytes_to_write_de - encrypted_text?.length).toString();
-    }
-    if (encrypted_text) {
-        availableSizeHistShiftCounterLabel.innerHTML = (current_bytes_to_write_hs - encrypted_text?.length).toString();
-    }
-    if (encrypted_text) {
-        availableSizeSingValDecompCounterLabel.innerHTML = (current_bytes_to_write_svd - encrypted_text?.length).toString();
-    }
-    if (encrypted_text) {
-        maximumSizeCounterLabel.innerHTML = (maximumSize - encrypted_text?.length).toString();
-    }
-    handleDownloadButtonsAvailability();
-    tryEnableEncryptButton();
-});
-inputImg.addEventListener('input', async (e) => {
-    // Retrieve Imagefile
-    const originalImage = e.target.files[0];
-    // Decode & Create Pixel 3D Array
-    bmp = await BMP.from(originalImage);
-    originalImageImg.src = URL.createObjectURL(originalImage);
-    updateCounters(bmp);
-    tryEnableEncryptButton();
-});
-encryptBtn.addEventListener("click", function () {
-    if (!bmp || !encrypted_text) {
+    if (typeof encryptedText != "string")
         return;
+    function updateCapacityCounters(counters) {
+        counters.forEach(counter => counter.update(messageLength));
     }
-    image_output = encryptAndDecrypt(bmp, encrypted_text);
-    loadResultImagesToResultSection(image_output);
+    function handleDownloadButtonsAvailability(elements) {
+        elements.forEach(element => element.checkWhetherCounterPassedZeroAndHandle());
+    }
+    const messageLength = encryptedText?.length ?? 0;
+    maximumSize.label.innerHTML = (maximumSizeValue - messageLength).toString();
+    updateCapacityCounters([diffExp.counter, histShift.counter, singValDecomp.counter]);
+    handleDownloadButtonsAvailability([diffExp, histShift, singValDecomp]);
+    tryEnableEncryptButton();
+});
+// -------------------------------------------------------------
+const originalImageImg = document.getElementById("orignal-image-img");
+const inputImg = document.getElementById("form-input-image");
+inputImg.addEventListener('input', async (e) => {
+    function updateCounters() {
+        function updateCapacityCounters(counters) {
+            counters.forEach(counter => counter.countTo());
+        }
+        function updateInfoCounters(counters) {
+            counters.forEach(counter => counter.countTo());
+        }
+        function updateMaximumSizeValue() {
+            maximumSizeValue = Math.max(diffExp.counter.currentBytesCapacity, histShift.counter.currentBytesCapacity, singValDecomp.counter.currentBytesCapacity) - (encryptedText?.length ?? 0);
+        }
+        updateMaximumSizeValue();
+        updateCapacityCounters([diffExp.counter, histShift.counter, singValDecomp.counter]);
+        updateInfoCounters([imageSize, maximumSize, decodeSize]);
+    }
+    const inputImage = e.target.files[0];
+    inputImageInfo = await BMP.from(inputImage);
+    originalImageImg.src = URL.createObjectURL(inputImage);
+    updateCounters();
+    tryEnableEncryptButton();
+});
+// -------------------------------------------------------------
+const encryptBtn = document.getElementById("btn-encrypt");
+encryptBtn.addEventListener("click", function () {
+    if (!inputImageInfo || !encryptedText)
+        return;
+    function loadResultImagesToResultSection(encrypted) {
+        diffExp.loadResultsImagesToResultSection(encrypted.differentialExpansion);
+        histShift.loadResultsImagesToResultSection(encrypted.histogramShifting);
+        singValDecomp.loadResultsImagesToResultSection(encrypted.singularValueDecomposition);
+    }
+    function displayResultsSection() {
+        const resultsSectionDiv = document.getElementById("section-results-div");
+        resultsSectionDiv.style.display = "block";
+        resultsSectionDiv.style.visibility = "visible";
+    }
+    function smoothScrollToResultsSection() {
+        const imageProcessingCompletedHeading = document.getElementById("results-section-scroll-hook");
+        imageProcessingCompletedHeading.scrollIntoView({ behavior: 'smooth' });
+    }
+    function downloadCheckboxSelectedImages(elements) {
+        elements.forEach(element => element.download());
+    }
+    const encryptedFile = encryptAndDecrypt(inputImageInfo, encryptedText);
+    try {
+        encryptedFile.checkMessageValidity();
+    }
+    catch (error) {
+        console.log(error);
+    }
+    loadResultImagesToResultSection(encryptedFile);
     displayResultsSection();
     smoothScrollToResultsSection();
+    downloadCheckboxSelectedImages([diffExp, histShift, singValDecomp]);
 });
-encryptBtn.addEventListener('click', function () {
-    if (checkbox1 && image_output && checkbox1.checked) {
-        downloadBMP(image_output.diffExpBMPEncrypted, `diff_exp_encoded_${image_output.name}`);
-    }
-    // TODO if (checkbox2 && image_output && checkbox2.checked) { downloadBMP(image_output.histShiftBMPEncrypted, `hist_shift_encoded_${ image_output.name }`); }
-    if (checkbox3 && image_output && checkbox3.checked) {
-        downloadBMP(image_output.singValDecompBMPEncrypted, `sing_val_decomp_encoded_${image_output.name}`);
-    }
-    if (checkbox1 && image_output && checkbox1.checked) {
-        downloadBMP(image_output.diffExpBMPDecrypted, `diff_exp_decoded_${image_output.name}`);
-    }
-    // TODO if (checkbox2 && image_output && checkbox2.checked) { downloadBMP(image_output.histShiftBMPDecrypted, `hist_shift_decoded_${ image_output.name }`); }
-    if (checkbox3 && image_output && checkbox3.checked) {
-        downloadBMP(image_output.singValDecompBMPDecrypted, `sing_val_decomp_decoded_${image_output.name}`);
-    }
-    if (image_output) {
-        console.log(`Encoded / Decoded:\n${image_output.message}`);
-    }
-});
+// -------------------------------------------------------------
+// -------------------------------------------------------------
+// Navigation Functions
+function smoothScrollToTopAfterReload() {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+}
+// -------------------------------------------------------------
+// Display Related Functions
+function makeHiddenOnClick(element) {
+    element.addEventListener('click', function () {
+        element.style.opacity = '0';
+        element.style.visibility = 'hidden';
+    });
+}
 // After Page Load
 smoothScrollToTopAfterReload();
 makeHiddenOnClick(fullscreenDiv);
