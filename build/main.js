@@ -3,8 +3,6 @@
 // Initialization
 const DEBUG = true;
 // -------------------------------------------------------------
-// Data Storages
-// Class storing the variables for the image
 class EncryptedFile {
     constructor(differentialExpansion, histogramShifting, singularValueDecomposition) {
         this.differentialExpansion = differentialExpansion;
@@ -35,29 +33,6 @@ class EncryptedDecryptedImage {
         this.message = message;
     }
 }
-// Globally scoped variables
-let encryptedText = null;
-let inputImageInfo = null;
-let maximumSizeValue = 0;
-// -------------------------------------------------------------
-// HTML Elements
-// Fullscreen
-const fullscreenDiv = document.getElementById("fullscreen-div");
-const fullscreenImg = document.getElementById("fullscreen-img");
-// Counters (JQuery Getter)
-// @ts-ignore
-const availableSizeDiffExpCounterLabelJQ = $('#available-diff-exp-counter');
-// @ts-ignore
-const availableSizeHistShiftCounterLabelJQ = $('#available-hist-shift-counter');
-// @ts-ignore
-const availableSizeSingValDecompCounterLabelJQ = $('#available-sing-val-decomp-counter');
-// @ts-ignore
-const imageSizeCounterLabelJQ = $('#image-size-counter');
-// @ts-ignore
-const maximumSizeCounterLabelJQ = $('#maximum-size-counter');
-// @ts-ignore
-const decodeSizeCounterLabelJQ = $('#decode-size-counter');
-// Available Size Counters
 class CapacityCounter {
     constructor(label, labelJQ, bytesToWrite) {
         this.currentBytesCapacity = 0;
@@ -80,7 +55,7 @@ class CapacityCounter {
                 return 0;
             }
         };
-        this.currentBytesCapacity = getBytesToWriteCapacity(inputImageInfo);
+        this.currentBytesCapacity = getBytesToWriteCapacity(inputImageInfo); // @ts-ignore
         this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: this.currentBytesCapacity - (encryptedText?.length ?? 0) });
     }
 }
@@ -137,20 +112,31 @@ class InfoCounter {
     }
     countTo() {
         if (!inputImageInfo)
-            return;
+            return; // @ts-ignore
         this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: Math.floor(inputImageInfo.fileSize / 1024) });
     }
 }
-const diffExp = new Algorithm(new CapacityCounter(document.getElementById("available-diff-exp-counter"), availableSizeDiffExpCounterLabelJQ, bytesToWriteDE), document.getElementById("method-de-label"), document.getElementById("method-de-checkbox"), document.getElementById("diff-exp-encoded-image"), document.getElementById("diff-exp-decoded-image"));
-const histShift = new Algorithm(new CapacityCounter(document.getElementById("available-hist-shift-counter"), availableSizeHistShiftCounterLabelJQ, bytesToWriteHS), document.getElementById("method-hs-label"), document.getElementById("method-hs-checkbox"), document.getElementById("hist-shift-encoded-image"), document.getElementById("hist-shift-decoded-image"));
-const singValDecomp = new Algorithm(new CapacityCounter(document.getElementById("available-sing-val-decomp-counter"), availableSizeSingValDecompCounterLabelJQ, bytesToWriteDE // TODO, change to bytesToWriteSVD
-), document.getElementById("method-svd-label"), document.getElementById("method-svd-checkbox"), document.getElementById("sing-val-decomp-encoded-image"), document.getElementById("sing-val-decomp-decoded-image"));
+// Globally scoped variables
+let encryptedText = null;
+let inputImageInfo = null;
+let maximumSizeValue = 0;
+// -------------------------------------------------------------
+// HTML Elements
+// Fullscreen
+const fullscreenDiv = document.getElementById("fullscreen-div");
+const fullscreenImg = document.getElementById("fullscreen-img");
 // Encryption Form (ImageInput, Textfield, Button and Tooltip)
 const encryptTooltip = document.getElementById("p-encrypt-tooltip");
+// -------------------------------------------------------------
+// Initialziing Globally Scoped Objects for Algorithms
+const diffExp = new Algorithm(new CapacityCounter(document.getElementById("available-diff-exp-counter"), $('#available-diff-exp-counter'), bytesToWriteDE), document.getElementById("method-de-label"), document.getElementById("method-de-checkbox"), document.getElementById("diff-exp-encoded-image"), document.getElementById("diff-exp-decoded-image"));
+const histShift = new Algorithm(new CapacityCounter(document.getElementById("available-hist-shift-counter"), $('#available-hist-shift-counter'), bytesToWriteHS), document.getElementById("method-hs-label"), document.getElementById("method-hs-checkbox"), document.getElementById("hist-shift-encoded-image"), document.getElementById("hist-shift-decoded-image"));
+const singValDecomp = new Algorithm(new CapacityCounter(document.getElementById("available-sing-val-decomp-counter"), $('#available-sing-val-decomp-counter'), bytesToWriteDE // TODO, change to bytesToWriteSVD
+), document.getElementById("method-svd-label"), document.getElementById("method-svd-checkbox"), document.getElementById("sing-val-decomp-encoded-image"), document.getElementById("sing-val-decomp-decoded-image"));
 // Info Counters
-const imageSize = new InfoCounter(document.getElementById("image-size-counter"), imageSizeCounterLabelJQ);
-const maximumSize = new InfoCounter(document.getElementById("maximum-size-counter"), maximumSizeCounterLabelJQ);
-const decodeSize = new InfoCounter(document.getElementById("decode-size-counter"), decodeSizeCounterLabelJQ);
+const imageSize = new InfoCounter(document.getElementById("image-size-counter"), $('#image-size-counter'));
+const maximumSize = new InfoCounter(document.getElementById("maximum-size-counter"), $('#maximum-size-counter'));
+const decodeSize = new InfoCounter(document.getElementById("decode-size-counter"), $('#decode-size-counter'));
 // -------------------------------------------------------------
 // User Controls Related Functions
 function tryEnableEncryptButton() {
@@ -294,7 +280,6 @@ encryptBtn.addEventListener("click", function () {
     downloadCheckboxSelectedImages([diffExp, histShift, singValDecomp]);
 });
 // -------------------------------------------------------------
-// -------------------------------------------------------------
 // Navigation Functions
 function smoothScrollToTopAfterReload() {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -307,6 +292,7 @@ function makeHiddenOnClick(element) {
         element.style.visibility = 'hidden';
     });
 }
-// After Page Load
+// -------------------------------------------------------------
+// After Page Load Actions
 smoothScrollToTopAfterReload();
 makeHiddenOnClick(fullscreenDiv);

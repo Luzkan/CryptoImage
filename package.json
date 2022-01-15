@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@types/blueimp-load-image": "^5.14.4",
+    "@types/jquery": "^3.5.13",
     "@types/node": "^16.11.7",
     "typescript": "^4.4.4"
   }

@@ -39,11 +39,11 @@ class EncryptedDecryptedImage {
 
 class CapacityCounter {
   label: HTMLSpanElement;
-  labelJQ: any;
+  labelJQ: JQuery<HTMLElement>;
   bytesToWrite: (bmp: BMP) => number;
   currentBytesCapacity: number = 0;
  
-  constructor(label: HTMLSpanElement, labelJQ: any, bytesToWrite: (bmp: BMP) => number) {
+  constructor(label: HTMLSpanElement, labelJQ: JQuery<HTMLElement>, bytesToWrite: (bmp: BMP) => number) {
     this.label = label;
     this.labelJQ = labelJQ;
     this.bytesToWrite = bytesToWrite;
@@ -58,7 +58,7 @@ class CapacityCounter {
     const getBytesToWriteCapacity = (inputImage: BMP): number => {
       try { return this.bytesToWrite(inputImage); } catch (e) { console.log(e); return 0 }
     }
-    this.currentBytesCapacity = getBytesToWriteCapacity(inputImageInfo);
+    this.currentBytesCapacity = getBytesToWriteCapacity(inputImageInfo);  // @ts-ignore
     this.labelJQ.countTo({from: parseInt(this.label.innerHTML), to: this.currentBytesCapacity - (encryptedText?.length ?? 0)});
   }
 }
@@ -125,15 +125,15 @@ class Algorithm {
 
 class InfoCounter {
   label: HTMLSpanElement;
-  labelJQ: any;
+  labelJQ: JQuery<HTMLElement>;
 
-  constructor(label: HTMLSpanElement, labelJQ: any) {
+  constructor(label: HTMLSpanElement, labelJQ: JQuery<HTMLElement>) {
     this.label = label;
     this.labelJQ = labelJQ;
   }
 
   countTo(): void {
-    if (!inputImageInfo) return
+    if (!inputImageInfo) return // @ts-ignore
     this.labelJQ.countTo({from: parseInt(this.label.innerHTML), to: Math.floor(inputImageInfo.fileSize/1024)});
   }
 }
@@ -154,27 +154,13 @@ const fullscreenImg = document.getElementById("fullscreen-img") as HTMLImageElem
 // Encryption Form (ImageInput, Textfield, Button and Tooltip)
 const encryptTooltip = document.getElementById("p-encrypt-tooltip") as HTMLParagraphElement;
 
-// Counters (JQuery Getter)
-// @ts-ignore
-const availableSizeDiffExpCounterLabelJQ = $('#available-diff-exp-counter')
-// @ts-ignore
-const availableSizeHistShiftCounterLabelJQ = $('#available-hist-shift-counter')
-// @ts-ignore
-const availableSizeSingValDecompCounterLabelJQ = $('#available-sing-val-decomp-counter')
-// @ts-ignore
-const imageSizeCounterLabelJQ = $('#image-size-counter')
-// @ts-ignore
-const maximumSizeCounterLabelJQ = $('#maximum-size-counter')
-// @ts-ignore
-const decodeSizeCounterLabelJQ = $('#decode-size-counter')
-
 // -------------------------------------------------------------
 // Initialziing Globally Scoped Objects for Algorithms
 
 const diffExp = new Algorithm(
   new CapacityCounter(
     document.getElementById("available-diff-exp-counter") as HTMLSpanElement,
-    availableSizeDiffExpCounterLabelJQ as any,
+    $('#available-diff-exp-counter'),
     bytesToWriteDE
   ),
   document.getElementById("method-de-label") as HTMLLabelElement,
@@ -186,7 +172,7 @@ const diffExp = new Algorithm(
 const histShift = new Algorithm(
   new CapacityCounter(
     document.getElementById("available-hist-shift-counter") as HTMLSpanElement,
-    availableSizeHistShiftCounterLabelJQ as any,
+    $('#available-hist-shift-counter'),
     bytesToWriteHS
   ),
   document.getElementById("method-hs-label") as HTMLLabelElement,
@@ -198,7 +184,7 @@ const histShift = new Algorithm(
 const singValDecomp = new Algorithm(
   new CapacityCounter(
     document.getElementById("available-sing-val-decomp-counter") as HTMLSpanElement,
-    availableSizeSingValDecompCounterLabelJQ as any,
+    $('#available-sing-val-decomp-counter'),
     bytesToWriteDE  // TODO, change to bytesToWriteSVD
   ),
   document.getElementById("method-svd-label") as HTMLLabelElement,
@@ -210,17 +196,17 @@ const singValDecomp = new Algorithm(
 // Info Counters
 const imageSize: InfoCounter = new InfoCounter(
   document.getElementById("image-size-counter") as HTMLSpanElement,
-  imageSizeCounterLabelJQ
+  $('#image-size-counter')
 );
 
 const maximumSize: InfoCounter = new InfoCounter(
   document.getElementById("maximum-size-counter") as HTMLSpanElement,
-  maximumSizeCounterLabelJQ
+  $('#maximum-size-counter')
 );
 
 const decodeSize: InfoCounter = new InfoCounter(
   document.getElementById("decode-size-counter") as HTMLSpanElement,
-  decodeSizeCounterLabelJQ
+  $('#decode-size-counter')
 );
 
 
