@@ -141,7 +141,7 @@ function handleDownloadButtonsAvailability() {
 function updateCounters(bmp) {
     function updateCapacityCounters() {
         current_bytes_to_write_de = bytesToWriteDE(bmp);
-        current_bytes_to_write_hs = bytesToWriteDE(bmp); // TODO: ... = bytesToWriteHS(bmp)
+        current_bytes_to_write_hs = bytesToWriteHS(bmp);
         current_bytes_to_write_svd = bytesToWriteDE(bmp); // TODO: ... = bytesToWriteSVD(bmp)
         const target_bytes_number_de = current_bytes_to_write_de - (encrypted_text?.length ?? 0);
         const target_bytes_number_hs = current_bytes_to_write_hs - (encrypted_text?.length ?? 0);
