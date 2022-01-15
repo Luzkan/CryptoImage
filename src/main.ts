@@ -1,10 +1,6 @@
 // -------------------------------------------------------------
 // Initialization
 
-const DEBUG = true
-
-// -------------------------------------------------------------
-
 class EncryptedFile {
   constructor(
     public readonly differentialExpansion: EncryptedDecryptedImage | null,
@@ -38,16 +34,12 @@ class EncryptedDecryptedImage {
 }
 
 class CapacityCounter {
-  label: HTMLSpanElement;
-  labelJQ: JQuery<HTMLElement>;
-  bytesToWrite: (bmp: BMP) => number;
-  currentBytesCapacity: number = 0;
- 
-  constructor(label: HTMLSpanElement, labelJQ: JQuery<HTMLElement>, bytesToWrite: (bmp: BMP) => number) {
-    this.label = label;
-    this.labelJQ = labelJQ;
-    this.bytesToWrite = bytesToWrite;
-  }
+  constructor(
+    public label: HTMLSpanElement,
+    public labelJQ: JQuery<HTMLElement>,
+    public bytesToWrite: (bmp: BMP) => number,
+    public currentBytesCapacity: number = 0,
+  ) { }
 
   update(encrypted_message_length: number): void {
     this.label.innerHTML = (this.currentBytesCapacity-encrypted_message_length).toString()
@@ -64,23 +56,13 @@ class CapacityCounter {
 }
 
 class Algorithm {
-  counter: CapacityCounter;
-  methodLabel: HTMLLabelElement;
-  checkbox: HTMLInputElement;
-  imageEncoded: HTMLImageElement;
-  imageDecoded: HTMLImageElement;
-
-  constructor(counter: CapacityCounter,
-              methodLabel: HTMLLabelElement,
-              checkbox: HTMLInputElement,
-              imageEncoded: HTMLImageElement,
-              imageDecoded: HTMLImageElement) {
-    this.counter = counter;
-    this.methodLabel = methodLabel;
-    this.checkbox = checkbox;
-    this.imageEncoded = imageEncoded;
-    this.imageDecoded = imageDecoded;
-  }
+  constructor(
+    public counter: CapacityCounter,
+    public methodLabel: HTMLLabelElement,
+    public checkbox: HTMLInputElement,
+    public imageEncoded: HTMLImageElement,
+    public imageDecoded: HTMLImageElement
+  ) { }
   
   isCapacityExceeded(): boolean {
     return this.counter.currentBytesCapacity - (encryptedText?.length ?? 0) < 0;
@@ -99,19 +81,10 @@ class Algorithm {
   loadResultsImagesToResultSection(image: EncryptedDecryptedImage | null) {
     if (!image) return
 
-    function makeFullscreenOnClick(image: HTMLImageElement) {
-      image.addEventListener('click', function() {
-        fullscreenImg.src = image.src;
-        fullscreenDiv.style.display = 'flex';
-        fullscreenDiv.style.visibility = 'visible';
-        fullscreenDiv.style.opacity = '1';
-      });
-    }
-
     this.imageEncoded.src = URL.createObjectURL( image.encrypted.toBlob() );
-    makeFullscreenOnClick(this.imageEncoded);
     this.imageDecoded.src = URL.createObjectURL( image.decrypted.toBlob() );
-    makeFullscreenOnClick(this.imageDecoded);
+    userFlowHandler.fullscreen.makeFullscreenOnClick(this.imageEncoded);
+    userFlowHandler.fullscreen.makeFullscreenOnClick(this.imageDecoded);
   }
 
   download() {
@@ -124,13 +97,7 @@ class Algorithm {
 }
 
 class InfoCounter {
-  label: HTMLSpanElement;
-  labelJQ: JQuery<HTMLElement>;
-
-  constructor(label: HTMLSpanElement, labelJQ: JQuery<HTMLElement>) {
-    this.label = label;
-    this.labelJQ = labelJQ;
-  }
+  constructor(public label: HTMLSpanElement, public labelJQ: JQuery<HTMLElement>) { }
 
   countTo(): void {
     if (!inputImageInfo) return // @ts-ignore
@@ -138,21 +105,77 @@ class InfoCounter {
   }
 }
 
+class Fullscreen {
+  constructor(public image: HTMLImageElement, public div: HTMLDivElement) { }
+
+  replaceFullscreenImage(newImage: HTMLImageElement) {
+    this.image.src = newImage.src;
+  }
+
+  makeFullscreenOnClick(newImage: HTMLImageElement) {
+    const that: this = this;
+    newImage.addEventListener('click', function() {
+      that.replaceFullscreenImage(newImage);
+      that.div.style.display = 'flex';
+      that.div.style.visibility = 'visible';
+      that.div.style.opacity = '1';
+    })
+  }
+
+  makeFullscreenDivHiddenOnClick() {
+    const that: this = this;
+    this.div.addEventListener('click', function() {
+       that.div.style.opacity = '0';
+       that.div.style.visibility = 'hidden';
+    });
+  }
+
+}
+
+class UserFlowHandler {
+  constructor(
+    public originalImage: HTMLImageElement,
+    public formInputImage: HTMLInputElement,
+    public encryptButton: HTMLButtonElement,
+    public messageTextArea: HTMLTextAreaElement,
+    public encryptTooltip: HTMLParagraphElement,
+    public fullscreen: Fullscreen
+  ) { }
+
+  smoothScrollToTopAfterReload(){
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }
+
+  tryEnableEncryptButton() {
+    const enableEncryptButton = () => {
+      this.encryptButton.disabled = false;
+      this.encryptTooltip.classList.add("permamently-transparent");
+    }
+  
+    if (!inputImageInfo && !encryptedText) { this.encryptTooltip.innerHTML = "Upload an image first and type in text."; }
+    else if (!inputImageInfo && encryptedText) { this.encryptTooltip.innerHTML = "Upload an image first."; }
+    else if (inputImageInfo && !encryptedText) { this.encryptTooltip.innerHTML = "Type in encryption text first."; }
+    else { enableEncryptButton() }
+  }
+}
+
+const userFlowHandler: UserFlowHandler = new UserFlowHandler(
+  document.getElementById("orignal-image-img") as HTMLImageElement,
+  document.getElementById("form-input-image") as HTMLInputElement,
+  document.getElementById("btn-encrypt") as HTMLButtonElement,
+  document.getElementById("crypto-image-message") as HTMLTextAreaElement,
+  document.getElementById("p-encrypt-tooltip") as HTMLParagraphElement,
+  new Fullscreen(
+    document.getElementById("fullscreen-img") as HTMLImageElement,
+    document.getElementById("fullscreen-div") as HTMLDivElement,
+  )
+);
+
 // Globally scoped variables
 let encryptedText: string | null = null;
 let inputImageInfo: BMP | null = null;
 let maximumSizeValue: number = 0;
 
-
-// -------------------------------------------------------------
-// HTML Elements
-
-// Fullscreen
-const fullscreenDiv = document.getElementById("fullscreen-div") as HTMLDivElement;
-const fullscreenImg = document.getElementById("fullscreen-img") as HTMLImageElement;
-
-// Encryption Form (ImageInput, Textfield, Button and Tooltip)
-const encryptTooltip = document.getElementById("p-encrypt-tooltip") as HTMLParagraphElement;
 
 // -------------------------------------------------------------
 // Initialziing Globally Scoped Objects for Algorithms
@@ -210,21 +233,6 @@ const decodeSize: InfoCounter = new InfoCounter(
 );
 
 
-// -------------------------------------------------------------
-// User Controls Related Functions
-
-function tryEnableEncryptButton() {
-  function enableEncryptButton() {
-    if (!encryptBtn || !encryptTooltip) return
-    encryptBtn.disabled = false;
-    encryptTooltip.classList.add("permamently-transparent");
-  }
-
-  if (!inputImageInfo && !encryptedText) { encryptTooltip.innerHTML = "Upload an image first and type in text."; }
-  else if (!inputImageInfo && encryptedText) { encryptTooltip.innerHTML = "Upload an image first."; }
-  else if (inputImageInfo && !encryptedText) { encryptTooltip.innerHTML = "Type in encryption text first."; }
-  else { enableEncryptButton() }
-}
 
 // -------------------------------------------------------------
 // Logic
@@ -274,9 +282,7 @@ function encryptAndDecrypt(bmp: BMP, encrypted_text: string): EncryptedFile {
 // -------------------------------------------------------------
 // Actions
 
-const messageTextArea: HTMLTextAreaElement = document.getElementById("crypto-image-message") as HTMLTextAreaElement;
-
-messageTextArea.addEventListener('input', (event: Event) => {
+userFlowHandler.messageTextArea.addEventListener('input', (event: Event) => {
   if (event) { encryptedText = (event.target as any).value; }
   if (typeof encryptedText != "string") return
 
@@ -293,15 +299,12 @@ messageTextArea.addEventListener('input', (event: Event) => {
   updateCapacityCounters([diffExp.counter, histShift.counter, singValDecomp.counter]);
 
   handleDownloadButtonsAvailability([diffExp, histShift, singValDecomp]);
-  tryEnableEncryptButton();
+  userFlowHandler.tryEnableEncryptButton();
 });
 
 // -------------------------------------------------------------
 
-const originalImageImg = document.getElementById("orignal-image-img") as HTMLImageElement;
-const inputImg: HTMLInputElement = document.getElementById("form-input-image") as HTMLInputElement;
-
-inputImg.addEventListener('input', async e => {
+userFlowHandler.formInputImage.addEventListener('input', async e => {
   function updateCounters(){
     function updateCapacityCounters(counters: CapacityCounter[]) {
       counters.forEach(counter => counter.countTo());
@@ -327,16 +330,14 @@ inputImg.addEventListener('input', async e => {
   const inputImage: Blob = (e.target as any).files[0];
   inputImageInfo = await BMP.from(inputImage);
 
-  originalImageImg.src = URL.createObjectURL( inputImage );
+  userFlowHandler.originalImage.src = URL.createObjectURL( inputImage );
   updateCounters();
-  tryEnableEncryptButton();
+  userFlowHandler.tryEnableEncryptButton();
 });
 
 // -------------------------------------------------------------
 
-const encryptBtn: HTMLButtonElement = document.getElementById("btn-encrypt") as HTMLButtonElement;
-
-encryptBtn.addEventListener("click", function() {
+userFlowHandler.encryptButton.addEventListener("click", function() {
   if (!inputImageInfo || !encryptedText) return
 
   function loadResultImagesToResultSection(encrypted: EncryptedFile){
@@ -370,23 +371,8 @@ encryptBtn.addEventListener("click", function() {
 });
 
 // -------------------------------------------------------------
-// Navigation Functions
-
-function smoothScrollToTopAfterReload(){
-  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-}
-
-// -------------------------------------------------------------
-// Display Related Functions
-
-function makeHiddenOnClick(element: HTMLElement) {
-  element.addEventListener('click', function() {
-     element.style.opacity = '0';
-     element.style.visibility = 'hidden';
-  });
-}
-
-// -------------------------------------------------------------
 // After Page Load Actions
-smoothScrollToTopAfterReload();
-makeHiddenOnClick(fullscreenDiv);
+
+userFlowHandler.fullscreen.makeFullscreenDivHiddenOnClick();
+userFlowHandler.smoothScrollToTopAfterReload();
+
