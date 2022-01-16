@@ -36,13 +36,46 @@ We have implemented three different algorithms for the hiding process, which are
 
 ##### [Paper](./papers/.pdf), [Wikipedia - _Differential Form_](https://en.wikipedia.org/wiki/Differential_form)
 
-TBA
+Implemented Algorithm:
+
+* All pixel values are converted to a flat array. Channels are not mixed and are concatenated channel by channel.
+* Flat array is divided into pairs.
+* For all pairs Differential Bits Map is created. For each index of pairs, it has an assigned value equal to the number of bits necessary to write the difference value between values in pairs.
+* Creating location map for indexes in Differential Bits Map which value is 7. We will try to save a payload in pairs which difference takes not more than 7 bits. A location map is necessary to make it possible to revert the encoded image to its original state. After encoding payload in pair with difference 7, its difference now is 8 so equal to unencoded pair with original difference 8. This map allows us to distinguish between pairs with or without payload.
+* Location map is converted to bytes and compressed using Huffman Compress algorithm.
+* Message to be encoded is converted to a bit array
+* Final payload is built and is the concatenation of compressed Location Map and bits of the message
+* Payload write order is created. The algorithm writes payload bits start from pairs with the smallest value from the Differential Bits Map.
+* Using encoding order the payload is written by shifting the difference and putting the payload bit in the LSB.
+* If the payload is smaller than image capacity rest of pairs encode value 0.
+* Encoded pixel pairs are converted back to BMP images.
+
+The decoding process consists in reversing the encoding algorithm. Tips:
+* Tricky thing is that after encoding value in pair with a difference taking 0 bits new difference not always takes 1 bit. If the encoding value is 0 then the new difference is still 0.
+* Splitting payload on a Location map and message bits can be made because of knowing the length of location map (which number of pixel pairs).
 
 #### **Histogram Shifting**
 
 ##### [Paper](./papers/.pdf), [Wikipedia - _Histogram_](https://en.wikipedia.org/wiki/Histogram)
 
-TBA
+Implemented Algorithm:
+
+* Convert all pixel values to the flat array.
+* Build Histogram based on the prepared array.
+* Extract valueWithMinCount, minValueCount, valueWithMaxCount from histogram
+* Prepare payload header. If minValueCount is 0 then the header has only 1 bit with a value 0. In another way:
+    * Set first bit of header to 1 (it means that header is in the extended version)
+    * Create Location Map for values equal to valueWithMinCount.
+    * Convert Location map to bytes and compress it using Huffman Compress algorithm
+    * Attach compressed Location Map to payload header.
+* Convert Message to be encoded to bit array.
+* Build final payload by concatenating Payload Header and bits of message.
+* Shift all pixels values with values between valueWithMinCount and valueWithMaxCount by 1 point to towards valueWithMinCount. (We make a gap in histogram next to valueWithMaxCount value)
+* Write payload bits by a splitting sequence of pixels with a value equal to valueWithMaxCount into two. If the coding value is 0 then the pixel value is not changing. When the value is 1 then we change the pixel value with 1 point filling the prepared gap in the histogram.
+* Convert encoded pixels into BMP image.
+
+The decoding process consists in reversing the encoding algorithm.
+
 
 #### **Singular Value Decomposition**
 
