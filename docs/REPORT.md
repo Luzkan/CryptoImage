@@ -81,7 +81,61 @@ The decoding process consists in reversing the encoding algorithm.
 
 ##### [Paper](./papers/.pdf), [Wikipedia - _Singular Value Decomposition_](https://en.wikipedia.org/wiki/Singular_value_decomposition)
 
-TBA
+Singular Value Decomposition (SVD) is a mathematical concept that gained significant popularity in the field of computer graphics. It has been shown in numerous papers that it can be effectively used as a method of encoding messages onto a bitmap.
+
+Because of its mathematical nature, several difficulties arise when applying the SVD method to the computer world. Martix values in theory can take any real values wheras pixel values can only be integers from the 0-255 range. Very big numbers result in int overflow and numbers close to zero might be interpreted as simply zero which can lead to several computational errors and misrepresentations. Because of that, the SVD method in its pure form is highly ineffective when transposed to a programming language. Every modern paper concerning the SVD embedding algorithm employs some sort of an enhancement used to increase the effectiveness of the method. During our work we discovered that it would also be necessary to apply enhancements in order to raise the effectiveness of the method to a decent level.
+
+Our initial implementation of algorithm can be described as follows:
+
+1. The image is divided into 8x8 blocks.
+2. Each block _A_ is decomposed into three martices using the SVD method _A_ = _U_ _S_ _V<sup>T</sup>_
+3. The message is encoded throughout the  available space on matrix _U_ (see the figure below) by setting the sings of matrix values to plus or minus depending whether 1 or 0 is to be embedded.
+4. The resulting matrix is readjusted as to keep its orthogonality.
+5. The watermarked matrix is constructed _A'_ = _U'_ _S_ _V<sup>T</sup>_
+6. _A'_ is rounded so that each of its value is an integer from range 0-255.
+7. Rounded _A'_ is used to assemble the watermarked image.
+
+<div align="center">
+    <img src="./img/report/svd_sample_matrix.svg" alt="Svg sample matrix">
+    <p style="font-size: 10px">Matrix <i>U</i>. Message bits are embedded in white fields. <i>Preserved columns</i> remain untouched to ensure that resulting image resembles the original one. Yellow fields are calculated on the fly using Gaussian Elimination to ensure that the resulting matrix is orthogonal. </p>
+</div>
+
+This is the simplest version of SVD embedding algorithm. It proved to be insufficient to effectively embed and extract a message. It's effectiveness (percentage of correctly decoded bits) was only slightly higher than 50%. We put a lot of effort to find out why the effectiveness was so low and how to improve it. Here is what we found:
+
+* After decomposition (transforming the matrix _A_ into three matrices _U'_ _S_ _V<sup>T</sup>_) it often happened that the matrix values were either `Infinity` or `NaN` which resulted in faulty embedding process. To avoid that we included a pre-check step to the procedure - if any of the _U'_ _S_ _V<sup>T</sup>_ matrices had those values, the processed block was skipped.
+
+* Some blocks yield better encoding results than others. SVD works best for "diverse" matrices. A matrix with variety in its values gave better results than matrices with similar or identical values. Next improvement of our method was filtering out potentially "ineffective" blocks which was added to the aforementioned pre-check step. To check if a block was "ineffective" a sample encode/decode operation is performed using a message `[1, 0, 1, 0, ...]`. If the number of correctly decoded bits is lower than the `correctBitsThreshold` parameter the block is skipped.
+
+* Following a paper on SVD method we initially preserved only one column of the _U_ matrix. Some other papers suggested that preserving two or more columns might improve the effectiveness of the method. To control the number of preserved columns a `preservedColumns` parameter was added. We increased it to `2` which gave method a slight effectiveness boost and improved the look of the resulting image. 
+
+After applying those steps, the effectiveness of our method spiked up to around 60%. Given that each character consists of 8 bits, it means that there is around 1,7% chance of correctly decoding a character which obviously is not ideal. 
+
+We then tried to improve the effectiveness even more by duplicating the encoded message (using the `repetitionNumber` parameter). In theory this method could highly improve the effectiveness - even up to 99,5%. In practice, it broke the method. Because of the pre-check step, the method falsely assumed encoded blocks to be the blocks skipped during encoding. When the method then tried to merge the duplicated messages into one, the duplicated blocks didn't match one another. The resulting decoded message was a complete **mess**. 
+
+Further work could be done on "helping" the decoding method correctly identify previously skipped blocks. It is also possible that the core SVD method could be improved to such extent as to completely abandon the pre-check step which would solve the duplication issues.
+
+<table>
+  <tr>
+    <td>
+      <div align="center">
+        <img src="./img/report/frog_1.bmp">
+        <p style="font-size: 10px">First, buggy version of the algorithm. A single transposition operation was missing from the procedure which severely distorted the resulting image.</p>
+      </div>
+    </td>
+    <td>
+      <div align="center">
+        <img src="./img/report/frog_2.bmp" alt="Svg sample matrix">
+        <p style="font-size: 10px">Fixed version. Corrupted blocks are the ones that were the least "diverse". Next step was to implement a pre-check algorithm to filter out those blocks.</p>
+      </div>
+    </td>
+    <td>
+      <div align="center">
+        <img src="./img/report/frog_3.bmp" alt="Svg sample matrix">
+        <p style="font-size: 10px">Final version after implementing the enhancements. Two columns are preserved and the <i>correctBitsThreshold</i> parameter is set to 10.</p>
+      </div>
+    </td>
+  </tr>
+</table>
 
 <div style="page-break-after: always;"></div>
 
