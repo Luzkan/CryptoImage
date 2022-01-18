@@ -1,9 +1,11 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+
 # Editor-based HTTP Client requests
 /httpRequests/
 .idea
+.vscode
 
 # Personal directory with testing files
 example

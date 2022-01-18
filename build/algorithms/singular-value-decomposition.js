@@ -1,7 +1,6 @@
 "use strict";
 // -------------------------------------------------------------
 // Singular value decomposition algorithm
-// 1+2+3+4+5+6
 const blockSize = 8; // minimum m + 2
 const preservedColumns = 2;
 // const defaultBits = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0];
@@ -11,7 +10,7 @@ const testBits = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1];
 const defaultBits = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1];
 // const defaultBits = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 // const defaultBits = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-const correctBitsThreshold = 12;
+const correctBitsThreshold = 10;
 const repetitionNumber = 3;
 let totalBlocks = 0;
 let correctBlocks = 0;
@@ -309,6 +308,7 @@ class BlockSkipUtils {
         return false;
     }
 }
+// https://www.npmjs.com/package/svd-js
 function SVD(a) {
     // Define default parameters
     const withu = true;

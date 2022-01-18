@@ -75,7 +75,7 @@
               >
                 <img
                   src="assets/img/background.jpg"
-                  id="orignal-image-img"
+                  id="img-preview-original-image"
                   alt="Original Image"
                   class="display-original-img"
                 />
@@ -95,7 +95,7 @@
                                 file-input
                                 custom-file-input
                               "
-                              id="form-input-image"
+                              id="input-form-image"
                               type="file"
                               accept=".bmp"
                             />
@@ -202,7 +202,7 @@
                             <div class="form-group">
                               <textarea
                                 class="form-control message-input"
-                                id="crypto-image-message"
+                                id="textarea-crypto-message"
                                 rows="3"
                               ></textarea>
                             </div>
@@ -223,7 +223,7 @@
                             </button>
                             <p
                               class="hidden-tooltip"
-                              id="p-encrypt-tooltip"
+                              id="p-form-tooltip"
                               style="margin-top: 8px"
                             >
                               Upload an image first and type in text.
@@ -284,9 +284,9 @@
     </section>
 
     <div id="section-results-div" style="display: none; visibility: hidden">
-      <div id="fullscreen-div" class="fullscreen">
+      <div id="div-fullscreen" class="fullscreen">
         <img
-          id="fullscreen-img"
+          id="img-fullscreen"
           alt="Fullscreen Image - Left click anywhere to close."
         />
       </div>
@@ -309,14 +309,14 @@
           <div class="container">
             <div class="row">
               <div class="to-animate">
-                <div class="col-md-4 text-center to-animate alt-project-grid">
+                <div class="col-md-4 text-center to-animate alt-project-grid" id="method-de-div">
                   <div class="desc">
                     <h3><a href="#">Differential Expansion</a></h3>
                     <span>Encoded</span>
                   </div>
                   <div>
                     <img
-                      id="diff-exp-encoded-image"
+                      id="method-de-encoded-image"
                       class="encoded-image-display"
                       alt="Differential Expansion Encoded Image"
                     />
@@ -332,19 +332,19 @@
                     <span>Decoded</span>
                   </div>
                   <img
-                    id="diff-exp-decoded-image"
+                    id="method-de-decoded-image"
                     class="encoded-image-display"
                     alt="Differential Expansion Decoded Image"
                   />
                 </div>
-                <div class="col-md-4 text-center to-animate alt-project-grid">
+                <div class="col-md-4 text-center to-animate alt-project-grid" id="method-hs-div">
                   <div class="desc">
                     <h3><a href="#">Histogram Shifting</a></h3>
                     <span>Encoded</span>
                   </div>
                   <div>
                     <img
-                      id="hist-shift-encoded-image"
+                      id="method-hs-encoded-image"
                       class="encoded-image-display"
                       alt="Histogram Shifting Encoded Image"
                     />
@@ -360,19 +360,19 @@
                     <span>Decoded</span>
                   </div>
                   <img
-                    id="hist-shift-decoded-image"
+                    id="method-hs-decoded-image"
                     class="encoded-image-display"
                     alt="Histogram Shifting Decoded Image"
                   />
                 </div>
-                <div class="col-md-4 text-center to-animate alt-project-grid">
+                <div class="col-md-4 text-center to-animate alt-project-grid" id="method-svd-div">
                   <div class="desc">
                     <h3><a href="#">Singular Value Decomposition</a></h3>
                     <span>Encoded</span>
                   </div>
                   <div>
                     <img
-                      id="sing-val-decomp-encoded-image"
+                      id="method-svd-encoded-image"
                       class="encoded-image-display"
                       alt="Singular Value Decomposition Encoded Image"
                     />
@@ -388,7 +388,7 @@
                     <span>Decoded</span>
                   </div>
                   <img
-                    id="sing-val-decomp-decoded-image"
+                    id="method-svd-decoded-image"
                     class="encoded-image-display"
                     alt="Singular Value Decomposition Decoded Image"
                   />
@@ -527,7 +527,11 @@
                 <h3>Jacek Wernikowski</h3>
                 <span class="position" title="not really">- SVD enthusiast -</span>
                 <p>
-                  Java/Kotlin Developer
+                  <br />
+                  <br />
+                  <br />
+                  Java & Kotlin<br />
+                  Developer<br />
                   <br />
                 </p>
                 <ul class="social-media">

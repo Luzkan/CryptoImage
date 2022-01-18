@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[1.0.0]] - 2022-01-18 _(MJ)_
+
+###### _([diff: 0.15.4-1.0.0])_
+
+Added:
+
+- Handling results adaptively depending on the number of encoded/decoded images.
+
+Changed:
+
+- Some more refactorizations in [`main.ts`](../src/main.ts).
+- Fixed few typos in [`REPORT.md`](./docs/REPORT.md).
+
 ## [[0.15.4]] - 2022-01-17 _(JW)_
 
 ###### _([diff: 0.15.3-0.15.4])_
@@ -15,6 +28,10 @@ Updated:
 
 - `REPORT.md` - added SVD section
 - My bio on `index.html`
+
+## [[0.15.3]] - 2022-01-16 _(KS)_
+
+###### _([diff: 0.15.2-0.15.3])_
 
 ## [[0.15.2]] - 2022-01-15 _(MJ)_
 
@@ -36,7 +53,6 @@ Changed:
 Added:
 
 - JQuery Types
-
 
 ## [[0.15.0]] - 2022-01-15 _(MJ)_
 
@@ -66,7 +82,6 @@ Added:
 
 Histogram Shifting - Decryption
 
-
 ## [[0.12.0]] - 2021-12-29 _(MJ)_
 
 ###### _([diff: 0.11.3-0.12.0])_
@@ -92,7 +107,6 @@ Added:
 
 - Histogram Shifting output is now visible on the webpage
 - Console check whether the decrypted messages match the original messages
-
 
 ## [[0.11.1]] - 2021-12-08 _(MJ)_
 
@@ -170,7 +184,6 @@ Fixed:
 
 - Image Size now properly displays the number in `KB` instead of `B`.
 
-
 ## [[0.9.0]] - 2021-11-25 _(MJ)_
 
 ###### _([diff: 0.8.0-0.9.0])_
@@ -193,7 +206,6 @@ Added:
 - Handling the situation when user, after inserting an image, adds another one to the website.
 - Properly inserting the preview of the image after input.
 - Added styling to the encoded images (rounded corners, themed border)
-
 
 ## [[0.7.3]] - 2021-11-14 _(KS)_
 
@@ -235,10 +247,8 @@ Added:
 Changed:
 
 - Code Flow in [`main.ts`]
-- Compile target from  `es2019` to `es2021`
+- Compile target from `es2019` to `es2021`
 - Module from `commonjs` to `esnext`
-
-
 
 ## [[0.6.2]] - 2021-11-01 _(KS)_
 
@@ -411,7 +421,9 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 0.15.4-1.0.0]: https://github.com/Luzkan/CryptoImage/compare/0.15.4...1.0.0
 [diff: 0.15.3-0.15.4]: https://github.com/Luzkan/CryptoImage/compare/0.15.3...0.15.4
+[diff: 0.15.2-0.15.3]: https://github.com/Luzkan/CryptoImage/compare/0.15.2...0.15.3
 [diff: 0.15.1-0.15.2]: https://github.com/Luzkan/CryptoImage/compare/0.15.1...0.15.2
 [diff: 0.15.0-0.15.1]: https://github.com/Luzkan/CryptoImage/compare/0.15.0...0.15.1
 [diff: 0.14.0-0.15.0]: https://github.com/Luzkan/CryptoImage/compare/0.14.0...0.15.0
@@ -444,7 +456,9 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[1.0.0]: https://github.com/Luzkan/CryptoImage/releases/tag/1.0.0
 [0.15.4]: https://github.com/Luzkan/CryptoImage/releases/tag/0.15.4
+[0.15.3]: https://github.com/Luzkan/CryptoImage/releases/tag/0.15.3
 [0.15.2]: https://github.com/Luzkan/CryptoImage/releases/tag/0.15.2
 [0.15.1]: https://github.com/Luzkan/CryptoImage/releases/tag/0.15.1
 [0.15.0]: https://github.com/Luzkan/CryptoImage/releases/tag/0.15.0

@@ -1,5 +1,5 @@
 // -------------------------------------------------------------
-// Initialization
+// Classes
 
 class EncryptedFile {
   constructor(
@@ -8,7 +8,15 @@ class EncryptedFile {
     public readonly singularValueDecomposition: EncryptedDecryptedImage | null,
   ) { }
 
-  checkMessageValidity() {
+  getImages(): (EncryptedDecryptedImage | null)[] {
+    return [
+      this.differentialExpansion,
+      this.histogramShifting,
+      this.singularValueDecomposition
+    ].filter(x => x !== null)
+  }
+
+  checkMessageValidity(): void {
     if (!this.differentialExpansion || !this.histogramShifting || !this.singularValueDecomposition) return
     const prinout = (msg1: string, msg2: string) => {
       console.log(`Message #1:\n${msg1}`);
@@ -33,7 +41,7 @@ class EncryptedDecryptedImage {
   ) { }
 }
 
-class CapacityCounter {
+class CounterCapacity {
   constructor(
     public label: HTMLSpanElement,
     public labelJQ: JQuery<HTMLElement>,
@@ -42,7 +50,7 @@ class CapacityCounter {
   ) { }
 
   update(encrypted_message_length: number): void {
-    this.label.innerHTML = (this.currentBytesCapacity-encrypted_message_length).toString()
+    this.label.innerHTML = (this.currentBytesCapacity - encrypted_message_length).toString()
   }
 
   countTo(): void {
@@ -51,19 +59,29 @@ class CapacityCounter {
       try { return this.bytesToWrite(inputImage); } catch (e) { console.log(e); return 0 }
     }
     this.currentBytesCapacity = getBytesToWriteCapacity(inputImageInfo);  // @ts-ignore
-    this.labelJQ.countTo({from: parseInt(this.label.innerHTML), to: this.currentBytesCapacity - (encryptedText?.length ?? 0)});
+    this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: this.currentBytesCapacity - (encryptedText?.length ?? 0) });
   }
 }
 
-class Algorithm {
+class CounterInformational {
+  constructor(public label: HTMLSpanElement, public labelJQ: JQuery<HTMLElement>) { }
+
+  countTo(): void {
+    if (!inputImageInfo) return // @ts-ignore
+    this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: Math.floor(inputImageInfo.fileSize / 1024) });
+  }
+}
+
+class AlgorithmElements {
   constructor(
-    public counter: CapacityCounter,
+    public counter: CounterCapacity,
     public methodLabel: HTMLLabelElement,
     public checkbox: HTMLInputElement,
+    public imageContainer: HTMLDivElement,
     public imageEncoded: HTMLImageElement,
     public imageDecoded: HTMLImageElement
   ) { }
-  
+
   isCapacityExceeded(): boolean {
     return this.counter.currentBytesCapacity - (encryptedText?.length ?? 0) < 0;
   }
@@ -81,8 +99,8 @@ class Algorithm {
   loadResultsImagesToResultSection(image: EncryptedDecryptedImage | null) {
     if (!image) return
 
-    this.imageEncoded.src = URL.createObjectURL( image.encrypted.toBlob() );
-    this.imageDecoded.src = URL.createObjectURL( image.decrypted.toBlob() );
+    this.imageEncoded.src = URL.createObjectURL(image.encrypted.toBlob());
+    this.imageDecoded.src = URL.createObjectURL(image.decrypted.toBlob());
     userFlowHandler.fullscreen.makeFullscreenOnClick(this.imageEncoded);
     userFlowHandler.fullscreen.makeFullscreenOnClick(this.imageDecoded);
   }
@@ -96,13 +114,64 @@ class Algorithm {
   }
 }
 
-class InfoCounter {
-  constructor(public label: HTMLSpanElement, public labelJQ: JQuery<HTMLElement>) { }
+class Algorithms {
+  constructor(
+    public readonly differentialExpansion: AlgorithmElements,
+    public readonly histogramShifting: AlgorithmElements,
+    public readonly singularValueDecomposition: AlgorithmElements
+  ) { }
 
-  countTo(): void {
-    if (!inputImageInfo) return // @ts-ignore
-    this.labelJQ.countTo({from: parseInt(this.label.innerHTML), to: Math.floor(inputImageInfo.fileSize/1024)});
+  getCounters(): CounterCapacity[] {
+    return [
+      this.differentialExpansion.counter,
+      this.histogramShifting.counter,
+      this.singularValueDecomposition.counter,
+    ]
   }
+
+  getAlgorithmElements(): AlgorithmElements[] {
+    return [
+      this.differentialExpansion,
+      this.histogramShifting,
+      this.singularValueDecomposition,
+    ]
+  }
+
+  downloadCheckboxSelectedImages(): void {
+    this.getAlgorithmElements().forEach(algorithm => algorithm.download())
+  }
+
+  loadResultImagesToResultSection(encrypted: EncryptedFile): void {
+    this.differentialExpansion.loadResultsImagesToResultSection(encrypted.differentialExpansion);
+    this.histogramShifting.loadResultsImagesToResultSection(encrypted.histogramShifting);
+    this.singularValueDecomposition.loadResultsImagesToResultSection(encrypted.singularValueDecomposition);
+  }
+
+  setupDivsBasedOnEncryptions(encrypted: EncryptedFile): void {
+    const number_of_encrypted_files: 0 | 1 | 2 | 3 = encrypted.getImages().length as 0 | 1 | 2 | 3;
+    const number_of_encrypted_files_to_col_sm_map = {
+      0: "",
+      1: "col-md-12",
+      2: "col-md-6",
+      3: "col-md-4"
+    }
+    const columns = ["col-md-12", "col-md-6", "col-md-4", "hidden-div"];
+
+    function setupDiv(encryptedDecryptedImage: EncryptedDecryptedImage | null, algorithmElements: AlgorithmElements) {
+      if (!encryptedDecryptedImage) {
+        algorithmElements.imageContainer.classList.add("hidden-div");
+        return;
+      }
+
+      columns.forEach(column => { algorithmElements.imageContainer.classList.remove(column) });
+      algorithmElements.imageContainer.classList.add(number_of_encrypted_files_to_col_sm_map[number_of_encrypted_files]);
+    }
+
+    setupDiv(encrypted.differentialExpansion, this.differentialExpansion);
+    setupDiv(encrypted.histogramShifting, this.histogramShifting);
+    setupDiv(encrypted.singularValueDecomposition, this.singularValueDecomposition);
+  }
+
 }
 
 class Fullscreen {
@@ -114,7 +183,7 @@ class Fullscreen {
 
   makeFullscreenOnClick(newImage: HTMLImageElement) {
     const that: this = this;
-    newImage.addEventListener('click', function() {
+    newImage.addEventListener('click', function () {
       that.replaceFullscreenImage(newImage);
       that.div.style.display = 'flex';
       that.div.style.visibility = 'visible';
@@ -124,9 +193,9 @@ class Fullscreen {
 
   makeFullscreenDivHiddenOnClick() {
     const that: this = this;
-    this.div.addEventListener('click', function() {
-       that.div.style.opacity = '0';
-       that.div.style.visibility = 'hidden';
+    this.div.addEventListener('click', function () {
+      that.div.style.opacity = '0';
+      that.div.style.visibility = 'hidden';
     });
   }
 
@@ -142,7 +211,7 @@ class UserFlowHandler {
     public fullscreen: Fullscreen
   ) { }
 
-  smoothScrollToTopAfterReload(){
+  smoothScrollToTopAfterReload() {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   }
 
@@ -151,7 +220,7 @@ class UserFlowHandler {
       this.encryptButton.disabled = false;
       this.encryptTooltip.classList.add("permamently-transparent");
     }
-  
+
     if (!inputImageInfo && !encryptedText) { this.encryptTooltip.innerHTML = "Upload an image first and type in text."; }
     else if (!inputImageInfo && encryptedText) { this.encryptTooltip.innerHTML = "Upload an image first."; }
     else if (inputImageInfo && !encryptedText) { this.encryptTooltip.innerHTML = "Type in encryption text first."; }
@@ -159,15 +228,18 @@ class UserFlowHandler {
   }
 }
 
+// -------------------------------------------------------------
+// Initializing
+
 const userFlowHandler: UserFlowHandler = new UserFlowHandler(
-  document.getElementById("orignal-image-img") as HTMLImageElement,
-  document.getElementById("form-input-image") as HTMLInputElement,
+  document.getElementById("img-preview-original-image") as HTMLImageElement,
+  document.getElementById("input-form-image") as HTMLInputElement,
   document.getElementById("btn-encrypt") as HTMLButtonElement,
-  document.getElementById("crypto-image-message") as HTMLTextAreaElement,
-  document.getElementById("p-encrypt-tooltip") as HTMLParagraphElement,
+  document.getElementById("textarea-crypto-message") as HTMLTextAreaElement,
+  document.getElementById("p-form-tooltip") as HTMLParagraphElement,
   new Fullscreen(
-    document.getElementById("fullscreen-img") as HTMLImageElement,
-    document.getElementById("fullscreen-div") as HTMLDivElement,
+    document.getElementById("img-fullscreen") as HTMLImageElement,
+    document.getElementById("div-fullscreen") as HTMLDivElement,
   )
 );
 
@@ -176,58 +248,57 @@ let encryptedText: string | null = null;
 let inputImageInfo: BMP | null = null;
 let maximumSizeValue: number = 0;
 
-
-// -------------------------------------------------------------
-// Initialziing Globally Scoped Objects for Algorithms
-
-const diffExp = new Algorithm(
-  new CapacityCounter(
-    document.getElementById("available-diff-exp-counter") as HTMLSpanElement,
-    $('#available-diff-exp-counter'),
-    bytesToWriteDE
+const algorithms: Algorithms = new Algorithms(
+  new AlgorithmElements(
+    new CounterCapacity(
+      document.getElementById("available-diff-exp-counter") as HTMLSpanElement,
+      $('#available-diff-exp-counter'),
+      bytesToWriteDE
+    ),
+    document.getElementById("method-de-label") as HTMLLabelElement,
+    document.getElementById("method-de-checkbox") as HTMLInputElement,
+    document.getElementById("method-de-div") as HTMLDivElement,
+    document.getElementById("method-de-encoded-image") as HTMLImageElement,
+    document.getElementById("method-de-decoded-image") as HTMLImageElement
   ),
-  document.getElementById("method-de-label") as HTMLLabelElement,
-  document.getElementById("method-de-checkbox") as HTMLInputElement,
-  document.getElementById("diff-exp-encoded-image") as HTMLImageElement,
-  document.getElementById("diff-exp-decoded-image") as HTMLImageElement
-);
-
-const histShift = new Algorithm(
-  new CapacityCounter(
-    document.getElementById("available-hist-shift-counter") as HTMLSpanElement,
-    $('#available-hist-shift-counter'),
-    bytesToWriteHS
+  new AlgorithmElements(
+    new CounterCapacity(
+      document.getElementById("available-hist-shift-counter") as HTMLSpanElement,
+      $('#available-hist-shift-counter'),
+      bytesToWriteHS
+    ),
+    document.getElementById("method-hs-label") as HTMLLabelElement,
+    document.getElementById("method-hs-checkbox") as HTMLInputElement,
+    document.getElementById("method-hs-div") as HTMLDivElement,
+    document.getElementById("method-hs-encoded-image") as HTMLImageElement,
+    document.getElementById("method-hs-decoded-image") as HTMLImageElement
   ),
-  document.getElementById("method-hs-label") as HTMLLabelElement,
-  document.getElementById("method-hs-checkbox") as HTMLInputElement,
-  document.getElementById("hist-shift-encoded-image") as HTMLImageElement,
-  document.getElementById("hist-shift-decoded-image") as HTMLImageElement
-);
-
-const singValDecomp = new Algorithm(
-  new CapacityCounter(
-    document.getElementById("available-sing-val-decomp-counter") as HTMLSpanElement,
-    $('#available-sing-val-decomp-counter'),
-    bytesToWriteDE  // TODO, change to bytesToWriteSVD
-  ),
-  document.getElementById("method-svd-label") as HTMLLabelElement,
-  document.getElementById("method-svd-checkbox") as HTMLInputElement,
-  document.getElementById("sing-val-decomp-encoded-image") as HTMLImageElement,
-  document.getElementById("sing-val-decomp-decoded-image") as HTMLImageElement
-);
+  new AlgorithmElements(
+    new CounterCapacity(
+      document.getElementById("available-sing-val-decomp-counter") as HTMLSpanElement,
+      $('#available-sing-val-decomp-counter'),
+      bytesToWriteDE  // TODO, change to bytesToWriteSVD
+    ),
+    document.getElementById("method-svd-label") as HTMLLabelElement,
+    document.getElementById("method-svd-checkbox") as HTMLInputElement,
+    document.getElementById("method-svd-div") as HTMLDivElement,
+    document.getElementById("method-svd-encoded-image") as HTMLImageElement,
+    document.getElementById("method-svd-decoded-image") as HTMLImageElement
+  )
+)
 
 // Info Counters
-const imageSize: InfoCounter = new InfoCounter(
+const imageSize: CounterInformational = new CounterInformational(
   document.getElementById("image-size-counter") as HTMLSpanElement,
   $('#image-size-counter')
 );
 
-const maximumSize: InfoCounter = new InfoCounter(
+const maximumSize: CounterInformational = new CounterInformational(
   document.getElementById("maximum-size-counter") as HTMLSpanElement,
   $('#maximum-size-counter')
 );
 
-const decodeSize: InfoCounter = new InfoCounter(
+const decodeSize: CounterInformational = new CounterInformational(
   document.getElementById("decode-size-counter") as HTMLSpanElement,
   $('#decode-size-counter')
 );
@@ -240,33 +311,33 @@ const decodeSize: InfoCounter = new InfoCounter(
 function encryptAndDecrypt(bmp: BMP, encrypted_text: string): EncryptedFile {
 
   function getDifferentialExpansionImages(): EncryptedDecryptedImage | null {
-    if (diffExp.isCapacityExceeded()) return null
+    if (algorithms.differentialExpansion.isCapacityExceeded()) return null
     try {
       const diffExpBMPEncrypted: BMP = differentialExpansionEncrypt(bmp, encrypted_text);
       const [diffExpBMPDecrypted, diffExpMsgDecrypted] = differentialExpansionDecrypt(diffExpBMPEncrypted);
-      return {encrypted: diffExpBMPEncrypted, decrypted: diffExpBMPDecrypted, message: diffExpMsgDecrypted }
+      return { encrypted: diffExpBMPEncrypted, decrypted: diffExpBMPDecrypted, message: diffExpMsgDecrypted }
     } catch (error) {
       return null
     }
   }
 
   function getHistogramShiftingImages(): EncryptedDecryptedImage | null {
-    if (histShift.isCapacityExceeded()) return null
+    if (algorithms.histogramShifting.isCapacityExceeded()) return null
     try {
       const [histShiftBMPEncrypted, histShiftKeys] = histogramShiftingEncrypt(bmp, encrypted_text);
       const [histShiftBMPDecrypted, histShiftMsgDecrypted] = histogramShiftingDecrypt(histShiftBMPEncrypted, histShiftKeys);
-      return {encrypted: histShiftBMPEncrypted, decrypted: histShiftBMPDecrypted, message: histShiftMsgDecrypted }
+      return { encrypted: histShiftBMPEncrypted, decrypted: histShiftBMPDecrypted, message: histShiftMsgDecrypted }
     } catch (error) {
       return null
     }
   }
 
   function getSingularValueDecompositionImages(): EncryptedDecryptedImage | null {
-    if (singValDecomp.isCapacityExceeded()) return null
+    if (algorithms.singularValueDecomposition.isCapacityExceeded()) return null
     try {
       const singValDecompBMPEncrypted = singularValueDecompositionEncrypt(bmp, encrypted_text);
       const [singValDecompBMPDecrypted, singValDecompMsgDecrypted] = singularValueDecompositionDecrypt(singValDecompBMPEncrypted);
-      return {encrypted: singValDecompBMPEncrypted, decrypted: singValDecompBMPDecrypted, message: singValDecompMsgDecrypted }
+      return { encrypted: singValDecompBMPEncrypted, decrypted: singValDecompBMPDecrypted, message: singValDecompMsgDecrypted }
     } catch (error) {
       return null
     }
@@ -286,88 +357,75 @@ userFlowHandler.messageTextArea.addEventListener('input', (event: Event) => {
   if (event) { encryptedText = (event.target as any).value; }
   if (typeof encryptedText != "string") return
 
-  function updateCapacityCounters(counters: CapacityCounter[]) {
+  function updateCapacityCounters(counters: CounterCapacity[]) {
     counters.forEach(counter => counter.update(messageLength));
   }
 
-  function handleDownloadButtonsAvailability(elements: Algorithm[]) {
+  function handleDownloadButtonsAvailability(elements: AlgorithmElements[]) {
     elements.forEach(element => element.checkWhetherCounterPassedZeroAndHandle());
   }
 
   const messageLength = encryptedText?.length ?? 0;
-  maximumSize.label.innerHTML = (maximumSizeValue-messageLength).toString();
-  updateCapacityCounters([diffExp.counter, histShift.counter, singValDecomp.counter]);
-
-  handleDownloadButtonsAvailability([diffExp, histShift, singValDecomp]);
+  maximumSize.label.innerHTML = (maximumSizeValue - messageLength).toString();
+  updateCapacityCounters(algorithms.getCounters());
+  handleDownloadButtonsAvailability(algorithms.getAlgorithmElements());
   userFlowHandler.tryEnableEncryptButton();
 });
 
 // -------------------------------------------------------------
 
 userFlowHandler.formInputImage.addEventListener('input', async e => {
-  function updateCounters(){
-    function updateCapacityCounters(counters: CapacityCounter[]) {
+  function updateCounters() {
+    function updateCapacityCounters(counters: CounterCapacity[]) {
       counters.forEach(counter => counter.countTo());
     }
-  
-    function updateInfoCounters(counters: InfoCounter[]) {
+
+    function updateInfoCounters(counters: CounterInformational[]) {
       counters.forEach(counter => counter.countTo());
     }
 
     function updateMaximumSizeValue() {
-      maximumSizeValue = Math.max(
-        diffExp.counter.currentBytesCapacity,
-        histShift.counter.currentBytesCapacity,
-        singValDecomp.counter.currentBytesCapacity
-      ) - (encryptedText?.length ?? 0);
+      const counterValues = algorithms.getCounters().map(counter => counter.currentBytesCapacity);
+      maximumSizeValue = Math.max(...counterValues) - (encryptedText?.length ?? 0);
     }
-  
+
     updateMaximumSizeValue()
-    updateCapacityCounters([diffExp.counter, histShift.counter, singValDecomp.counter]);
+    updateCapacityCounters(algorithms.getCounters());
     updateInfoCounters([imageSize, maximumSize, decodeSize]);
   }
 
   const inputImage: Blob = (e.target as any).files[0];
   inputImageInfo = await BMP.from(inputImage);
 
-  userFlowHandler.originalImage.src = URL.createObjectURL( inputImage );
+  userFlowHandler.originalImage.src = URL.createObjectURL(inputImage);
   updateCounters();
   userFlowHandler.tryEnableEncryptButton();
 });
 
 // -------------------------------------------------------------
 
-userFlowHandler.encryptButton.addEventListener("click", function() {
+userFlowHandler.encryptButton.addEventListener("click", function () {
   if (!inputImageInfo || !encryptedText) return
 
-  function loadResultImagesToResultSection(encrypted: EncryptedFile){
-    diffExp.loadResultsImagesToResultSection(encrypted.differentialExpansion);
-    histShift.loadResultsImagesToResultSection(encrypted.histogramShifting);
-    singValDecomp.loadResultsImagesToResultSection(encrypted.singularValueDecomposition);
-  }
-
-  function displayResultsSection(){
+  function displayResultsSection() {
     const resultsSectionDiv = document.getElementById("section-results-div") as HTMLDivElement;
     resultsSectionDiv.style.display = "block";
     resultsSectionDiv.style.visibility = "visible";
   }
 
-  function smoothScrollToResultsSection(){
+  function smoothScrollToResultsSection() {
     const imageProcessingCompletedHeading = document.getElementById("results-section-scroll-hook") as HTMLHeadingElement;
     imageProcessingCompletedHeading.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  function downloadCheckboxSelectedImages(elements: Algorithm[]) {
-    elements.forEach(element => element.download());
   }
 
   const encryptedFile: EncryptedFile = encryptAndDecrypt(inputImageInfo, encryptedText);
   try { encryptedFile.checkMessageValidity(); } catch (error) { console.log(error); }
 
-  loadResultImagesToResultSection(encryptedFile);
+  algorithms.loadResultImagesToResultSection(encryptedFile);
+  algorithms.setupDivsBasedOnEncryptions(encryptedFile);
   displayResultsSection();
   smoothScrollToResultsSection();
-  downloadCheckboxSelectedImages([diffExp, histShift, singValDecomp]);
+  algorithms.downloadCheckboxSelectedImages();
 });
 
 // -------------------------------------------------------------

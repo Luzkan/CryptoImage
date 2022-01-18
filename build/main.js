@@ -1,11 +1,18 @@
 "use strict";
 // -------------------------------------------------------------
-// Initialization
+// Classes
 class EncryptedFile {
     constructor(differentialExpansion, histogramShifting, singularValueDecomposition) {
         this.differentialExpansion = differentialExpansion;
         this.histogramShifting = histogramShifting;
         this.singularValueDecomposition = singularValueDecomposition;
+    }
+    getImages() {
+        return [
+            this.differentialExpansion,
+            this.histogramShifting,
+            this.singularValueDecomposition
+        ].filter(x => x !== null);
     }
     checkMessageValidity() {
         if (!this.differentialExpansion || !this.histogramShifting || !this.singularValueDecomposition)
@@ -31,7 +38,7 @@ class EncryptedDecryptedImage {
         this.message = message;
     }
 }
-class CapacityCounter {
+class CounterCapacity {
     constructor(label, labelJQ, bytesToWrite, currentBytesCapacity = 0) {
         this.label = label;
         this.labelJQ = labelJQ;
@@ -57,11 +64,23 @@ class CapacityCounter {
         this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: this.currentBytesCapacity - (encryptedText?.length ?? 0) });
     }
 }
-class Algorithm {
-    constructor(counter, methodLabel, checkbox, imageEncoded, imageDecoded) {
+class CounterInformational {
+    constructor(label, labelJQ) {
+        this.label = label;
+        this.labelJQ = labelJQ;
+    }
+    countTo() {
+        if (!inputImageInfo)
+            return; // @ts-ignore
+        this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: Math.floor(inputImageInfo.fileSize / 1024) });
+    }
+}
+class AlgorithmElements {
+    constructor(counter, methodLabel, checkbox, imageContainer, imageEncoded, imageDecoded) {
         this.counter = counter;
         this.methodLabel = methodLabel;
         this.checkbox = checkbox;
+        this.imageContainer = imageContainer;
         this.imageEncoded = imageEncoded;
         this.imageDecoded = imageDecoded;
     }
@@ -95,15 +114,54 @@ class Algorithm {
         link.click();
     }
 }
-class InfoCounter {
-    constructor(label, labelJQ) {
-        this.label = label;
-        this.labelJQ = labelJQ;
+class Algorithms {
+    constructor(differentialExpansion, histogramShifting, singularValueDecomposition) {
+        this.differentialExpansion = differentialExpansion;
+        this.histogramShifting = histogramShifting;
+        this.singularValueDecomposition = singularValueDecomposition;
     }
-    countTo() {
-        if (!inputImageInfo)
-            return; // @ts-ignore
-        this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: Math.floor(inputImageInfo.fileSize / 1024) });
+    getCounters() {
+        return [
+            this.differentialExpansion.counter,
+            this.histogramShifting.counter,
+            this.singularValueDecomposition.counter,
+        ];
+    }
+    getAlgorithmElements() {
+        return [
+            this.differentialExpansion,
+            this.histogramShifting,
+            this.singularValueDecomposition,
+        ];
+    }
+    downloadCheckboxSelectedImages() {
+        this.getAlgorithmElements().forEach(algorithm => algorithm.download());
+    }
+    loadResultImagesToResultSection(encrypted) {
+        this.differentialExpansion.loadResultsImagesToResultSection(encrypted.differentialExpansion);
+        this.histogramShifting.loadResultsImagesToResultSection(encrypted.histogramShifting);
+        this.singularValueDecomposition.loadResultsImagesToResultSection(encrypted.singularValueDecomposition);
+    }
+    setupDivsBasedOnEncryptions(encrypted) {
+        const number_of_encrypted_files = encrypted.getImages().length;
+        const number_of_encrypted_files_to_col_sm_map = {
+            0: "",
+            1: "col-md-12",
+            2: "col-md-6",
+            3: "col-md-4"
+        };
+        const columns = ["col-md-12", "col-md-6", "col-md-4", "hidden-div"];
+        function setupDiv(encryptedDecryptedImage, algorithmElements) {
+            if (!encryptedDecryptedImage) {
+                algorithmElements.imageContainer.classList.add("hidden-div");
+                return;
+            }
+            columns.forEach(column => { algorithmElements.imageContainer.classList.remove(column); });
+            algorithmElements.imageContainer.classList.add(number_of_encrypted_files_to_col_sm_map[number_of_encrypted_files]);
+        }
+        setupDiv(encrypted.differentialExpansion, this.differentialExpansion);
+        setupDiv(encrypted.histogramShifting, this.histogramShifting);
+        setupDiv(encrypted.singularValueDecomposition, this.singularValueDecomposition);
     }
 }
 class Fullscreen {
@@ -162,26 +220,24 @@ class UserFlowHandler {
         }
     }
 }
-const userFlowHandler = new UserFlowHandler(document.getElementById("orignal-image-img"), document.getElementById("form-input-image"), document.getElementById("btn-encrypt"), document.getElementById("crypto-image-message"), document.getElementById("p-encrypt-tooltip"), new Fullscreen(document.getElementById("fullscreen-img"), document.getElementById("fullscreen-div")));
+// -------------------------------------------------------------
+// Initializing
+const userFlowHandler = new UserFlowHandler(document.getElementById("img-preview-original-image"), document.getElementById("input-form-image"), document.getElementById("btn-encrypt"), document.getElementById("textarea-crypto-message"), document.getElementById("p-form-tooltip"), new Fullscreen(document.getElementById("img-fullscreen"), document.getElementById("div-fullscreen")));
 // Globally scoped variables
 let encryptedText = null;
 let inputImageInfo = null;
 let maximumSizeValue = 0;
-// -------------------------------------------------------------
-// Initialziing Globally Scoped Objects for Algorithms
-const diffExp = new Algorithm(new CapacityCounter(document.getElementById("available-diff-exp-counter"), $('#available-diff-exp-counter'), bytesToWriteDE), document.getElementById("method-de-label"), document.getElementById("method-de-checkbox"), document.getElementById("diff-exp-encoded-image"), document.getElementById("diff-exp-decoded-image"));
-const histShift = new Algorithm(new CapacityCounter(document.getElementById("available-hist-shift-counter"), $('#available-hist-shift-counter'), bytesToWriteHS), document.getElementById("method-hs-label"), document.getElementById("method-hs-checkbox"), document.getElementById("hist-shift-encoded-image"), document.getElementById("hist-shift-decoded-image"));
-const singValDecomp = new Algorithm(new CapacityCounter(document.getElementById("available-sing-val-decomp-counter"), $('#available-sing-val-decomp-counter'), bytesToWriteDE // TODO, change to bytesToWriteSVD
-), document.getElementById("method-svd-label"), document.getElementById("method-svd-checkbox"), document.getElementById("sing-val-decomp-encoded-image"), document.getElementById("sing-val-decomp-decoded-image"));
+const algorithms = new Algorithms(new AlgorithmElements(new CounterCapacity(document.getElementById("available-diff-exp-counter"), $('#available-diff-exp-counter'), bytesToWriteDE), document.getElementById("method-de-label"), document.getElementById("method-de-checkbox"), document.getElementById("method-de-div"), document.getElementById("method-de-encoded-image"), document.getElementById("method-de-decoded-image")), new AlgorithmElements(new CounterCapacity(document.getElementById("available-hist-shift-counter"), $('#available-hist-shift-counter'), bytesToWriteHS), document.getElementById("method-hs-label"), document.getElementById("method-hs-checkbox"), document.getElementById("method-hs-div"), document.getElementById("method-hs-encoded-image"), document.getElementById("method-hs-decoded-image")), new AlgorithmElements(new CounterCapacity(document.getElementById("available-sing-val-decomp-counter"), $('#available-sing-val-decomp-counter'), bytesToWriteDE // TODO, change to bytesToWriteSVD
+), document.getElementById("method-svd-label"), document.getElementById("method-svd-checkbox"), document.getElementById("method-svd-div"), document.getElementById("method-svd-encoded-image"), document.getElementById("method-svd-decoded-image")));
 // Info Counters
-const imageSize = new InfoCounter(document.getElementById("image-size-counter"), $('#image-size-counter'));
-const maximumSize = new InfoCounter(document.getElementById("maximum-size-counter"), $('#maximum-size-counter'));
-const decodeSize = new InfoCounter(document.getElementById("decode-size-counter"), $('#decode-size-counter'));
+const imageSize = new CounterInformational(document.getElementById("image-size-counter"), $('#image-size-counter'));
+const maximumSize = new CounterInformational(document.getElementById("maximum-size-counter"), $('#maximum-size-counter'));
+const decodeSize = new CounterInformational(document.getElementById("decode-size-counter"), $('#decode-size-counter'));
 // -------------------------------------------------------------
 // Logic
 function encryptAndDecrypt(bmp, encrypted_text) {
     function getDifferentialExpansionImages() {
-        if (diffExp.isCapacityExceeded())
+        if (algorithms.differentialExpansion.isCapacityExceeded())
             return null;
         try {
             const diffExpBMPEncrypted = differentialExpansionEncrypt(bmp, encrypted_text);
@@ -193,7 +249,7 @@ function encryptAndDecrypt(bmp, encrypted_text) {
         }
     }
     function getHistogramShiftingImages() {
-        if (histShift.isCapacityExceeded())
+        if (algorithms.histogramShifting.isCapacityExceeded())
             return null;
         try {
             const [histShiftBMPEncrypted, histShiftKeys] = histogramShiftingEncrypt(bmp, encrypted_text);
@@ -205,7 +261,7 @@ function encryptAndDecrypt(bmp, encrypted_text) {
         }
     }
     function getSingularValueDecompositionImages() {
-        if (singValDecomp.isCapacityExceeded())
+        if (algorithms.singularValueDecomposition.isCapacityExceeded())
             return null;
         try {
             const singValDecompBMPEncrypted = singularValueDecompositionEncrypt(bmp, encrypted_text);
@@ -234,8 +290,8 @@ userFlowHandler.messageTextArea.addEventListener('input', (event) => {
     }
     const messageLength = encryptedText?.length ?? 0;
     maximumSize.label.innerHTML = (maximumSizeValue - messageLength).toString();
-    updateCapacityCounters([diffExp.counter, histShift.counter, singValDecomp.counter]);
-    handleDownloadButtonsAvailability([diffExp, histShift, singValDecomp]);
+    updateCapacityCounters(algorithms.getCounters());
+    handleDownloadButtonsAvailability(algorithms.getAlgorithmElements());
     userFlowHandler.tryEnableEncryptButton();
 });
 // -------------------------------------------------------------
@@ -248,10 +304,11 @@ userFlowHandler.formInputImage.addEventListener('input', async (e) => {
             counters.forEach(counter => counter.countTo());
         }
         function updateMaximumSizeValue() {
-            maximumSizeValue = Math.max(diffExp.counter.currentBytesCapacity, histShift.counter.currentBytesCapacity, singValDecomp.counter.currentBytesCapacity) - (encryptedText?.length ?? 0);
+            const counterValues = algorithms.getCounters().map(counter => counter.currentBytesCapacity);
+            maximumSizeValue = Math.max(...counterValues) - (encryptedText?.length ?? 0);
         }
         updateMaximumSizeValue();
-        updateCapacityCounters([diffExp.counter, histShift.counter, singValDecomp.counter]);
+        updateCapacityCounters(algorithms.getCounters());
         updateInfoCounters([imageSize, maximumSize, decodeSize]);
     }
     const inputImage = e.target.files[0];
@@ -264,11 +321,6 @@ userFlowHandler.formInputImage.addEventListener('input', async (e) => {
 userFlowHandler.encryptButton.addEventListener("click", function () {
     if (!inputImageInfo || !encryptedText)
         return;
-    function loadResultImagesToResultSection(encrypted) {
-        diffExp.loadResultsImagesToResultSection(encrypted.differentialExpansion);
-        histShift.loadResultsImagesToResultSection(encrypted.histogramShifting);
-        singValDecomp.loadResultsImagesToResultSection(encrypted.singularValueDecomposition);
-    }
     function displayResultsSection() {
         const resultsSectionDiv = document.getElementById("section-results-div");
         resultsSectionDiv.style.display = "block";
@@ -278,9 +330,6 @@ userFlowHandler.encryptButton.addEventListener("click", function () {
         const imageProcessingCompletedHeading = document.getElementById("results-section-scroll-hook");
         imageProcessingCompletedHeading.scrollIntoView({ behavior: 'smooth' });
     }
-    function downloadCheckboxSelectedImages(elements) {
-        elements.forEach(element => element.download());
-    }
     const encryptedFile = encryptAndDecrypt(inputImageInfo, encryptedText);
     try {
         encryptedFile.checkMessageValidity();
@@ -288,10 +337,11 @@ userFlowHandler.encryptButton.addEventListener("click", function () {
     catch (error) {
         console.log(error);
     }
-    loadResultImagesToResultSection(encryptedFile);
+    algorithms.loadResultImagesToResultSection(encryptedFile);
+    algorithms.setupDivsBasedOnEncryptions(encryptedFile);
     displayResultsSection();
     smoothScrollToResultsSection();
-    downloadCheckboxSelectedImages([diffExp, histShift, singValDecomp]);
+    algorithms.downloadCheckboxSelectedImages();
 });
 // -------------------------------------------------------------
 // After Page Load Actions
