@@ -69,10 +69,10 @@ class CounterInformational {
         this.label = label;
         this.labelJQ = labelJQ;
     }
-    countTo() {
+    countTo(topValue) {
         if (!inputImageInfo)
             return; // @ts-ignore
-        this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: Math.floor(inputImageInfo.fileSize / 1024) });
+        this.labelJQ.countTo({ from: parseInt(this.label.innerHTML), to: topValue });
     }
 }
 class AlgorithmElements {
@@ -288,6 +288,7 @@ userFlowHandler.messageTextArea.addEventListener('input', (event) => {
     function handleDownloadButtonsAvailability(elements) {
         elements.forEach(element => element.checkWhetherCounterPassedZeroAndHandle());
     }
+    console.log(maximumSizeValue);
     const messageLength = encryptedText?.length ?? 0;
     maximumSize.label.innerHTML = (maximumSizeValue - messageLength).toString();
     updateCapacityCounters(algorithms.getCounters());
@@ -300,16 +301,21 @@ userFlowHandler.formInputImage.addEventListener('input', async (e) => {
         function updateCapacityCounters(counters) {
             counters.forEach(counter => counter.countTo());
         }
-        function updateInfoCounters(counters) {
-            counters.forEach(counter => counter.countTo());
+        function updateInfoCounters() {
+            if (!inputImageInfo)
+                return;
+            imageSize.countTo(inputImageInfo.fileSize / 1024);
+            maximumSize.countTo(maximumSizeValue);
+            decodeSize.countTo(inputImageInfo.fileSize / 1024);
         }
         function updateMaximumSizeValue() {
             const counterValues = algorithms.getCounters().map(counter => counter.currentBytesCapacity);
             maximumSizeValue = Math.max(...counterValues) - (encryptedText?.length ?? 0);
+            console.log("!!!", maximumSizeValue);
         }
-        updateMaximumSizeValue();
         updateCapacityCounters(algorithms.getCounters());
-        updateInfoCounters([imageSize, maximumSize, decodeSize]);
+        updateMaximumSizeValue();
+        updateInfoCounters();
     }
     const inputImage = e.target.files[0];
     inputImageInfo = await BMP.from(inputImage);
