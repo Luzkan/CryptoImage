@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [[1.0.3]] - 2022-01-18 _(JW)_
+
+Added:
+
+- Added: SVD Dimension Counter
+
 ## [[1.0.2]] - 2022-01-18 _(MJ)_
 
 Changed:
@@ -434,6 +440,7 @@ Added:
 - Created [**`CHANGELOG.md`**](../docs/CHANGELOG.md) for the project that contains the history of changes for this project.
 - Created [**`README.md`**](../README.md) for the project that contains various useful information, requirements and instructions in order ot run the program.
 
+[diff: 1.0.2-1.0.3]: https://github.com/Luzkan/CryptoImage/compare/1.0.2...1.0.3
 [diff: 1.0.1-1.0.2]: https://github.com/Luzkan/CryptoImage/compare/1.0.1...1.0.2
 [diff: 1.0.0-1.0.1]: https://github.com/Luzkan/CryptoImage/compare/1.0.0...1.0.1
 [diff: 0.15.4-1.0.0]: https://github.com/Luzkan/CryptoImage/compare/0.15.4...1.0.0
@@ -471,6 +478,7 @@ Added:
 [diff: 0.1.0-0.1.1]: https://github.com/Luzkan/CryptoImage/compare/0.1.0...0.1.1
 [diff: 0.0.1-0.1.0]: https://github.com/Luzkan/CryptoImage/compare/0.0.1...0.1.0
 [diff: 0.0.0-0.0.1]: https://github.com/Luzkan/CryptoImage/compare/0.0.0...0.0.1
+[1.0.3]: https://github.com/Luzkan/CryptoImage/releases/tag/1.0.2
 [1.0.2]: https://github.com/Luzkan/CryptoImage/releases/tag/1.0.2
 [1.0.1]: https://github.com/Luzkan/CryptoImage/releases/tag/1.0.1
 [1.0.0]: https://github.com/Luzkan/CryptoImage/releases/tag/1.0.0

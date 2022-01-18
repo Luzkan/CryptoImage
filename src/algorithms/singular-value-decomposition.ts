@@ -23,6 +23,19 @@ let correctCorrectBlockBits = 0;
 let totalBits = 0;
 let correctBits = 0;
 
+function bytesToWriteSVD(bmp: BMP) {
+
+  return Math.floor(pixel3DArrayTo2DArrays(bmp.pixels3D)
+    .flatMap(twoDimArrayToBlocks)
+    .filter(block => !BlockSkipUtils.shouldBlockBeSkipped(block))
+    .length * bitsPerBlock() / repetitionNumber / 8)
+}
+
+function bitsPerBlock(): number {
+
+  return defaultBits.length
+}
+
 function singularValueDecompositionEncrypt(bmp: BMP, asciiMessage: string) {
 
   textIterator = new EncodedTextIterator(asciiMessage);
@@ -369,7 +382,7 @@ class BlockSkipUtils {
     const [u, q, v] = SVD(block);
     const uDash = orthogonalize(createUDash(u, testBits));
 
-    if (this.isCorrupted(uDash)) {
+    if (BlockSkipUtils.isCorrupted(uDash)) {
       return true;
     }
 

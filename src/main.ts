@@ -277,7 +277,7 @@ const algorithms: Algorithms = new Algorithms(
     new CounterCapacity(
       document.getElementById("available-sing-val-decomp-counter") as HTMLSpanElement,
       $('#available-sing-val-decomp-counter'),
-      bytesToWriteDE  // TODO, change to bytesToWriteSVD
+      bytesToWriteSVD
     ),
     document.getElementById("method-svd-label") as HTMLLabelElement,
     document.getElementById("method-svd-checkbox") as HTMLInputElement,
