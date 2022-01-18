@@ -298,9 +298,14 @@ const maximumSize: CounterInformational = new CounterInformational(
   $('#maximum-size-counter')
 );
 
-const decodeSize: CounterInformational = new CounterInformational(
-  document.getElementById("decode-size-counter") as HTMLSpanElement,
-  $('#decode-size-counter')
+const counterXDimension: CounterInformational = new CounterInformational(
+  document.getElementById("span-counter-x-dimension") as HTMLSpanElement,
+  $('#span-counter-x-dimension')
+);
+
+const counterYDimension: CounterInformational = new CounterInformational(
+  document.getElementById("span-counter-y-dimension") as HTMLSpanElement,
+  $('#span-counter-y-dimension')
 );
 
 
@@ -386,7 +391,8 @@ userFlowHandler.formInputImage.addEventListener('input', async e => {
       if (!inputImageInfo) return
       imageSize.countTo(inputImageInfo.fileSize / 1024);
       maximumSize.countTo(maximumSizeValue);
-      decodeSize.countTo(inputImageInfo.fileSize / 1024);
+      counterXDimension.countTo(inputImageInfo.width);
+      counterYDimension.countTo(inputImageInfo.height);
     }
 
     function updateMaximumSizeValue() {

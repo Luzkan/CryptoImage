@@ -232,7 +232,8 @@ const algorithms = new Algorithms(new AlgorithmElements(new CounterCapacity(docu
 // Info Counters
 const imageSize = new CounterInformational(document.getElementById("image-size-counter"), $('#image-size-counter'));
 const maximumSize = new CounterInformational(document.getElementById("maximum-size-counter"), $('#maximum-size-counter'));
-const decodeSize = new CounterInformational(document.getElementById("decode-size-counter"), $('#decode-size-counter'));
+const counterXDimension = new CounterInformational(document.getElementById("span-counter-x-dimension"), $('#span-counter-x-dimension'));
+const counterYDimension = new CounterInformational(document.getElementById("span-counter-y-dimension"), $('#span-counter-y-dimension'));
 // -------------------------------------------------------------
 // Logic
 function encryptAndDecrypt(bmp, encrypted_text) {
@@ -306,12 +307,12 @@ userFlowHandler.formInputImage.addEventListener('input', async (e) => {
                 return;
             imageSize.countTo(inputImageInfo.fileSize / 1024);
             maximumSize.countTo(maximumSizeValue);
-            decodeSize.countTo(inputImageInfo.fileSize / 1024);
+            counterXDimension.countTo(inputImageInfo.width);
+            counterYDimension.countTo(inputImageInfo.height);
         }
         function updateMaximumSizeValue() {
             const counterValues = algorithms.getCounters().map(counter => counter.currentBytesCapacity);
             maximumSizeValue = Math.max(...counterValues) - (encryptedText?.length ?? 0);
-            console.log("!!!", maximumSizeValue);
         }
         updateCapacityCounters(algorithms.getCounters());
         updateMaximumSizeValue();

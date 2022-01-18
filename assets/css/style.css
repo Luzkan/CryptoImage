@@ -594,6 +594,7 @@ input[type="file"]::file-selector-button {
 
 .author-photo {
   border: 2px solid #8c7676;
+  image-rendering: pixelated;
 }
 
 .fullscreen {
